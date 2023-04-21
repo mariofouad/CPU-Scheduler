@@ -51,7 +51,7 @@ void Process::excute1TimeStep()
 
 bool Process::MustbeTerminated()
 {
-	if (CT == 0) return true;
+	if (CT <= 0) return true;
 	return false;
 }
 

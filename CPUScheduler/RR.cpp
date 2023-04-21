@@ -22,21 +22,19 @@ RR::RR(int id) {
 void RR::ScheduleAgo()                                      //Overloaded Scheduler Algorithem for RR processors
 {
 	Process ptorun;
-	int ntimesteps = 0;
 	if(!IsIdeal() && !IsBusy() )
 	{
 		RDY->Dequeue(ptorun);
 		RDYcount--;
 		RUN = &ptorun;
-	}
-	if (IsBusy() && TMslice != 0) 
-	{
-		TMslice--;
-		RUN->excute1TimeStep();
-	}
-	if (TMslice == 0)
-	{
-		return;
+		for (int i = 0; i < TMslice; i++) 
+		{
+			RUN->excute1TimeStep();
+			if (RUN->MustbeTerminated()) return;
+		}
+		RDY->Enqueue(*RUN);
+		RDYcount++;
+		KillRUN();
 	}
 }
 
