@@ -6,7 +6,7 @@
 using namespace std;
 
 //====================================================================================================================//
-//======================================================== CLASS IMPLIMENTATION ======================================//
+//============================================ CLASS IMPLIMENTATION ==================================================//
 //====================================================================================================================//
 Scheduler::Scheduler() {
 	UserInterface = new UI(this);
@@ -186,10 +186,10 @@ void Scheduler::PrintWindow()
 
 }
 
-void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}	//this fn will be responsible for migrating processes through different processors
-//====================================================================================================================//
-//================================================== PHASE-1 SIMULATOR ===============================================//
-//====================================================================================================================//
+void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}	
+
+void Scheduler::Work_stealing() {}									
+
 void Scheduler::Phase1Simulator()
 {
 	//================================================= READ_FILE =====================================================//
@@ -273,16 +273,11 @@ int Scheduler::GenerateRandom()
 	return 0;
 }
 
-//====================================================================================================================//
-//====================================================================================================================//
-void Scheduler::Work_stealing() {}									//will manage the work stealing
-
 bool Scheduler::WorkisDone()
 {
 	if (NEW->IsEmpty() && BLK->IsEmpty() && TRM_count == tempProc_count) return true;
 	return false;
 }
-
 
 bool Scheduler::MovetoTRM(Process* p)
 {
@@ -291,7 +286,6 @@ bool Scheduler::MovetoTRM(Process* p)
 	TRM_count++;
 	return true;
 }
-
 
 bool Scheduler::MoveFromNewToRdy()
 {
@@ -490,28 +484,8 @@ bool Scheduler::KillFromFCFS()
 	return false;
 }
 
-Scheduler::~Scheduler() {}
+void Scheduler::Simulator() {}
 
-
-//for (int i = 0; i < Processor_count; i++)
-	//{
-	//	Process* p = new Process;
-	//	Processor * Ptemp = nullptr;
-	//	AllProcessors->Traversal(Ptemp, i);
-	//	int a = Ptemp->GenerateRandom(&p);
-	//	if (a == 1)
-	//	{
-	//		Ptemp->KillRUN();
-	//		MoveToBlk(p);
-	//	}
-	//	if (a == 2)
-	//	{
-	//		Ptemp->KillRUN();
-	//		Ptemp->InserttoRDY(*p);
-	//	}
-	//	if (a == 3)
-	//	{
-	//		Ptemp->KillRUN();
-	//		MovetoTRM(p);
-	//	}
-	//}
+Scheduler::~Scheduler() {
+	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors , ActualRUN;
+}
