@@ -44,6 +44,17 @@ bool Process::operator<(const Process& other) const
 }
 
 
+void Process::excute1TimeStep()
+{
+	CT--;
+}
+
+bool Process::MustbeTerminated()
+{
+	if (CT <= 0) return true;
+	return false;
+}
+
 Process::~Process()
 {
 }
@@ -59,14 +70,4 @@ int Process::GetAT()
 	return AT;
 
 
-}
-
-void Process::SetHamada(bool l)
-{
-	hamada = l;
-}
-
-bool Process::GetHamada()
-{
-	return hamada;
 }
