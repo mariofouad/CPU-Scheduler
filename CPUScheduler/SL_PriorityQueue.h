@@ -57,7 +57,7 @@ SL_PriorityQueue<ItemType>::SL_PriorityQueue(const SL_PriorityQueue& pq)
 template <class ItemType>
 SL_PriorityQueue<ItemType>::~SL_PriorityQueue()
 {
-	delete slistPtr;
+	//delete slistPtr;
 } // end destructor
 
 template < class ItemType>

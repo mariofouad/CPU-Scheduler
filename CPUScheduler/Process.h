@@ -27,7 +27,7 @@ private:
 	int* IO_D;					//I|O Duration time
 	int Randomization = 0;		//Returns a number from 1-100 used for managing what to do with the process
 	friend ostream& operator << (ostream& Out, const Process& p);
-	int LastOpDone=AT;
+	int LastOpDone=0;
 
 public:
 

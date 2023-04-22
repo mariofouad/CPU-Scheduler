@@ -218,9 +218,9 @@ bool LinkedSortedList<ItemType>::remove(int position)
 
 template < class ItemType>
 void LinkedSortedList<ItemType>::clear()
-{
+{/*
 	while (!isEmpty())
-		remove(1);
+		remove(1);*/
 } // end clear
 
 template < class ItemType>

@@ -43,9 +43,9 @@ bool SJF::MoveFromRDYToRUN(int& CTS)
 	if (!IsIdeal() && !prc.IsOpDone(CTS))
 	{
 		RDY->remove(prc);
+		prc.OpIsDone(CTS);
 		RUN = new Process(prc);
 		RDYcount--;
-		prc.OpIsDone(CTS);
 		return true;
 	}
 	return false;
