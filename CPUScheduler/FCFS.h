@@ -22,7 +22,7 @@ public:
 
 	void InserttoRDY(Process& P);					  //Virtual function responsible for inserting a Process to RDY list
 
-	bool MoveFromRDYToRUN();
+	bool MoveFromRDYToRUN(int& CTS);
 
 	void MoveFromBLKToRUN(Process& P);                //Virtual function responsible for moving a Process from BLK to RDY list
 

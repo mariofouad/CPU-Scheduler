@@ -27,17 +27,32 @@ private:
 	int* IO_D;					//I|O Duration time
 	int Randomization = 0;		//Returns a number from 1-100 used for managing what to do with the process
 	friend ostream& operator << (ostream& Out, const Process& p);
+	int LastOpDone=AT;
 
 public:
 
 	Process();
+
 	Process(int art, int id, int cpt);
+
+	bool IsNew(int& CTS);
+
+	void OpIsDone(int& CTS); //me7tageen neshoof law el op 7asal 3aleeha 7aga han3raf lama ne update el time el operation 7asal feeh bel CTS
+
+	bool IsOpDone(int&CTS);
+
 	void SetNumberOfRequests(int n);
+
 	void SetInputData(int ir, int id, int i);
+
 	bool operator == (const Process& p);
+
 	bool operator<(const Process& other) const;
+
 	int GetAT();
+
 	void excute1TimeStep();								//Let the process excute 1 time step only 
+	
 	bool MustbeTerminated();							//Returns true if the process is ready to be Terminated
 	~Process();
 };

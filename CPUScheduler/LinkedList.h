@@ -35,7 +35,7 @@ public:
 
 	void DeleteFirst(T& value);                             //Delete a node at the begining
 
-	bool DeleteNode(T& value);								//Delete a specific node with a value passed by user
+	bool DeleteNode(const T& value);								//Delete a specific node with a value passed by user
 
 	bool DeleteNodes(T value);								//Delete all nodes
 
@@ -43,13 +43,17 @@ public:
 
 	void Reverse();                                         //Reverse a linked list
 
-	bool IsEmpty()const;
+	bool IsEmpty()const;									//Check if the list is empty
 
-	bool Traversal(T& value, int& key);
+	bool Traversal(T& value, int& key);						//return the value at given index
 
 	bool DeleteLast(T& frntEntry);                          //Delete a node at the end
 
-	~LinkedList();                                          //Destructor calls delete all function to delete all nodes
+	bool peek(T& value);
+
+	~LinkedList();
+
+	//Destructor calls delete all function to delete all nodes
 };
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
@@ -157,6 +161,7 @@ bool LinkedList<T>::Find(int Key)                           //search for a data 
 	}
 	return false;
 }
+
 template<typename T>
 bool LinkedList<T>::Traversal(T& value, int& Key)                           //search for a data in the nodes of the linked list
 {
@@ -231,31 +236,49 @@ bool LinkedList<T>::DeleteLast(T& frntEntry)                            //Delete
 	return true;
 }
 
-template <typename T>
-bool LinkedList<T>::DeleteNode(T& value)              //Delete a specific node with a value passed by user
-{
-	Node<T>* delptr = Head;
-	if (!Head)
+template<typename T>
+bool LinkedList<T>::peek(T&value) {
+	if (IsEmpty()) {
+		// handle empty list
 		return false;
-	if ((Head->getValue()) == value)
-	{
+	}
+	value = Head->getValue();
+	return true;
+}
+
+template <typename T>
+bool LinkedList<T>::DeleteNode(const T& value)
+{
+	if (!Head) {
+		// handle empty list
+		return false;
+	}
+
+	if (Head->getValue() == value) {
+		// handle deleting the head node
+		Node<T>* delptr = Head;
 		Head = Head->getNext();
 		delete delptr;
+		return true;
 	}
-	else
-	{
-		Node<T>* prev = nullptr;
-		delptr = Head;
-		bool temp = (value == delptr->getValue());
-		while (!temp)
-		{
-			prev = delptr;
-			delptr = delptr->getNext();
+
+	Node<T>* prev = Head;
+	Node<T>* curr = Head->getNext();
+	while (curr) {
+		if (curr->getValue() == value) {
+			// handle deleting a non-head node
+			prev->setNext(curr->getNext());
+			delete curr;
+			return true;
 		}
-		prev->setNext(delptr->getNext());
-		delete delptr;
+		prev = curr;
+		curr = curr->getNext();
 	}
+
+	// handle value not found
+	return false;
 }
+
 
 template <typename T>
 bool LinkedList<T>::DeleteNodes(T value)             //Delete all nodes
@@ -292,5 +315,4 @@ LinkedList<T>::~LinkedList()                                //Destructor calls d
 {
 	DeleteAll();
 }
-
 #endif

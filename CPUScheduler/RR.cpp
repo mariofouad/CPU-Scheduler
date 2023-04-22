@@ -22,7 +22,7 @@ RR::RR(int id) {
 void RR::ScheduleAgo()                                      //Overloaded Scheduler Algorithem for RR processors
 {
 	Process ptorun;
-	if(!IsIdeal() && !IsBusy() )
+	if(!IsIdeal() && !IsBusy())
 	{
 		RDY->Dequeue(ptorun);
 		RDYcount--;
@@ -55,19 +55,20 @@ bool RR::IsIdeal()
 	return false;
 }
 
-bool RR::MoveFromRDYToRUN()
+bool RR::MoveFromRDYToRUN(int& CTS)
 {
 	Process p;
-	if (!RDY->IsEmpty())
+	RDY->peek(p);
+	if (!RDY->IsEmpty()&& !p.IsOpDone(CTS))
 	{
 		RDY->Dequeue(p);
 		RUN = &p;
+		p.OpIsDone(CTS);
 		RDYcount--;
 		return true;
 	}
 	return false;
 }
-
 
 string RR::returntypename()
 {

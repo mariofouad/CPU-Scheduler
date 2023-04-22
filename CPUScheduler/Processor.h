@@ -37,7 +37,7 @@ public:
 
 	void PrintRUN();
 
-	virtual bool MoveFromRDYToRUN() = 0;
+	virtual bool MoveFromRDYToRUN(int& CTS) = 0;
 
 	virtual bool IsBusy();
 
