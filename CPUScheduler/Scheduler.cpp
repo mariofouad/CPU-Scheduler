@@ -160,23 +160,8 @@ void Scheduler::PrintWindow()
 	std::cout << '\n';
 
 	std::cout << "---------------------- RUN processes ----------------------" << '\n';
-	//Processor* Ptemp = nullptr;
 	int actur = 0;
-	/*for (int i = 0; i < Processor_count; i++)
-	{
-		AllProcessors->Traversal(Ptemp, i);
-		if (Ptemp->IsBusy()) actur++;
-	}
-	std::cout << actur << " RUN: ";
-	for (int i = 0; i < Processor_count; i++)
-	{
-		AllProcessors->Traversal(Ptemp, i);
-		if (Ptemp->IsBusy())
-		{
-			Ptemp->PrintRUN();
-			std::cout << ", ";
-		}
-	}*/
+
 	for (int i = 0; i < FCFS_Count; i++)
 	{
 		FCFS* P = nullptr;
@@ -228,9 +213,7 @@ void Scheduler::PrintWindow()
 			std::cout << ", ";
 		}
 	}
-	
 	std::cout << '\n';
-
 	std::cout << "---------------------- TRM processes ----------------------" << '\n';
 	std::cout << TRM_count << " TRM: ";
 	TRM->print();
@@ -244,7 +227,7 @@ void Scheduler::Work_stealing() {}
 
 void Scheduler::Phase1Simulator()
 {
-	//================================================= READ_FILE =====================================================//
+	//============================================================ READ_FILE =====================================================//
 	int id = 1;
 	ReadFile();
 	for (int i = 0; i < FCFS_Count; i++)
@@ -270,22 +253,18 @@ void Scheduler::Phase1Simulator()
 	}
 	while (!WorkisDone())
 	{
-		//============================================================= i  =============================================================//(DONE)
+		//============================================================= i  =========================================================//(DONE)
 		MoveFromNewToRdy();
 		//============================================================= ii  ========================================================//(DONE) 
 		DistToRUN();
-		//============================================================= iii =======================================================//(DONE)
+		//============================================================= iii ========================================================//(DONE)
 		Blk_Rdy_Trm();
-		//============================================================= iv =======================================================//(DONE)
+		//============================================================= iv =========================================================//(DONE)
 		RandomSch();
-		//=============================================================  v  ==================================================//(DONE)
-		//else if (KillFromFCFS())                  //me7taga tetzabat 7ewar is new fa commented 3ashan ne test eno sha3'al bs
-		//{
-		//	GetInterface()->UpdateInterface();
-		//	//CurrentTimestep++;
-		//}
+		//=============================================================  v  ========================================================//(DONE)
 		GetInterface()->UpdateInterface();
 		CurrentTimestep++;
+		//==========================================================================================================================//
 	}
 }
 
@@ -293,17 +272,17 @@ int Scheduler::GenerateRandom()
 {
 	srand(time(0));                                                 // seed the random number generator with current time
 	int random_num = rand() % 100 + 1;
-	if (random_num >= 1 && random_num <= 70)
+	if (random_num >= 1 && random_num <= 15)
 	{
 		return 1;
 	}
-	if (random_num >= 71 && random_num <= 98)
+	if (random_num >= 20 && random_num <= 30)
 	{
-		return 1;
+		return 2;
 	}
-	if (random_num >= 99 && random_num <= 100)
+	if (random_num >= 50 && random_num <= 60)
 	{
-		return 1;
+		return 3;
 	}
 	return 0;
 }
@@ -488,23 +467,23 @@ bool Scheduler::Blk_Rdy_Trm()
 		{
 			if (GenerateRandom() == 1)
 			{
+				Rtemp->OpIsDone(CurrentTimestep);
 				MoveToBlk(Rtemp);
 				Atemp->KillRUN();
-				Rtemp->OpIsDone(CurrentTimestep);
 				c++;
 			}
 			if (GenerateRandom() == 2)
 			{
+				Rtemp->OpIsDone(CurrentTimestep);
 				MoveToRDY(Rtemp);
 				Atemp->KillRUN();
-				Rtemp->OpIsDone(CurrentTimestep);
 				c++;
 			}
 			if (GenerateRandom() == 3)
 			{
+				Rtemp->OpIsDone(CurrentTimestep);
 				MovetoTRM(Rtemp);
 				Atemp->KillRUN();
-				Rtemp->OpIsDone(CurrentTimestep);
 				c++;
 			}
 		}
@@ -521,12 +500,12 @@ bool Scheduler::RandomSch()
 	int random_num1 = rand() % 100 + 1;                              // generate a random number between 1 and 100
 	Process p;
 	BLK->peek(p);
-	if (random_num1 < 80 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
+	if (random_num1 < 10 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
 	{
 		BLK->DeleteFirst(p);
 		BLK_count--;
-		MoveToRDY(&p);
 		p.OpIsDone(CurrentTimestep);
+		MoveToRDY(&p);
 		return true;
 	}
 	return false;
@@ -541,8 +520,9 @@ bool Scheduler::KillFromFCFS()
 	{
 		FCFS* temp;
 		FCFS_Processors->Traversal(temp, i);
-		if (temp->ProcIsFound(&pfind) && !pfind.IsNew(CurrentTimestep))
+		if (temp->ProcIsFound(&pfind) && !pfind.IsOpDone(CurrentTimestep))
 		{
+			pfind.OpIsDone(CurrentTimestep);
 			MovetoTRM(&pfind);
 			return true;
 		}

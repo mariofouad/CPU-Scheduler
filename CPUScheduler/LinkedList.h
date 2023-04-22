@@ -206,9 +206,10 @@ void LinkedList<T>::DeleteFirst(T& value)                           //Delete a n
 	if (!Head)
 		return;
 	Node<T>* delptr = Head;
-	value = delptr->getValue();
+	value = Head->getValue();
 	Head = Head->getNext();
 	count--;
+	delete delptr;
 }
 
 template <typename T>
