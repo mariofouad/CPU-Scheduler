@@ -2,17 +2,14 @@
 #include "FCFS.h"
 #include "SJF.h"
 #include "RR.h"
-
-using namespace std;
-
 //====================================================================================================================//
 //============================================ CLASS IMPLIMENTATION ==================================================//
 //====================================================================================================================//
 Scheduler::Scheduler() {
 	UserInterface = new UI(this);
-	NEW = new LinkedQueue<Process>;
-	BLK = new LinkedList<Process>;
-	TRM = new LinkedQueue<Process>;
+	NEW = new LinkedQueue<Process*>;
+	BLK = new LinkedList<Process*>;
+	TRM = new LinkedQueue<Process*>;
 	ActualRUN = new LinkedQueue<Process*>;
 	FCFS_Processors = new LinkedList<FCFS*>;
 	SJF_Processors = new LinkedList<SJF*>;
@@ -72,10 +69,10 @@ void Scheduler::ReadFile()
 			std::getline(inputfile, line);
 			std::stringstream Processline(line);
 			Processline >> AT >> PID >> CT >> N;
-			Process P(AT, PID, CT);
+			Process* P=new Process(AT, PID, CT);
 			if (N != 0)
 			{
-				P.SetNumberOfRequests(N);
+				P->SetNumberOfRequests(N);
 				for (int i = 0; i < N; i++)
 				{
 					int IOR, IOD;
@@ -100,7 +97,7 @@ void Scheduler::ReadFile()
 							Processline >> IOD;
 
 							// set input data for the process
-							P.SetInputData(IOR, IOD, i);
+							P->SetInputData(IOR, IOD, i);
 						}
 					}
 				}
@@ -296,7 +293,7 @@ bool Scheduler::WorkisDone()
 bool Scheduler::MovetoTRM(Process* p)
 {
 	if (p == nullptr) return false;
-	TRM->Enqueue(*p);
+	TRM->Enqueue(p);
 	TRM_count++;
 	return true;
 }
@@ -304,16 +301,16 @@ bool Scheduler::MovetoTRM(Process* p)
 bool Scheduler::MoveFromNewToRdy()
 {
 	int c = 0;
-	Process ptemp;
+	Process* ptemp = nullptr;
 	FCFS* Ftemp = nullptr;
 	SJF* Stemp = nullptr;
 	RR* Rtemp = nullptr;
-	Process Ntemp;
+	Process* Ntemp = nullptr;
 	while (!(NEW->IsEmpty()))
 	{
 		if (ProcessorI == (FCFS_Count + SJF_Count + RR_Count)) { ProcessorI = 0; }
 		NEW->peek(ptemp);
-		if (ptemp.GetAT() == CurrentTimestep)
+		if (ptemp->GetAT() == CurrentTimestep)
 		{
 			NEW->Dequeue(Ntemp);
 			Proc_count--;
@@ -321,7 +318,7 @@ bool Scheduler::MoveFromNewToRdy()
 			if (ProcessorI < FCFS_Count)
 			{
 				FCFS_Processors->Traversal(Ftemp, ProcessorI);
-				Ftemp->InserttoRDY(Ntemp);
+				Ftemp->InserttoRDY(*Ntemp);
 				c++;
 			}
 
@@ -329,7 +326,7 @@ bool Scheduler::MoveFromNewToRdy()
 			{
 				int is = ProcessorI - FCFS_Count;
 				SJF_Processors->Traversal(Stemp, is);
-				Stemp->InserttoRDY(Ntemp);
+				Stemp->InserttoRDY(*Ntemp);
 				c++;
 			}
 
@@ -337,7 +334,7 @@ bool Scheduler::MoveFromNewToRdy()
 			{
 				int ir = ProcessorI - SJF_Count - FCFS_Count;
 				RR_Processors->Traversal(Rtemp, ir);
-				Rtemp->InserttoRDY(Ntemp);
+				Rtemp->InserttoRDY(*Ntemp);
 				c++;
 			}
 			ProcessorI++;
@@ -353,7 +350,7 @@ bool Scheduler::MoveFromNewToRdy()
 bool Scheduler::MoveToBlk(Process* p)
 {
 	if (p == nullptr) return false;
-	BLK->InsertEnd(*p);
+	BLK->InsertEnd(p);
 	BLK_count++;
 	return true;
 }
@@ -498,14 +495,14 @@ bool Scheduler::RandomSch()
 {
 	srand(time(0));                                                 // seed the random number generator with current time
 	int random_num1 = rand() % 100 + 1;                              // generate a random number between 1 and 100
-	Process p;
+	Process* p;
 	BLK->peek(p);
-	if (random_num1 < 10 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
+	if (random_num1 < 10 && !BLK->IsEmpty() && !p->IsOpDone(CurrentTimestep))
 	{
 		BLK->DeleteFirst(p);
 		BLK_count--;
-		p.OpIsDone(CurrentTimestep);
-		MoveToRDY(&p);
+		p->OpIsDone(CurrentTimestep);
+		MoveToRDY(p);
 		return true;
 	}
 	return false;

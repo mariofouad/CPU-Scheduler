@@ -12,6 +12,7 @@
 #include <iostream>                                         //READ_FILE INCLUDES
 #include <sstream>
 #include <string>
+using namespace std;
 //====================================================================================================================//
 #include <cstdlib>
 #include <ctime>                                            //RANDOM_NUMBER_GENERATOR_INCLUDES
@@ -29,12 +30,12 @@ class Scheduler {
 
 private:
 	UI* UserInterface;				                         //An object from UI so we can make scheduler call it and do the output and input
-	LinkedQueue<Process>* NEW = nullptr;				     //A container for all the processes just before their arrival to CPU
+	LinkedQueue<Process*>* NEW = nullptr;				     //A container for all the processes just before their arrival to CPU
 	int Proc_count = 0;				                         //Total number of processes in NEW before anything occurs 
 	int tempProc_count = 0;
-	LinkedList<Process>* BLK = nullptr;						 //A container for all processses in blocked state
+	LinkedList<Process*>* BLK = nullptr;						 //A container for all processses in blocked state
 	int BLK_count = 0;
-	LinkedQueue<Process>* TRM = nullptr;				     //A container for all terminated processes
+	LinkedQueue<Process*>* TRM = nullptr;				     //A container for all terminated processes
 	int TRM_count = 0;
 	LinkedQueue<Process*>* ActualRUN = nullptr;
 	int ActualRUNcount = 0;
