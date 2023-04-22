@@ -33,7 +33,7 @@ public:
 
 	bool IsIdeal();											 //Returns true if the RDY list is empty
 
-	bool MoveFromRDYToRUN();								 //Moves the first process in The RDY queue to RUN state
+	bool MoveFromRDYToRUN(int &CTS);								 //Moves the first process in The RDY queue to RUN state
 
 	string returntypename();								 //Returna a string with the type name which is RR
 

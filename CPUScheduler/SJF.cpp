@@ -36,15 +36,16 @@ bool SJF::IsIdeal()
 }
 
 
-bool SJF::MoveFromRDYToRUN()
+bool SJF::MoveFromRDYToRUN(int& CTS)
 {
-
 	Process prc;
-	if (!IsIdeal())
+	RDY->peek(prc);
+	if (!IsIdeal() && !prc.IsOpDone(CTS))
 	{
 		RDY->remove(prc);
 		RUN = new Process(prc);
 		RDYcount--;
+		prc.OpIsDone(CTS);
 		return true;
 	}
 	return false;

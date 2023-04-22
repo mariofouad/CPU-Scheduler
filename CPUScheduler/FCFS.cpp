@@ -26,13 +26,15 @@ void FCFS::InserttoRDY(Process& P)
 	RDYcount++;
 }
 
-bool FCFS::MoveFromRDYToRUN()
+bool FCFS::MoveFromRDYToRUN(int& CTS)
 {
 	Process P;
-	if (!IsIdeal())
+	RDY->peek(P);
+	if (!IsIdeal() && !P.IsOpDone(CTS))
 	{
 		RDY->DeleteFirst(P);
 		RUN = new Process(P);
+		P.OpIsDone(CTS);
 		RDYcount--;
 		return true;
 	}
@@ -69,8 +71,6 @@ bool FCFS::ProcIsFound(Process* p)
 		RDY->Traversal(ptemp, i);
 		if (ptemp == *p)
 		{
-			RDY->DeleteNode(ptemp);
-			RDYcount--;
 			return true;
 		}
 	}
@@ -80,5 +80,6 @@ bool FCFS::ProcIsFound(Process* p)
 
 FCFS::~FCFS()                                               //Default Destructor
 {
-
+	RDY->~LinkedList();
+	delete RDY;
 }

@@ -28,7 +28,7 @@ public:
 
 	bool IsIdeal();
 
-	bool MoveFromRDYToRUN();
+	bool MoveFromRDYToRUN(int& CTS);
 
 	string returntypename();
 

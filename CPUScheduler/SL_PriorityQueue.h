@@ -19,9 +19,10 @@ public:
 	bool isEmpty() const;
 	bool add(const ItemType& newEntry);
 	void print() const;
+	bool peek(ItemType& entry);
 	void Traversal(ItemType& entry, int position);
 	bool remove(ItemType& entry);
-	ItemType peek() const;
+	
 }; // end SL_PriorityQueue
 
 template<class ItemType>
@@ -31,7 +32,7 @@ void SL_PriorityQueue<ItemType>::Traversal(ItemType& entry, int position) {
 		return;
 	}
 	else {
-		if (position < 0 || position > slistPtr->getLength()) {
+		if (position < 0 || position >= slistPtr->getLength()) {
 			// handle position out of bounds
 			return;
 		}
@@ -40,7 +41,7 @@ void SL_PriorityQueue<ItemType>::Traversal(ItemType& entry, int position) {
 		}
 	}
 }
-
+ 
 template <class ItemType>
 SL_PriorityQueue<ItemType>::SL_PriorityQueue() {
 	slistPtr = new LinkedSortedList<ItemType>();
@@ -81,7 +82,6 @@ bool SL_PriorityQueue<ItemType>::remove(ItemType& anEntry)
 		return false;
 	}
 }
-
 template <class ItemType>
 bool SL_PriorityQueue<ItemType>::isEmpty() const
 {
@@ -103,4 +103,13 @@ void SL_PriorityQueue<ItemType>::print() const {
 	}
 }
 
+template<class ItemType>
+bool SL_PriorityQueue<ItemType>::peek(ItemType& entry) {
+	if (isEmpty()) {
+		// handle empty queue
+		return false;
+	}
+	entry = slistPtr->getEntry(1);
+	return true;
+}
 #endif

@@ -40,19 +40,19 @@ bool Scheduler::FileisFound() {
 
 void Scheduler::ReadFile()
 {
-	string line;
-	ifstream inputfile(FileName);
+	std::string line;
+	std::ifstream inputfile(FileName);
 	if (inputfile.is_open())
 	{
 		//Fist line in text file
 		std::getline(inputfile, line);
-		stringstream firstline(line);
+		std::stringstream firstline(line);
 		firstline >> FCFS_Count >> SJF_Count >> RR_Count;
 		Processor_count = FCFS_Count + SJF_Count + RR_Count;
 
 		//Second line in text file
 		std::getline(inputfile, line);
-		stringstream secondline(line);
+		std::stringstream secondline(line);
 		secondline >> TimeSliceRR;
 
 		//Third line in text file
@@ -62,15 +62,15 @@ void Scheduler::ReadFile()
 
 		//Fourth line in text file
 		std::getline(inputfile, line);
-		stringstream fourthline(line);
+		std::stringstream fourthline(line);
 		fourthline >> Proc_count;
 		tempProc_count = Proc_count;
 
 		for (int i = 0; i < Proc_count; i++)
 		{
-			int AT, PID, CT, N, IOR, IOD;
+			int AT, PID, CT, N, IOR=0, IOD=0;
 			std::getline(inputfile, line);
-			stringstream Processline(line);
+			std::stringstream Processline(line);
 			Processline >> AT >> PID >> CT >> N;
 			Process P(AT, PID, CT);
 			if (N != 0)
@@ -110,12 +110,12 @@ void Scheduler::ReadFile()
 		}
 		//Bfore last line in text file
 		std::getline(inputfile, line);
-		stringstream Beforelastline(line);
+		std::stringstream Beforelastline(line);
 		Beforelastline >> KillPID;
 
 		//Last line in text file
 		std::getline(inputfile, line);
-		stringstream Lastline(line);
+		std::stringstream Lastline(line);
 		Lastline >> KillTime;
 		inputfile.close();
 	}
@@ -127,62 +127,114 @@ void Scheduler::ReadFile()
 
 void Scheduler::PrintWindow()
 {
-	cout << "===========================================================" << endl;
-	cout << "Current Timestep:" << CurrentTimestep << endl;
-	cout << "---------------------- RDY processes ----------------------" << endl;
+	std::cout << "===========================================================" << '\n';
+	std::cout << "Current Timestep:" << CurrentTimestep << '\n';
+	std::cout << "---------------------- RDY processes ----------------------" << '\n';
 	for (int i = 0; i < FCFS_Count; i++)
 	{
 		FCFS* Ptemp = nullptr;
 		FCFS_Processors->Traversal(Ptemp, i);
-		cout << *Ptemp;
-		cout << endl;
+		std::cout << *Ptemp;
+		std::cout << '\n';
 	}
 
 	for (int i = 0; i < SJF_Count; i++)
 	{
 		SJF* Stemp = nullptr;
 		SJF_Processors->Traversal(Stemp, i);
-		cout << *Stemp;
-		cout << endl;
+		std::cout << *Stemp;
+		std::cout << '\n';
 	}
 
 	for (int i = 0; i < RR_Count; i++)
 	{
 		RR* Rtemp = nullptr;
 		RR_Processors->Traversal(Rtemp, i);
-		cout << *Rtemp;
-		cout << endl;
+		std::cout << *Rtemp;
+		std::cout << '\n';
 	}
 
-	cout << "---------------------- BLK processes ----------------------" << endl;
-	cout << BLK_count << " BLK: ";
+	std::cout << "---------------------- BLK processes ----------------------" << '\n';
+	std::cout << BLK_count << " BLK: ";
 	BLK->PrintList();
-	cout << endl;
+	std::cout << '\n';
 
-	cout << "---------------------- RUN processes ----------------------" << endl;
-	Processor* Ptemp = nullptr;
+	std::cout << "---------------------- RUN processes ----------------------" << '\n';
+	//Processor* Ptemp = nullptr;
 	int actur = 0;
-	for (int i = 0; i < Processor_count; i++)
+	/*for (int i = 0; i < Processor_count; i++)
 	{
 		AllProcessors->Traversal(Ptemp, i);
 		if (Ptemp->IsBusy()) actur++;
 	}
-	cout << actur << " RUN: ";
+	std::cout << actur << " RUN: ";
 	for (int i = 0; i < Processor_count; i++)
 	{
 		AllProcessors->Traversal(Ptemp, i);
 		if (Ptemp->IsBusy())
 		{
 			Ptemp->PrintRUN();
-			cout << ", ";
+			std::cout << ", ";
+		}
+	}*/
+	for (int i = 0; i < FCFS_Count; i++)
+	{
+		FCFS* P = nullptr;
+		FCFS_Processors->Traversal(P, i);
+		if (P->IsBusy()) actur++;
+	}
+	for (int i = 0; i < SJF_Count; i++)
+	{
+		SJF* P = nullptr;
+		SJF_Processors->Traversal(P, i);
+		if (P->IsBusy()) actur++;
+	}
+	for (int i = 0; i < RR_Count; i++)
+	{
+		RR* P = nullptr;
+		RR_Processors->Traversal(P, i);
+		if (P->IsBusy()) actur++;;
+	}
+
+	std::cout << actur << " RUN: ";
+
+	for (int i = 0; i < FCFS_Count; i++)
+	{
+		FCFS* P = nullptr;
+		FCFS_Processors->Traversal(P, i);
+		if (P->IsBusy())
+		{
+			P->PrintRUN();
+			std::cout << ", ";
 		}
 	}
-	cout << endl;
+	for (int i = 0; i < SJF_Count; i++)
+	{
+		SJF* P = nullptr;
+		SJF_Processors->Traversal(P, i);
+		if (P->IsBusy())
+		{
+			P->PrintRUN();
+			std::cout << ", ";
+		}
+	}
+	for (int i = 0; i < RR_Count; i++)
+	{
+		RR* P = nullptr;
+		RR_Processors->Traversal(P, i);
+		if (P->IsBusy())
+		{
+			P->PrintRUN();
+			std::cout << ", ";
+		}
+	}
+	
+	std::cout << '\n';
 
-	cout << "---------------------- TRM processes ----------------------" << endl;
-	cout << TRM_count << " TRM: ";
+	std::cout << "---------------------- TRM processes ----------------------" << '\n';
+	std::cout << TRM_count << " TRM: ";
 	TRM->print();
-	cout << endl;
+	std::cout << '\n';
 
 }
 
@@ -216,41 +268,24 @@ void Scheduler::Phase1Simulator()
 		RR_Processors->InsertEnd(P);
 		AllProcessors->add(Pproc);
 	}
-	//==============================================  i  ==============================================================//(DONE)
 	while (!WorkisDone())
 	{
-		int s = 0;
-		if (MoveFromNewToRdy())
-		{
-			GetInterface()->UpdateInterface();
-			CurrentTimestep++;
-		}
-		//=================================================  ii  =========================================================//(DONE) 
-		else if (DistToRUN())
-		{
-			GetInterface()->UpdateInterface();
-			CurrentTimestep++;
-		}
-		//==================================================  iii  =======================================================//(DONE)
-		else if (RandomSch())
-		{
-			GetInterface()->UpdateInterface();
-			CurrentTimestep++;
-		}
-		//=====================================================  iv  =====================================================//(DONE)
-		else if (Blk_Rdy_Trm())
-		{
-			GetInterface()->UpdateInterface();
-			CurrentTimestep++;
-
-		}
-		////============================================================= v ====================================================//(DONE)
-		else if (KillFromFCFS())
-		{
-			GetInterface()->UpdateInterface();
-			CurrentTimestep++;
-
-		}
+		//============================================================= i  =============================================================//(DONE)
+		MoveFromNewToRdy();
+		//============================================================= ii  ========================================================//(DONE) 
+		DistToRUN();
+		//============================================================= iii =======================================================//(DONE)
+		Blk_Rdy_Trm();
+		//============================================================= iv =======================================================//(DONE)
+		RandomSch();
+		//=============================================================  v  ==================================================//(DONE)
+		//else if (KillFromFCFS())                  //me7taga tetzabat 7ewar is new fa commented 3ashan ne test eno sha3'al bs
+		//{
+		//	GetInterface()->UpdateInterface();
+		//	//CurrentTimestep++;
+		//}
+		GetInterface()->UpdateInterface();
+		CurrentTimestep++;
 	}
 }
 
@@ -346,13 +381,34 @@ bool Scheduler::MoveToBlk(Process* p)
 
 bool Scheduler::MoveToRDY(Process* p)
 {
-	if (p == NULL) return false;
-	srand(time(0));                                                 // seed the random number generator with current time
-	Processor* P = nullptr;
-	int random_num = rand() % Processor_count;
-	AllProcessors->Traversal(P, random_num);
-	P->InserttoRDY(*p);
-	return true;
+	if (p == nullptr) return false;
+	srand(time(0));   // seed the random number generator with current time
+	int ProcessorI = (rand() % Processor_count) + 1;
+	int c = 0;
+	FCFS* Ftemp = nullptr;
+	SJF* Stemp = nullptr;
+	RR* Rtemp = nullptr;
+	if (ProcessorI < FCFS_Count)
+	{
+		FCFS_Processors->Traversal(Ftemp, ProcessorI);
+		Ftemp->InserttoRDY(*p);
+		c++;
+	}
+	else if (ProcessorI >= (FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count))
+	{
+		int is = ProcessorI - FCFS_Count;
+		SJF_Processors->Traversal(Stemp, is);
+		Stemp->InserttoRDY(*p);
+		c++;
+	}
+	else if (ProcessorI >= (SJF_Count + FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count + RR_Count))
+	{
+		int ir = ProcessorI - SJF_Count - FCFS_Count;
+		RR_Processors->Traversal(Rtemp, ir);
+		Rtemp->InserttoRDY(*p);
+		c++;
+	}
+	return (c != 0);
 }
 
 void Scheduler::SetActualRUN() {
@@ -375,6 +431,7 @@ void Scheduler::SetActualRUN() {
 bool Scheduler::DistToRUN()
 {
 	int c = 0;
+	bool done = true;
 	for (int i = 0; i < Processor_count; i++)
 	{
 		if (i < FCFS_Count)
@@ -383,8 +440,8 @@ bool Scheduler::DistToRUN()
 			FCFS_Processors->Traversal(Fproc, i);
 			if (!Fproc->IsBusy() && !Fproc->IsIdeal())
 			{
-				Fproc->MoveFromRDYToRUN();
-				c++;
+				done = Fproc->MoveFromRDYToRUN(CurrentTimestep);
+				if (done) c++;
 			}
 		}
 
@@ -395,8 +452,8 @@ bool Scheduler::DistToRUN()
 			SJF_Processors->Traversal(Sproc, is);
 			if (!Sproc->IsBusy() && !Sproc->IsIdeal())
 			{
-				Sproc->MoveFromRDYToRUN();
-				c++;
+				done = Sproc->MoveFromRDYToRUN(CurrentTimestep);
+				if (done) c++;
 			}
 		}
 
@@ -407,8 +464,8 @@ bool Scheduler::DistToRUN()
 			RR_Processors->Traversal(Rproc, ir);
 			if (!Rproc->IsBusy() && !Rproc->IsIdeal())
 			{
-				Rproc->MoveFromRDYToRUN();
-				c++;
+				done = Rproc->MoveFromRDYToRUN(CurrentTimestep);
+				if (done) c++;
 			}
 		}
 	}
@@ -423,26 +480,32 @@ bool Scheduler::Blk_Rdy_Trm()
 	int i = 0;
 	while (AllProcessors->remove(Atemp))
 	{
-		if (GenerateRandom() == 1)
+		Rtemp = Atemp->GetRUN();
+		if (Rtemp == nullptr) 
+			continue;
+		else if (!Rtemp->IsOpDone(CurrentTimestep))
 		{
-			Rtemp = Atemp->GetRUN();
-			MoveToBlk(Rtemp);
-			Atemp->KillRUN();
-			c++;
-		}
-		if (GenerateRandom() == 2)
-		{
-			Rtemp = Atemp->GetRUN();
-			MoveToRDY(Rtemp);
-			Atemp->KillRUN();
-			c++;
-		}
-		if (GenerateRandom() == 3)
-		{
-			Rtemp = Atemp->GetRUN();
-			MovetoTRM(Rtemp);
-			Atemp->KillRUN();
-			c++;
+			if (GenerateRandom() == 1)
+			{
+				MoveToBlk(Rtemp);
+				Atemp->KillRUN();
+				Rtemp->OpIsDone(CurrentTimestep);
+				c++;
+			}
+			if (GenerateRandom() == 2)
+			{
+				MoveToRDY(Rtemp);
+				Atemp->KillRUN();
+				Rtemp->OpIsDone(CurrentTimestep);
+				c++;
+			}
+			if (GenerateRandom() == 3)
+			{
+				MovetoTRM(Rtemp);
+				Atemp->KillRUN();
+				Rtemp->OpIsDone(CurrentTimestep);
+				c++;
+			}
 		}
 		AllProcessors->add(Atemp);
 		i++;
@@ -455,12 +518,14 @@ bool Scheduler::RandomSch()
 {
 	srand(time(0));                                                 // seed the random number generator with current time
 	int random_num1 = rand() % 100 + 1;                              // generate a random number between 1 and 100
-	if (random_num1 < 10 && !BLK->IsEmpty())
+	Process p;
+	BLK->peek(p);
+	if (random_num1 < 10 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
 	{
-		Process p;
 		BLK->DeleteFirst(p);
 		BLK_count--;
 		MoveToRDY(&p);
+		p.OpIsDone(CurrentTimestep);
 		return true;
 	}
 	return false;
@@ -475,7 +540,7 @@ bool Scheduler::KillFromFCFS()
 	{
 		FCFS* temp;
 		FCFS_Processors->Traversal(temp, i);
-		if (temp->ProcIsFound(&pfind))
+		if (temp->ProcIsFound(&pfind) && !pfind.IsNew(CurrentTimestep))
 		{
 			MovetoTRM(&pfind);
 			return true;
@@ -487,5 +552,5 @@ bool Scheduler::KillFromFCFS()
 void Scheduler::Simulator() {}
 
 Scheduler::~Scheduler() {
-	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors , ActualRUN;
+	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface;
 }

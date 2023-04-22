@@ -16,8 +16,25 @@ Process::Process(int art, int id, int cpt)
 	isBlocked = false;
 	isTerminated = false;
 	isOrphan = false;
+	LastOpDone = AT;
 }
 
+bool Process::IsNew(int& CTS)
+{
+	return (AT == CTS);
+}
+void Process::OpIsDone(int& CTS)
+{
+	LastOpDone = CTS;
+}
+bool Process::IsOpDone(int&CTS)
+{
+	if (LastOpDone==CTS)
+	{
+		return true;
+	}
+	return false;
+}
 void Process::SetNumberOfRequests(int n)
 {
 	ION = n;
