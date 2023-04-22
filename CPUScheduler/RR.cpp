@@ -62,8 +62,8 @@ bool RR::MoveFromRDYToRUN(int& CTS)
 	if (!RDY->IsEmpty()&& !p.IsOpDone(CTS))
 	{
 		RDY->Dequeue(p);
-		RUN = &p;
 		p.OpIsDone(CTS);
+		RUN = new Process(p);
 		RDYcount--;
 		return true;
 	}

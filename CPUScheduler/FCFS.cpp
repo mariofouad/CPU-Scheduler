@@ -33,8 +33,8 @@ bool FCFS::MoveFromRDYToRUN(int& CTS)
 	if (!IsIdeal() && !P.IsOpDone(CTS))
 	{
 		RDY->DeleteFirst(P);
-		RUN = new Process(P);
 		P.OpIsDone(CTS);
+		RUN = new Process(P);
 		RDYcount--;
 		return true;
 	}

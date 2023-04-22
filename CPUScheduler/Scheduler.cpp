@@ -293,17 +293,17 @@ int Scheduler::GenerateRandom()
 {
 	srand(time(0));                                                 // seed the random number generator with current time
 	int random_num = rand() % 100 + 1;
-	if (random_num >= 1 && random_num <= 15)
+	if (random_num >= 1 && random_num <= 70)
 	{
 		return 1;
 	}
-	if (random_num >= 20 && random_num <= 30)
+	if (random_num >= 71 && random_num <= 98)
 	{
-		return 2;
+		return 1;
 	}
-	if (random_num >= 50 && random_num <= 60)
+	if (random_num >= 99 && random_num <= 100)
 	{
-		return 3;
+		return 1;
 	}
 	return 0;
 }
@@ -481,8 +481,9 @@ bool Scheduler::Blk_Rdy_Trm()
 	while (AllProcessors->remove(Atemp))
 	{
 		Rtemp = Atemp->GetRUN();
-		if (Rtemp == nullptr) 
-			continue;
+		if (Rtemp == nullptr)
+		{
+		}
 		else if (!Rtemp->IsOpDone(CurrentTimestep))
 		{
 			if (GenerateRandom() == 1)
@@ -520,7 +521,7 @@ bool Scheduler::RandomSch()
 	int random_num1 = rand() % 100 + 1;                              // generate a random number between 1 and 100
 	Process p;
 	BLK->peek(p);
-	if (random_num1 < 10 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
+	if (random_num1 < 80 && !BLK->IsEmpty() && !p.IsOpDone(CurrentTimestep))
 	{
 		BLK->DeleteFirst(p);
 		BLK_count--;
