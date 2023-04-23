@@ -203,8 +203,10 @@ int LinkedList<T>::CountOccurance(T value)           //no of repertition of a nu
 template <typename T>
 void LinkedList<T>::DeleteFirst(T& value)                           //Delete a node at the begining
 {
-	if (!Head)
+	if (IsEmpty())
+	{
 		return;
+	}
 	Node<T>* delptr = Head;
 	value = Head->getValue();
 	Head = Head->getNext();

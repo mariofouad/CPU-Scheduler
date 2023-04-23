@@ -1,4 +1,5 @@
 #include "Processor.h"
+#include "Scheduler.h"
 //====================================================================================================================//
 //======================================================== CLASS IMPLEMENTATION ======================================//
 //====================================================================================================================//
@@ -16,7 +17,7 @@ Processor::Processor(int id)                                 //Non-Default const
 	RUN = nullptr;
 }
 
-void Processor::ScheduleAgo()                                //Virtual function to be overloaded in each child processor
+void ScheduleAlgo(Scheduler* S, int& CTS)                                //Virtual function to be overloaded in each child processor
 {
 }
 

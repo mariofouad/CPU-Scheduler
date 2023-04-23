@@ -10,6 +10,7 @@ Process::Process(int art, int id, int cpt)
 	PID = id;
 	AT = art;
 	CT = cpt;
+	tempCT = CT;
 	isNew = true;
 	isReady = false;
 	isRunning = false;
@@ -21,12 +22,15 @@ Process::Process(int art, int id, int cpt)
 
 bool Process::IsNew(int& CTS)
 {
-	return (AT == CTS);
+	isNew = (AT == CTS);
+	return (isNew);
 }
+
 void Process::OpIsDone(int& CTS)
 {
 	LastOpDone = CTS;
 }
+
 bool Process::IsOpDone(int&CTS)
 {
 	if (LastOpDone==CTS)
@@ -35,11 +39,30 @@ bool Process::IsOpDone(int&CTS)
 	}
 	return false;
 }
+
 void Process::SetNumberOfRequests(int n)
 {
 	ION = n;
 	IO_R = new int[n];
 	IO_D = new int[n];
+}
+
+void Process::ExcutionTimeNeeded(int& timeleft)
+{
+	CT--;
+	timeleft = CT;
+}
+
+void Process::TerminationTime(int& CTS)
+{
+	TT = CTS;
+	TRT = TT - AT;
+	WT = TRT - tempCT;
+}
+
+void Process::SetResponceTime(int& CTS)
+{
+	RT = (CTS - AT);
 }
 
 void Process::SetInputData(int ir, int id, int i)
@@ -54,12 +77,10 @@ bool Process::operator==(const Process& p)
 	return false;
 }
 
-
 bool Process::operator<(const Process& other) const
 {
 	return CT > other.CT;
 }
-
 
 void Process::excute1TimeStep()
 {
@@ -81,10 +102,7 @@ ostream& operator << (ostream& Out, const Process& P) {
 	return Out;
 }
 
-
 int Process::GetAT()
 {
 	return AT;
-
-
 }
