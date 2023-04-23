@@ -18,7 +18,7 @@ public:
 
 	FCFS(int id);
 
-	void ScheduleAlgo(Scheduler* S, int& CTS);                                //Overloaded Scheduler Algorithem for FCFS processors
+	void ScheduleAlgo(int& CTS);        //Overloaded Scheduler Algorithem for FCFS processors
 
 	void InserttoRDY(Process& P);					  //Virtual function responsible for inserting a Process to RDY list
 

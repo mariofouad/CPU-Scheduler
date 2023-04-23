@@ -221,7 +221,9 @@ void Scheduler::PrintWindow()
 void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}	
 
 void Scheduler::Work_stealing() {}									
-
+//================================================================================================================================//
+//================================================================= PHASE-1 ======================================================//
+//================================================================================================================================//
 void Scheduler::Phase1Simulator()
 {
 	//============================================================ READ_FILE =====================================================//
@@ -265,6 +267,93 @@ void Scheduler::Phase1Simulator()
 	}
 }
 
+//================================================================================================================================//
+//================================================================= PHASE-2 ======================================================//
+//================================================================================================================================//
+void Scheduler::ProcessesScheduling()
+{
+	//============================================================ READ FILE =====================================================//
+	int id = 1;
+	ReadFile();
+	for (int i = 0; i < FCFS_Count; i++)
+	{
+		FCFS* P = new FCFS(id++);
+		Processor* Pproc = P;
+		FCFS_Processors->InsertEnd(P);
+		AllProcessors->add(Pproc);
+	}
+	for (int i = 0; i < SJF_Count; i++)
+	{
+		SJF* P = new SJF(id++);
+		Processor* Pproc = P;
+		SJF_Processors->InsertEnd(P);
+		AllProcessors->add(Pproc);
+	}
+	for (int i = 0; i < RR_Count; i++)
+	{
+		RR* P = new RR(id++);
+		Processor* Pproc = P;
+		RR_Processors->InsertEnd(P);
+		AllProcessors->add(Pproc);
+	}
+	//================================================================ MOVING FROM NEW TO RDY ====================================//
+	MoveFromNewToRdy();
+	//=============================================================== HANDLING FCFS PROCESSORS ===================================//
+	for (int i = 0; i < FCFS_Count; i++)
+	{                  //=========== MOVING TO RUN USING SCHEDULER ALGO =========//                                      
+		FCFS* P = nullptr;
+		FCFS_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);                                               //Move From RDY To RUN if no operation done in this cts or busy or empty
+		                //=============== HANDLING THE RUN STATE ================//                            
+		if (P->IsBusy())                                                                 //Busy? yes -> make checks needed : No-> nothing to be done
+		{                                                                                //there is requests to be done? true : No-> nothimg to be done          
+			if (P->GetRUN()->IsIORequested(CurrentTimestep))                             //true-> (first IOreq time >= time in RUN? && no op done )-> req is done time in run=0
+			{                           
+				MoveToBlk(P->GetRUN());
+				P->KillRUN();                                                            //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
+			}	                                                                         //Iorequested? true -> move to BLK : false ->nothing to be done
+			int timeleft = 0;
+			P->GetRUN()->ExcutionTimeNeeded(timeleft);
+			if (timeleft <= 0 && MovetoTRM(P->GetRUN()))
+			{
+				P->KillRUN();
+			}
+		}
+	}
+	//=============================================================== HANDLING SJF PROCESSORS ===================================//	
+	for (int i = 0; i < SJF_Count; i++)
+	{
+		SJF* P = nullptr;  
+		SJF_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);
+	}
+	for (int i = 0; i < RR_Count; i++)
+	{
+		RR* P = nullptr;
+		RR_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);
+	}
+	//=========================================================== HANDLING RUN STATE ==============================================//
+	for (int i = 0; i < FCFS_Count; i++)
+	{
+		FCFS* P = nullptr;
+		FCFS_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);
+	}
+	for (int i = 0; i < SJF_Count; i++)
+	{
+		SJF* P = nullptr;
+		SJF_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);
+	}
+	for (int i = 0; i < RR_Count; i++)
+	{
+		RR* P = nullptr;
+		RR_Processors->Traversal(P, i);
+		P->ScheduleAlgo(CurrentTimestep);
+	}
+}
+
 int Scheduler::GenerateRandom()
 {
 	srand(time(0));                                                 // seed the random number generator with current time
@@ -292,7 +381,7 @@ bool Scheduler::WorkisDone()
 
 bool Scheduler::MovetoTRM(Process* p)
 {
-	if (p == nullptr && !p->IsOpDone(CurrentTimestep))
+	if (p == nullptr || p->IsOpDone(CurrentTimestep))
 	{
 		return false;
 	}
@@ -357,7 +446,8 @@ bool Scheduler::MoveFromNewToRdy()
 
 bool Scheduler::MoveToBlk(Process* p)
 {
-	if (p == nullptr) return false;
+	if (p == nullptr || p->IsOpDone(CurrentTimestep)) return false;
+	p->OpIsDone(CurrentTimestep);
 	BLK->InsertEnd(p);
 	BLK_count++;
 	return true;

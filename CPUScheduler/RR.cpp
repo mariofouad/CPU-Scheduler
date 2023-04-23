@@ -19,7 +19,7 @@ RR::RR(int id) {
 	RDY = new LinkedQueue<Process>;
 }
 
-void RR::ScheduleAlgo(Scheduler* S, int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
+void RR::ScheduleAlgo(int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
 {
 	Process ptorun;
 	if(!IsIdeal() && !IsBusy())

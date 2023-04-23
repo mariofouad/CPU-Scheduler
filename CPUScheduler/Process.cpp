@@ -18,6 +18,8 @@ Process::Process(int art, int id, int cpt)
 	isTerminated = false;
 	isOrphan = false;
 	LastOpDone = AT;
+	ReqDone = 0;
+	TimeInRun = 0;
 }
 
 bool Process::IsNew(int& CTS)
@@ -50,9 +52,24 @@ void Process::SetNumberOfRequests(int n)
 void Process::ExcutionTimeNeeded(int& timeleft)
 {
 	CT--;
+	TimeInRun++;
 	timeleft = CT;
 }
 
+bool Process::IsIORequested(int& CTS)
+{
+	if (ION == 0)
+	{
+		return false;
+	}
+	else if ((IO_R[ReqDone] >= TimeInRun) && !IsOpDone(CTS))
+	{
+		ReqDone++;
+		TimeInRun = 0;
+		return true;
+	}
+	return false;
+}
 void Process::TerminationTime(int& CTS)
 {
 	TT = CTS;

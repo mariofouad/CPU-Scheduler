@@ -29,7 +29,8 @@ private:
 	friend ostream& operator << (ostream& Out, const Process& p);
 	int LastOpDone=0;
 	int tempCT = 0;
-
+	int ReqDone = 0;
+	int TimeInRun = 0;
 public:
 
 	Process();
@@ -45,6 +46,8 @@ public:
 	void SetNumberOfRequests(int n);
 
 	void ExcutionTimeNeeded(int& timeleft);
+
+	bool IsIORequested(int& CTS);
 
 	void TerminationTime(int& CTS);
 
