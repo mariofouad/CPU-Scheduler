@@ -17,7 +17,7 @@ Processor::Processor(int id)                                 //Non-Default const
 	RUN = nullptr;
 }
 
-void ScheduleAlgo(Scheduler* S, int& CTS)                                //Virtual function to be overloaded in each child processor
+void ScheduleAlgo(int& CTS)                                //Virtual function to be overloaded in each child processor
 {
 }
 

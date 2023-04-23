@@ -33,7 +33,7 @@ private:
 	LinkedQueue<Process*>* NEW = nullptr;				     //A container for all the processes just before their arrival to CPU
 	int Proc_count = 0;				                         //Total number of processes in NEW before anything occurs 
 	int tempProc_count = 0;
-	LinkedList<Process*>* BLK = nullptr;						 //A container for all processses in blocked state
+	LinkedList<Process*>* BLK = nullptr;				     //A container for all processses in blocked state
 	int BLK_count = 0;
 	LinkedQueue<Process*>* TRM = nullptr;				     //A container for all terminated processes
 	int TRM_count = 0;
@@ -65,7 +65,7 @@ public:
 
 	UI* GetInterface();										 //returns a pointer form UI 
 
-	void setFileName(string& fname);							 //used to set the inputfile name so that scheduler go opens it and reads the data from it
+	void setFileName(string& fname);					     //used to set the inputfile name so that scheduler go opens it and reads the data from it
 
 	bool FileisFound();										 //Returns true if file is found
 
@@ -76,6 +76,8 @@ public:
 	void Process_Migartion(Processor* p1, Processor* p2);	 //this fn will be responsible for migrating processes through different processors
 
 	void Phase1Simulator();									 //simulator function for phase 1
+
+	void ProcessesScheduling();
 
 	int GenerateRandom();									 //Generates a random number used in Phase1simulator function				 
 
@@ -105,5 +107,4 @@ public:
 
 	~Scheduler();
 };
-
 #endif

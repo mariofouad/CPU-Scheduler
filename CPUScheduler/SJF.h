@@ -20,7 +20,7 @@ public:
 
 	SJF(int id);
 
-	void ScheduleAlgo(Scheduler* S, int& CTS);									 //Overloaded Scheduler Algorithem for SJF processors
+	void ScheduleAlgo(int& CTS);									 //Overloaded Scheduler Algorithem for SJF processors
 
 	void InserttoRDY(Process& P);
 
