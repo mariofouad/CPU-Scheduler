@@ -65,7 +65,7 @@ public:
 
 	UI* GetInterface();										 //returns a pointer form UI 
 
-	void setFileName(string fname);							 //used to set the inputfile name so that scheduler go opens it and reads the data from it
+	void setFileName(string& fname);							 //used to set the inputfile name so that scheduler go opens it and reads the data from it
 
 	bool FileisFound();										 //Returns true if file is found
 

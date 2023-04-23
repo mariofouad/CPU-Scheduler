@@ -25,7 +25,7 @@ public:
 
 	RR(int id , int TimeSlice);								 //ID , Time slice initializer 
 
-	void ScheduleAgo();										 //Overloaded Scheduler Algorithem for RR processors
+	void ScheduleAlgo(Scheduler* S, int& CTS);										 //Overloaded Scheduler Algorithem for RR processors
 
 	void InserttoRDY(Process& P);							 //This function will insert a Process into that processor RDY list
 

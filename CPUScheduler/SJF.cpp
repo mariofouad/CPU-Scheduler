@@ -14,7 +14,8 @@ SJF::SJF(int id) {
 }
 
 
-void SJF::ScheduleAgo()                                     //Overloaded Scheduler Algorithem for SJF processors
+
+void SJF::ScheduleAlgo(Scheduler* S, int& CTS)                                     //Overloaded Scheduler Algorithem for SJF processors
 {
 }
 

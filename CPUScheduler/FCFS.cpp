@@ -1,12 +1,14 @@
 #include <iostream>
 #include "FCFS.h"
 #include "LinkedList.h"
+#include "Scheduler.h"
 using namespace std;
 
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
 
+//========================================================== CONSTRUCTORS ============================================//
 FCFS::FCFS() {
 	RDY = new LinkedList<Process>;
 }
@@ -15,11 +17,31 @@ FCFS::FCFS(int id) {
 	ID = id;
 	RDY = new LinkedList<Process>;
 }
-
-void FCFS::ScheduleAgo()                                    //Overloaded Scheduler Algorithem for FCFS processors
+//========================================================== SCHEDULER ALGORITHM ======================================//
+void FCFS::ScheduleAlgo(Scheduler* S, int& CTS)                             //Overloaded Scheduler Algorithem for FCFS processors
 {
+	Sch = S;
+	Process P;
+	RDY->peek(P);
+	if (IsBusy())                                                            //If Busy will check if excution time ended will move to trm else will stay in run after CT--
+	{      
+		int timeleft = 0;                                                    //IO not yet handeled
+		RUN->ExcutionTimeNeeded(timeleft);
+		if(timeleft <= 0 && Sch->MovetoTRM(RUN))
+		{
+			RUN = nullptr;
+		}
+	}
+	if (!IsIdeal() && !P.IsOpDone(CTS) && !IsBusy())
+	{
+		RDY->DeleteFirst(P);
+		RDYcount--;
+		P.SetResponceTime(CTS);
+		P.OpIsDone(CTS);
+		RUN = new Process(P);
+	}
 }
-
+//==========================================================================================================================//
 void FCFS::InserttoRDY(Process& P)
 {
 	RDY->InsertEnd(P);
@@ -30,7 +52,7 @@ bool FCFS::MoveFromRDYToRUN(int& CTS)
 {
 	Process P;
 	RDY->peek(P);
-	if (!IsIdeal() && !P.IsOpDone(CTS))
+	if (!IsIdeal() && !P.IsOpDone(CTS) && !IsBusy())
 	{
 		RDY->DeleteFirst(P);
 		P.OpIsDone(CTS);

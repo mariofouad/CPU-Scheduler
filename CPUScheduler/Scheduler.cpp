@@ -21,7 +21,7 @@ UI* Scheduler::GetInterface() {
 	return UserInterface;
 }
 
-void Scheduler::setFileName(string fname) {
+void Scheduler::setFileName(string& fname) {
 	FileName = fname;
 }
 
@@ -70,9 +70,9 @@ void Scheduler::ReadFile()
 			std::stringstream Processline(line);
 			Processline >> AT >> PID >> CT >> N;
 			Process* P=new Process(AT, PID, CT);
+			P->SetNumberOfRequests(N);
 			if (N != 0)
 			{
-				P->SetNumberOfRequests(N);
 				for (int i = 0; i < N; i++)
 				{
 					int IOR, IOD;
@@ -292,10 +292,18 @@ bool Scheduler::WorkisDone()
 
 bool Scheduler::MovetoTRM(Process* p)
 {
-	if (p == nullptr) return false;
-	TRM->Enqueue(p);
-	TRM_count++;
-	return true;
+	if (p == nullptr && !p->IsOpDone(CurrentTimestep))
+	{
+		return false;
+	}
+	else
+	{
+		p->OpIsDone(CurrentTimestep);
+		p->TerminationTime(CurrentTimestep);
+		TRM->Enqueue(p);
+		TRM_count++;
+		return true;
+	}
 }
 
 bool Scheduler::MoveFromNewToRdy()

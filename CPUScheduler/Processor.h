@@ -7,11 +7,11 @@
 //====================================================================================================================//
 //======================================================== CLASS FUNCTIONS ===========================================//
 //====================================================================================================================//
-
+class Scheduler;
 class Processor
 {
 protected:
-
+	Scheduler* Sch;
 	int ID;							                         //Processor identifiers
 	int RDYcount;					                         //number of Ready processes
 	Process* RUN;					                         //that should contain only process I think because every process can only excute one
@@ -23,7 +23,7 @@ public:
 
 	Processor(int ID);                                       //Non-Default constructor
 
-	virtual void ScheduleAgo() = 0;                          //Virtual function to be overloaded in each derived processor
+	virtual void ScheduleAlgo(Scheduler* S, int& CTS) = 0;                         //Virtual function to be overloaded in each derived processor
 
 	virtual void InserttoRDY(Process& P) = 0;				 //Virtual function responsible for inserting a Process to RDY list
 

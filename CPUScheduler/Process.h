@@ -14,8 +14,8 @@ private:
 	int RT = 0;					//Response time, the diff. between the arrival time and the time the process reach the cpu for the first time
 	int CT = 0;					//CPU time, the total time needed to run the process
 	int TT = 0;					//Termination time, when the process finish exectuting 
-	int TRT = 0;				//Turnaround duration, the total time the process spends in the system from its arrival to termination
-	int WT = 0;					//Waiting time, total time wait by the process in the system before being executed
+	int TRT = 0;			//Turnaround duration, the total time the process spends in the system from its arrival to termination
+	int WT = 0; 			//Waiting time, total time wait by the process in the system before being executed
 	int ION = 0;				//Number of I/O requests
 	bool isNew;					//Checks if a process is New
 	bool isReady;				//Checks if a process is Ready
@@ -28,6 +28,7 @@ private:
 	int Randomization = 0;		//Returns a number from 1-100 used for managing what to do with the process
 	friend ostream& operator << (ostream& Out, const Process& p);
 	int LastOpDone=0;
+	int tempCT = 0;
 
 public:
 
@@ -43,6 +44,12 @@ public:
 
 	void SetNumberOfRequests(int n);
 
+	void ExcutionTimeNeeded(int& timeleft);
+
+	void TerminationTime(int& CTS);
+
+	void SetResponceTime(int& CTS);
+
 	void SetInputData(int ir, int id, int i);
 
 	bool operator == (const Process& p);
@@ -54,6 +61,7 @@ public:
 	void excute1TimeStep();								//Let the process excute 1 time step only 
 	
 	bool MustbeTerminated();							//Returns true if the process is ready to be Terminated
+	
 	~Process();
 };
 #endif
