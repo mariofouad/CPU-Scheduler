@@ -16,6 +16,7 @@ private:
 
 	LinkedQueue<Process>* RDY;								 //RDY list for RR proceses
 	int TMslice = 0;										 //Time Slice data will be set by the scheduler after reading the input file
+	int tempSlice;											 //A variable that saves a temporary integer with the value og the TMslice
 
 public:
 

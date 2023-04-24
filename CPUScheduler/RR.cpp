@@ -12,6 +12,7 @@ RR::RR(int id, int TimeSlice)
 {
 	ID = id;
 	SetTMslice(TimeSlice);
+	tempSlice = TimeSlice;
 }
 
 RR::RR(int id) {
@@ -22,19 +23,23 @@ RR::RR(int id) {
 void RR::ScheduleAlgo(int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
 {
 	Process ptorun;
-	if(!IsIdeal() && !IsBusy())
+	if (!IsIdeal() && !IsBusy() && TMslice != 0)
 	{
 		RDY->Dequeue(ptorun);
-		RDYcount--;
 		RUN = &ptorun;
-		for (int i = 0; i < TMslice; i++) 
-		{
-			RUN->excute1TimeStep();
-			if (RUN->MustbeTerminated()) return;
-		}
+		ptorun.excute1TimeStep();
+		TMslice--;
+	}
+	if (IsBusy() && TMslice != 0)
+	{
+		RUN->excute1TimeStep();
+		TMslice--;
+	}
+	if (IsBusy() && TMslice == 0)
+	{
 		RDY->Enqueue(*RUN);
-		RDYcount++;
 		KillRUN();
+		TMslice = tempSlice;
 	}
 }
 
