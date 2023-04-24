@@ -41,20 +41,15 @@ void RR::ScheduleAlgo(int& CTS)                                      //Overloade
 	else if (IsBusy() && TMslice != 0)
 	{
 		RUN->excute1TimeStep();
-		RUN->OpIsDone(CTS);
 		TMslice--;
 	}
 	else if (IsBusy() && TMslice == 0)
 	{
 		Process* p = RUN;
-		if (!RUN->IsOpDone(CTS)) 
-		{
-			RDY->Enqueue(RUN);
-			RDYcount++;
-			KillRUN();
-			TMslice = tempSlice;
-			p->OpIsDone(CTS);
-		}
+		RDY->Enqueue(RUN);
+		RDYcount++;
+		KillRUN();
+		TMslice = tempSlice;
 	}
 }
 

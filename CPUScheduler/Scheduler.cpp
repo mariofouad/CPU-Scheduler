@@ -109,7 +109,7 @@ void Scheduler::SIMULATOR()
 				}
 				else if (p->MustbeTerminated() && MovetoTRM(p))
 				{
-						R->KillRUN();
+					R->KillRUN();
 				}
 			}
 		}

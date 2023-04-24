@@ -55,7 +55,7 @@ bool Process::MustBeBlocked(int& CTS)
 	{
 		return false;
 	}
-	else if ((IO_R[ReqDone] >= TimeInRun) && !IsOpDone(CTS))
+	else if ((IO_R[ReqDone] <= TimeInRun) && !IsOpDone(CTS))
 	{
 		ReqDone++;
 		TimeInRun = 0;
