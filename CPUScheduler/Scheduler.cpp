@@ -23,7 +23,7 @@ Scheduler::~Scheduler() {
 //===================================================================================================================================//
 //================================================================= PHASE-2 =========================================================//
 //===================================================================================================================================//
-void Scheduler::ProcessesScheduling()
+void Scheduler::SIMULATOR()
 {
 	//============================================================ READ FILE ========================================================//
 	int id = 1;
@@ -44,80 +44,110 @@ void Scheduler::ProcessesScheduling()
 	}
 	for (int i = 0; i < RR_Count; i++)
 	{
-		RR* P = new RR(id++);
+		RR* P = new RR(id++, TimeSliceRR);
 		Processor* Pproc = P;
 		RR_Processors->InsertEnd(P);
 		AllProcessors->add(Pproc);
 	}
-	//================================================================ MOVING FROM NEW TO RDY ====================================//
-	MoveFromNewToRdy();  // me7taga tet3'aiar 3ashan phase 2 benwaza3 lel expected to finish eariler
-	//=============================================================== HANDLING FCFS PROCESSORS ===================================//
-	for (int i = 0; i < FCFS_Count; i++)
-	{   //=========== MOVING TO RUN USING SCHEDULER ALGO =========//                                      
-		FCFS* P = nullptr;
-		Process* proc = nullptr;
-		FCFS_Processors->Traversal(P, i);
-		proc = P->GetRUN();
-		P->ScheduleAlgo(CurrentTimestep);                                   //Move From RDY To RUN if no operation done in this cts or busy or empty
-		//=============== HANDLING THE RUN STATE ================//                            
-		if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
-		{          
-			int timeleft = 0;                                               //there is requests to be done? true : No-> nothimg to be done          
-			if (proc->IsIORequested(CurrentTimestep))                       //true-> (first IOreq time >= time in RUN? && no op done )-> req is done time in run=0
+	while (!WorkisDone()) 
+	{
+		//================================================================ MOVING FROM NEW TO RDY ====================================//
+		MoveFromNewToRdy();
+		//=============================================================== HANDLING FCFS PROCESSORS ===================================//
+		for (int i = 0; i < FCFS_Count; i++)
+		{   //=========== MOVING TO RUN USING SCHEDULER ALGO =========//                                      
+			FCFS* P = nullptr;
+			Process* proc = nullptr;
+			FCFS_Processors->Traversal(P, i);
+			P->ScheduleAlgo(CurrentTimestep);         //Move From RDY To RUN if no operation done in this cts or busy or empty
+			proc = P->GetRUN();
+			if (P->IsBusy())
 			{
-				MoveToBlk(proc);
+				ActualRUN->Enqueue(proc);
+				ActualRUNcount++;
+			}
+			//=============== HANDLING THE RUN STATE ================//                            
+			if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
+			{
+				int timeleft = 0;                                               //there is requests to be done? true : No-> nothimg to be done          
+				if (proc->MustBeBlocked(CurrentTimestep))                       //true-> (first IOreq time >= time in RUN? && no op done )-> req is done time in run=0
+				{
+					MoveToBlk(proc);
+					proc->ExcutionTimeNeeded(timeleft);
+					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
+					continue;
+				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
 				proc->ExcutionTimeNeeded(timeleft);
-				P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
-				continue;
-			}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
-			proc->ExcutionTimeNeeded(timeleft);
-			if (timeleft <= 0 && MovetoTRM(proc))
-			{
-				P->KillRUN();
+				if (timeleft <= 0 && MovetoTRM(proc))
+				{
+					P->KillRUN();
+				}
 			}
 		}
-	}
-	//=============================================================== HANDLING SJF PROCESSORS ===================================//	
-	for (int i = 0; i < SJF_Count; i++)
-	{
-		SJF* P = nullptr;
-		SJF_Processors->Traversal(P, i);
-		P->ScheduleAlgo(CurrentTimestep);
-	}
-	for (int i = 0; i < RR_Count; i++)
-	{
-		RR* P = nullptr;
-		RR_Processors->Traversal(P, i);
-		P->ScheduleAlgo(CurrentTimestep);
-	}
-	//================================================================ HANDLING RR PROCESSORS ===================================//	
-	for (int i = 0; i < FCFS_Count; i++)
-	{
-		FCFS* P = nullptr;
-		FCFS_Processors->Traversal(P, i);
-		P->ScheduleAlgo(CurrentTimestep);
-	}
-	for (int i = 0; i < SJF_Count; i++)
-	{
-		SJF* P = nullptr;
-		SJF_Processors->Traversal(P, i);
-		P->ScheduleAlgo(CurrentTimestep);
-	}
-	for (int i = 0; i < RR_Count; i++)
-	{
-		RR* P = nullptr;
-		RR_Processors->Traversal(P, i);
-		P->ScheduleAlgo(CurrentTimestep);
-	}
-	//==================================================================== HANDLING BLK list ====================================//	
-	//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
-	//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
-	//+ conditon en maikonsh 7asal 3aleeha ai operation tani f same current time step fa IsOpDone teb2a false 
-	//law kolo true han move lel rdy list el expexted to finish eariler w call OpIsDone(CurrentTimeStep)
-	//===========================================================================================================================//
-}
-//=================================================================== END OF SCHEDULING ==========================================//
+		//====================================== HANDLING SJF PROCESSORS ===================================//	
+		/*for (int i = 0; i < SJF_Count; i++)
+		{
+			SJF* P = nullptr;
+			SJF_Processors->Traversal(P, i);
+			P->ScheduleAlgo(CurrentTimestep);
 
+		}*/
+		//======================================= HANDLING RR PROCESSORS ===================================//	
+		for (int i = 0; i < RR_Count; i++)
+		{
+			RR* R = nullptr;
+			Process* p;
+			RR_Processors->Traversal(R, i);
+			R->ScheduleAlgo(CurrentTimestep);
+			p = R->GetRUN();
+			if (R->IsBusy())
+			{
+				if (p->MustBeBlocked(CurrentTimestep))
+				{
+					MoveToBlk(p);
+					R->KillRUN();
+				}
+				else if (p->MustbeTerminated() && MovetoTRM(p))
+				{
+						R->KillRUN();
+				}
+			}
+		}
+		
+		//============================== HANDLING BLK list ============================//
+		//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
+		//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
+		//+ conditon en maikonsh 7asal 3aleeha ai operation tani f same current time step fa IsOpDone teb2a false 
+		//law kolo true han move lel rdy list el expexted to finish eariler w call OpIsDone(CurrentTimeStep)
+		//=============================================================================//
+		/*Process* ptemp = nullptr;
+		int temp = ActualRUNcount;
+		for (int i = 0; i < temp; i++)
+		{
+			ActualRUN->Dequeue(ptemp);
+			if (ptemp->MustbeBlocked())
+			{
+				MoveToBlk(ptemp);
+				ActualRUNcount++;
+			}
+			else if (ptemp->MustbeTerminated())
+			{
+				MovetoTRM(ptemp);
+				ActualRUNcount++;
+			}
+			else 
+			{
+				ActualRUN->Enqueue(ptemp);
+				ActualRUNcount++;
+			}
+			
+		}*/
+		GetInterface()->UpdateInterface();
+		CurrentTimestep++;
+	}
+	//=================================================================== END OF SCHEDULING ==========================================//
+}
+	
 //================================================================ USED FUNCTIONS IN PHASE2 ======================================//
 bool Scheduler::MoveToBlk(Process* p)
 {
@@ -150,44 +180,40 @@ bool Scheduler::MovetoTRM(Process* p)
 	}
 }
 
-bool Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel rdy el expected to finish earliear
+void Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel rdy el expected to finish earliear
 {
-	int c = 0;
 	Process* ptemp = nullptr;
 	FCFS* Ftemp = nullptr;
 	SJF* Stemp = nullptr;
 	RR* Rtemp = nullptr;
-	Process* Ntemp = nullptr;
 	while (!(NEW->IsEmpty()))
 	{
 		if (ProcessorI == (FCFS_Count + SJF_Count + RR_Count)) { ProcessorI = 0; }
 		NEW->peek(ptemp);
 		if (ptemp->GetAT() == CurrentTimestep)
 		{
-			NEW->Dequeue(Ntemp);
+			NEW->Dequeue(ptemp);
 			Proc_count--;
 
 			if (ProcessorI < FCFS_Count)
 			{
 				FCFS_Processors->Traversal(Ftemp, ProcessorI);
-				Ftemp->InserttoRDY(Ntemp);
-				c++;
+				Ftemp->InserttoRDY(ptemp);
 			}
 
 			if (ProcessorI >= (FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count))
 			{
 				int is = ProcessorI - FCFS_Count;
 				SJF_Processors->Traversal(Stemp, is);
-				Stemp->InserttoRDY(Ntemp);
-				c++;
+				Stemp->InserttoRDY(ptemp);
+
 			}
 
 			if (ProcessorI >= (SJF_Count + FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count + RR_Count))
 			{
 				int ir = ProcessorI - SJF_Count - FCFS_Count;
 				RR_Processors->Traversal(Rtemp, ir);
-				Rtemp->InserttoRDY(Ntemp);
-				c++;
+				Rtemp->InserttoRDY(ptemp);
 			}
 			ProcessorI++;
 		}
@@ -196,7 +222,6 @@ bool Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel r
 			break;
 		}
 	}
-	return (c != 0);
 }
 
 bool Scheduler::MoveFromBLKToRDY()                                  //Me7taga tet3adel 3ashan newadi be condition el expected to finish

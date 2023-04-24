@@ -24,23 +24,37 @@ RR::RR(int id) {
 void RR::ScheduleAlgo(int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
 {
 	Process *ptorun;
-	if (!IsIdeal() && !IsBusy() && TMslice != 0)
+	RDY->peek(ptorun);
+	if (!RDY->IsEmpty() && !IsBusy() && TMslice != 0)
 	{
-		RDY->Dequeue(ptorun);
-		RUN = ptorun;
-		ptorun->excute1TimeStep();
-		TMslice--;
+		if (!(ptorun->IsOpDone(CTS))) 
+		{
+			RDY->Dequeue(ptorun);
+			RDYcount--;
+			RUN = ptorun;
+			ptorun->excute1TimeStep();
+			TMslice--;
+			ptorun->OpIsDone(CTS);
+			/*ptorun->SetResponceTime(CTS);*/
+		}
 	}
-	if (IsBusy() && TMslice != 0)
+	else if (IsBusy() && TMslice != 0)
 	{
 		RUN->excute1TimeStep();
+		RUN->OpIsDone(CTS);
 		TMslice--;
 	}
-	if (IsBusy() && TMslice == 0)
+	else if (IsBusy() && TMslice == 0)
 	{
-		RDY->Enqueue(RUN);
-		KillRUN();
-		TMslice = tempSlice;
+		Process* p = RUN;
+		if (!RUN->IsOpDone(CTS)) 
+		{
+			RDY->Enqueue(RUN);
+			RDYcount++;
+			KillRUN();
+			TMslice = tempSlice;
+			p->OpIsDone(CTS);
+		}
 	}
 }
 

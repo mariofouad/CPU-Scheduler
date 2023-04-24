@@ -11,12 +11,6 @@ Process::Process(int art, int id, int cpt)
 	AT = art;
 	CT = cpt;
 	tempCT = CT;
-	/*isNew = true;
-	isReady = false;
-	isRunning = false;
-	isBlocked = false;
-	isTerminated = false;
-	isOrphan = false;*/
 	LastOpDone = AT;
 	ReqDone = 0;
 	TimeInRun = 0;
@@ -55,7 +49,7 @@ void Process::ExcutionTimeNeeded(int& timeleft)
 	timeleft = CT;
 }
 
-bool Process::IsIORequested(int& CTS)
+bool Process::MustBeBlocked(int& CTS)
 {
 	if (ION == 0)
 	{
@@ -69,6 +63,7 @@ bool Process::IsIORequested(int& CTS)
 	}
 	return false;
 }
+
 void Process::TerminationTime(int& CTS)
 {
 	TT = CTS;
@@ -106,18 +101,6 @@ void Process::excute1TimeStep()
 bool Process::MustbeTerminated()
 {
 	if (CT <= 0) return true;
-	return false;
-}
-
-bool Process::MustbeBlocked()
-{
-	for (int i = 0; i < ION; i++)
-	{
-		if (CT == tempCT - IO_R[i])
-		{
-			return true;
-		}
-	}
 	return false;
 }
 

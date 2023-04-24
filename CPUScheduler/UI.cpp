@@ -1,5 +1,8 @@
+#include <iostream>
+#include "windows.h"
 #include "UI.h"
 #include "Scheduler.h"
+
 
 using namespace std;
 
@@ -61,9 +64,9 @@ void UI::UpdateInterface() const {
 	case STEPBYSTEP:
 		cout << endl;
 		S->PrintWindow();
-		cout << "PRESS ANYKEY TO MOVE TO NEXT STEP!";
+		cout << "THE PROGRAM WILL MOVE TO THE NEXT STEP AUTOMATICALLY!";
 		cout << endl;
-		/*_sleep(1000);*/
+		Sleep(1000);
 		break;
 
 	case SILENT:
