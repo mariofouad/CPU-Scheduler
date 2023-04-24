@@ -99,11 +99,9 @@ public:
 
 	bool Blk_Rdy_Trm();
 
-	bool RandomSch();
+	bool MoveFromBLKToRDY();
 
 	bool KillFromFCFS();
-
-	void Simulator();
 
 	~Scheduler();
 };
