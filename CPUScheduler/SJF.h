@@ -12,7 +12,7 @@ class SJF : public Processor
 {
 private:
 
-	SL_PriorityQueue<Process>* RDY;						     //RDY list for SJF proceses
+	SL_PriorityQueue<Process*>* RDY;						     //RDY list for SJF proceses
 
 public:
 
@@ -22,7 +22,7 @@ public:
 
 	void ScheduleAlgo(int& CTS);									 //Overloaded Scheduler Algorithem for SJF processors
 
-	void InserttoRDY(Process& P);
+	void InserttoRDY(Process* P);
 
 	void PrintRDY();
 

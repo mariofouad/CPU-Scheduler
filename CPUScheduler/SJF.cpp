@@ -5,12 +5,12 @@
 //====================================================================================================================//
 
 SJF::SJF() {
-	RDY = new SL_PriorityQueue<Process>;
+	RDY = new SL_PriorityQueue<Process*>;
 }
 
 SJF::SJF(int id) {
 	ID = id;
-	RDY = new SL_PriorityQueue<Process>;
+	RDY = new SL_PriorityQueue<Process*>;
 }
 
 
@@ -19,7 +19,7 @@ void SJF::ScheduleAlgo(int& CTS)                                     //Overloade
 {
 }
 
-void SJF::InserttoRDY(Process& P)
+void SJF::InserttoRDY(Process* P)
 {
 	RDY->add(P);
 	RDYcount++;
@@ -39,13 +39,13 @@ bool SJF::IsIdeal()
 
 bool SJF::MoveFromRDYToRUN(int& CTS)
 {
-	Process prc;
+	Process *prc;
 	RDY->peek(prc);
-	if (!IsIdeal() && !prc.IsOpDone(CTS))
+	if (!IsIdeal() && !prc->IsOpDone(CTS))
 	{
 		RDY->remove(prc);
-		prc.OpIsDone(CTS);
-		RUN = new Process(prc);
+		prc->OpIsDone(CTS);
+		RUN = prc;
 		RDYcount--;
 		return true;
 	}

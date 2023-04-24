@@ -11,12 +11,6 @@ Process::Process(int art, int id, int cpt)
 	AT = art;
 	CT = cpt;
 	tempCT = CT;
-	isNew = true;
-	isReady = false;
-	isRunning = false;
-	isBlocked = false;
-	isTerminated = false;
-	isOrphan = false;
 	LastOpDone = AT;
 	ReqDone = 0;
 	TimeInRun = 0;
@@ -24,8 +18,7 @@ Process::Process(int art, int id, int cpt)
 
 bool Process::IsNew(int& CTS)
 {
-	isNew = (AT == CTS);
-	return (isNew);
+	return (AT == CTS);
 }
 
 void Process::OpIsDone(int& CTS)
@@ -56,7 +49,7 @@ void Process::ExcutionTimeNeeded(int& timeleft)
 	timeleft = CT;
 }
 
-bool Process::IsIORequested(int& CTS)
+bool Process::MustBeBlocked(int& CTS)
 {
 	if (ION == 0)
 	{
@@ -70,6 +63,7 @@ bool Process::IsIORequested(int& CTS)
 	}
 	return false;
 }
+
 void Process::TerminationTime(int& CTS)
 {
 	TT = CTS;
@@ -114,8 +108,8 @@ Process::~Process()
 {
 }
 
-ostream& operator << (ostream& Out, const Process& P) {
-	Out << P.PID;
+ostream& operator << (ostream& Out, Process* P) {
+	Out << P->PID;
 	return Out;
 }
 

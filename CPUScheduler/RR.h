@@ -14,7 +14,7 @@ class RR : public Processor
 {
 private:
 
-	LinkedQueue<Process>* RDY;								 //RDY list for RR proceses
+	LinkedQueue<Process*>* RDY;								 //RDY list for RR proceses
 	int TMslice = 0;										 //Time Slice data will be set by the scheduler after reading the input file
 	int tempSlice;											 //A variable that saves a temporary integer with the value og the TMslice
 
@@ -26,9 +26,9 @@ public:
 
 	RR(int id , int TimeSlice);								 //ID , Time slice initializer 
 
-	void ScheduleAlgo(int& CTS);										 //Overloaded Scheduler Algorithem for RR processors
+	void ScheduleAlgo(int& CTS);							 //Overloaded Scheduler Algorithem for RR processors
 
-	void InserttoRDY(Process& P);							 //This function will insert a Process into that processor RDY list
+	void InserttoRDY(Process* P);							 //This function will insert a Process into that processor RDY list
 
 	void PrintRDY();										 //Prints the data in the RDY list 
 

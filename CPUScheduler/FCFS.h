@@ -10,7 +10,7 @@ class FCFS : public Processor
 {
 private:
 
-	LinkedList<Process>* RDY;
+	LinkedList<Process*>* RDY;
 
 public:
 
@@ -20,11 +20,11 @@ public:
 
 	void ScheduleAlgo(int& CTS);        //Overloaded Scheduler Algorithem for FCFS processors
 
-	void InserttoRDY(Process& P);					  //Virtual function responsible for inserting a Process to RDY list
+	void InserttoRDY(Process* P);					  //Virtual function responsible for inserting a Process to RDY list
 
 	bool MoveFromRDYToRUN(int& CTS);
 
-	void MoveFromBLKToRUN(Process& P);                //Virtual function responsible for moving a Process from BLK to RDY list
+	void MoveFromBLKToRUN(Process* P);                //Virtual function responsible for moving a Process from BLK to RDY list
 
 	void PrintRDY();
 

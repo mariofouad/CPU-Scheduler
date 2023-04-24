@@ -77,7 +77,7 @@ public:
 
 	void Phase1Simulator();									 //simulator function for phase 1
 
-	void ProcessesScheduling();
+	void SIMULATOR();										 //The real simulator that will do real scheduling						
 
 	int GenerateRandom();									 //Generates a random number used in Phase1simulator function				 
 
@@ -85,7 +85,7 @@ public:
 
 	bool WorkisDone();                                       //returns true if all processes are terminated		
 
-	bool MoveFromNewToRdy();								 //This function is responsible for distributimg NEW processes into RDY lists of each processor
+	void MoveFromNewToRdy();								 //This function is responsible for distributimg NEW processes into RDY lists of each processor
 
 	bool MovetoTRM(Process* p);								 //This function will terminate a process
 
