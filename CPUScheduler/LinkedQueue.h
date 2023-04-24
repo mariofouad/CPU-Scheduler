@@ -125,10 +125,10 @@ void LinkedQueue<ItemType>::print() const {
 		return;
 	}
 	Node<ItemType>* currentNode = Front;
-	cout << (currentNode->getValue());
+	cout << currentNode->getValue();
 	currentNode = currentNode->getNext();
 	while (currentNode != nullptr) {
-		cout << ", " << (currentNode->getValue());
+		cout << ", " << currentNode->getValue();
 		currentNode = currentNode->getNext();
 	}
 }

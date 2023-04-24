@@ -5,11 +5,12 @@
 //====================================================================================================================//
 
 RR::RR() {
-	RDY = new LinkedQueue<Process>;
+	RDY = new LinkedQueue<Process*>;
 }
 
 RR::RR(int id, int TimeSlice)
 {
+	RDY = new LinkedQueue<Process*>;
 	ID = id;
 	SetTMslice(TimeSlice);
 	tempSlice = TimeSlice;
@@ -17,17 +18,17 @@ RR::RR(int id, int TimeSlice)
 
 RR::RR(int id) {
 	ID = id;
-	RDY = new LinkedQueue<Process>;
+	RDY = new LinkedQueue<Process*>;
 }
 
 void RR::ScheduleAlgo(int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
 {
-	Process ptorun;
+	Process *ptorun;
 	if (!IsIdeal() && !IsBusy() && TMslice != 0)
 	{
 		RDY->Dequeue(ptorun);
-		RUN = &ptorun;
-		ptorun.excute1TimeStep();
+		RUN = ptorun;
+		ptorun->excute1TimeStep();
 		TMslice--;
 	}
 	if (IsBusy() && TMslice != 0)
@@ -37,13 +38,13 @@ void RR::ScheduleAlgo(int& CTS)                                      //Overloade
 	}
 	if (IsBusy() && TMslice == 0)
 	{
-		RDY->Enqueue(*RUN);
+		RDY->Enqueue(RUN);
 		KillRUN();
 		TMslice = tempSlice;
 	}
 }
 
-void RR::InserttoRDY(Process& P)
+void RR::InserttoRDY(Process* P)
 {
 	RDY->Enqueue(P);
 	RDYcount++;
@@ -62,13 +63,13 @@ bool RR::IsIdeal()
 
 bool RR::MoveFromRDYToRUN(int& CTS)
 {
-	Process p;
+	Process *p;
 	RDY->peek(p);
-	if (!RDY->IsEmpty()&& !p.IsOpDone(CTS))
+	if (!RDY->IsEmpty()&& !p->IsOpDone(CTS))
 	{
 		RDY->Dequeue(p);
-		p.OpIsDone(CTS);
-		RUN = new Process(p);
+		p->OpIsDone(CTS);
+		RUN = p;
 		RDYcount--;
 		return true;
 	}
@@ -82,12 +83,12 @@ string RR::returntypename()
 
 bool RR::ProcIsFound(Process* p)
 {
-	Process pfind;
+	Process* pfind = nullptr;
 	for (int i = 0; i < RDYcount; i++)
 	{
-		RDY->Dequeue(*p);
-		RDY->Enqueue(*p);
-		if (*p == pfind) return true;
+		RDY->Dequeue(pfind);
+		RDY->Enqueue(pfind);
+		if (p == pfind) return true;
 	}
 	return false;
 }

@@ -11,12 +11,12 @@ Process::Process(int art, int id, int cpt)
 	AT = art;
 	CT = cpt;
 	tempCT = CT;
-	isNew = true;
+	/*isNew = true;
 	isReady = false;
 	isRunning = false;
 	isBlocked = false;
 	isTerminated = false;
-	isOrphan = false;
+	isOrphan = false;*/
 	LastOpDone = AT;
 	ReqDone = 0;
 	TimeInRun = 0;
@@ -24,8 +24,7 @@ Process::Process(int art, int id, int cpt)
 
 bool Process::IsNew(int& CTS)
 {
-	isNew = (AT == CTS);
-	return (isNew);
+	return (AT == CTS);
 }
 
 void Process::OpIsDone(int& CTS)
@@ -110,12 +109,24 @@ bool Process::MustbeTerminated()
 	return false;
 }
 
+bool Process::MustbeBlocked()
+{
+	for (int i = 0; i < ION; i++)
+	{
+		if (CT == tempCT - IO_R[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 Process::~Process()
 {
 }
 
-ostream& operator << (ostream& Out, const Process& P) {
-	Out << P.PID;
+ostream& operator << (ostream& Out, Process* P) {
+	Out << P->PID;
 	return Out;
 }
 

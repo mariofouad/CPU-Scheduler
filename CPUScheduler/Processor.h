@@ -25,7 +25,7 @@ public:
 
 	virtual void ScheduleAlgo(int& CTS) = 0;                         //Virtual function to be overloaded in each derived processor
 
-	virtual void InserttoRDY(Process& P) = 0;				 //Virtual function responsible for inserting a Process to RDY list
+	virtual void InserttoRDY(Process* P) = 0;				 //Virtual function responsible for inserting a Process to RDY list
 
 	friend ostream& operator << (ostream& Out, Processor& P);
 

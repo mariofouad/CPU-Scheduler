@@ -35,7 +35,7 @@ Process* Processor::GetRUN()
 
 void Processor::PrintRUN()
 {
-	cout << *RUN << "(P" << ID << ")";
+	cout << RUN << "(P" << ID << ")";
 }
 
 

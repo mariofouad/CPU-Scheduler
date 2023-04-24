@@ -170,7 +170,7 @@ bool Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel r
 			if (ProcessorI < FCFS_Count)
 			{
 				FCFS_Processors->Traversal(Ftemp, ProcessorI);
-				Ftemp->InserttoRDY(*Ntemp);
+				Ftemp->InserttoRDY(Ntemp);
 				c++;
 			}
 
@@ -178,7 +178,7 @@ bool Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel r
 			{
 				int is = ProcessorI - FCFS_Count;
 				SJF_Processors->Traversal(Stemp, is);
-				Stemp->InserttoRDY(*Ntemp);
+				Stemp->InserttoRDY(Ntemp);
 				c++;
 			}
 
@@ -186,7 +186,7 @@ bool Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel r
 			{
 				int ir = ProcessorI - SJF_Count - FCFS_Count;
 				RR_Processors->Traversal(Rtemp, ir);
-				Rtemp->InserttoRDY(*Ntemp);
+				Rtemp->InserttoRDY(Ntemp);
 				c++;
 			}
 			ProcessorI++;
@@ -228,21 +228,21 @@ bool Scheduler::MoveToRDY(Process* p)                       // me7taga tet3adel 
 	if (ProcessorI < FCFS_Count)
 	{
 		FCFS_Processors->Traversal(Ftemp, ProcessorI);
-		Ftemp->InserttoRDY(*p);
+		Ftemp->InserttoRDY(p);
 		c++;
 	}
 	else if (ProcessorI >= (FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count))
 	{
 		int is = ProcessorI - FCFS_Count;
 		SJF_Processors->Traversal(Stemp, is);
-		Stemp->InserttoRDY(*p);
+		Stemp->InserttoRDY(p);
 		c++;
 	}
 	else if (ProcessorI >= (SJF_Count + FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count + RR_Count))
 	{
 		int ir = ProcessorI - SJF_Count - FCFS_Count;
 		RR_Processors->Traversal(Rtemp, ir);
-		Rtemp->InserttoRDY(*p);
+		Rtemp->InserttoRDY(p);
 		c++;
 	}
 	return (c != 0);
