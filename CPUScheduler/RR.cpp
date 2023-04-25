@@ -107,6 +107,23 @@ void RR::SetTMslice(int timeslice)
 	TMslice = timeslice;
 }
 
+bool RR::ProcessMigration(SJF* receiver, int RTF)
+{
+	Process* p = nullptr;
+	for (int i = 0; i < RDYcount; i++)
+	{
+		RDY->peek(p);
+		if (p->MustMigrateToSJF(RTF))
+		{
+			RDY->Dequeue(p);
+			receiver->InserttoRDY(p);
+			RDYcount--;
+			return true;
+		}
+	}
+	return false;
+}
+
 RR::~RR()                                                   //Default Destructor
 {
 

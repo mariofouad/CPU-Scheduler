@@ -2,6 +2,7 @@
 #define ROUNDROBIN
 #pragma once
 #include "Processor.h"
+#include "SJF.h"
 #include "LinkedQueue.h"
 #include <iostream>
 
@@ -34,13 +35,15 @@ public:
 
 	bool IsIdeal();											 //Returns true if the RDY list is empty
 
-	bool MoveFromRDYToRUN(int &CTS);								 //Moves the first process in The RDY queue to RUN state
+	bool MoveFromRDYToRUN(int &CTS);						 //Moves the first process in The RDY queue to RUN state
 
 	string returntypename();								 //Returna a string with the type name which is RR
 
 	bool ProcIsFound(Process* p);							 //Returns true if a process is found in the RDY list
 
 	void SetTMslice(int timeslice);							 //Sets the time slice of RR processors
+
+	bool ProcessMigration(SJF* reciever , int RTF);			 //Will migrate 1 process from the RDY queue of RR to SJF
 
 	~RR();                                                   //Default Destructor
 };
