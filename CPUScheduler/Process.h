@@ -56,9 +56,13 @@ public:
 
 	int GetAT();
 
-	void excute1TimeStep();								//Let the process excute 1 time step only 
+	void excute1TimeStep();								//Let the process excute 1 time step only by decreasing 1 timestep from CT
 	
-	bool MustbeTerminated();							//Returns true if the process is ready to be Terminated		   
+	bool MustbeTerminated();							//Returns true if the process is ready to be Terminated		 
+
+	bool MustMigrateToSJF(int RTF);						//Returns True if CT < RTF , ready to be migrated from RR to SJF
+
+	bool MustMigrateToRR(int MaxW);					    //Returns TRue if WT > MaxW , ready to be migrated from FCFS to RR
 	
 	~Process();
 };

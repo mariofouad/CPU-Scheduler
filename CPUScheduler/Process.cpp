@@ -104,6 +104,18 @@ bool Process::MustbeTerminated()
 	return false;
 }
 
+bool Process::MustMigrateToSJF(int RTF)
+{
+	if (CT < RTF) return true;
+	return false;
+}
+
+bool Process::MustMigrateToRR(int MaxW)
+{
+	if (WT > MaxW) return true;
+	return false;
+}
+
 Process::~Process()
 {
 }

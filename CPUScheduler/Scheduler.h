@@ -53,6 +53,7 @@ private:
 	int TimeSliceRR = 0;
 	int STL = 0;
 	int ForkProb = 0;
+	int RTFcount = 0;
 	int KillPID = 0;
 	int KillTime = 0;
 	int Processor_count = 0;
@@ -73,7 +74,7 @@ public:
 
 	void PrintWindow();										 //this function would be called from the UI using a pointer from scheduler because Scheduler is the only class that should had access over data needed
 
-	void Process_Migartion(Processor* p1, Processor* p2);	 //this fn will be responsible for migrating processes through different processors
+	/*void Process_Migartion1(RR* R, SJF* p2);	*/				 //this fn will be responsible for migrating processes through different processors
 
 	void Phase1Simulator();									 //simulator function for phase 1
 

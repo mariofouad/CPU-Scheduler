@@ -12,7 +12,7 @@
     <Filter Include="Data Structures">
       <UniqueIdentifier>{f35a83c0-82af-4547-b743-ea693c0bdab3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Resource Files">
+    <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>

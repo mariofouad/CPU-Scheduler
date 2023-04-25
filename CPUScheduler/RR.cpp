@@ -41,20 +41,15 @@ void RR::ScheduleAlgo(int& CTS)                                      //Overloade
 	else if (IsBusy() && TMslice != 0)
 	{
 		RUN->excute1TimeStep();
-		RUN->OpIsDone(CTS);
 		TMslice--;
 	}
 	else if (IsBusy() && TMslice == 0)
 	{
 		Process* p = RUN;
-		if (!RUN->IsOpDone(CTS)) 
-		{
-			RDY->Enqueue(RUN);
-			RDYcount++;
-			KillRUN();
-			TMslice = tempSlice;
-			p->OpIsDone(CTS);
-		}
+		RDY->Enqueue(RUN);
+		RDYcount++;
+		KillRUN();
+		TMslice = tempSlice;
 	}
 }
 
@@ -110,6 +105,23 @@ bool RR::ProcIsFound(Process* p)
 void RR::SetTMslice(int timeslice)
 {
 	TMslice = timeslice;
+}
+
+bool RR::ProcessMigration(SJF* receiver, int RTF)
+{
+	Process* p = nullptr;
+	for (int i = 0; i < RDYcount; i++)
+	{
+		RDY->peek(p);
+		if (p->MustMigrateToSJF(RTF))
+		{
+			RDY->Dequeue(p);
+			receiver->InserttoRDY(p);
+			RDYcount--;
+			return true;
+		}
+	}
+	return false;
 }
 
 RR::~RR()                                                   //Default Destructor

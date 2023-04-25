@@ -22,7 +22,8 @@ Scheduler::~Scheduler() {
 //===================================================================================================================================//
 void Scheduler::SIMULATOR()
 {
-	//============================================================ READ FILE ========================================================//
+
+	//=================================== READ FILE ==================================//
 	int id = 1;
 	ReadFile();
 	for (int i = 0; i < FCFS_Count; i++)
@@ -46,24 +47,26 @@ void Scheduler::SIMULATOR()
 		RR_Processors->InsertEnd(P);
 		AllProcessors->add(Pproc);
 	}
+	////////////////////////////////////////////////////////////////////////////////////
+
 	while (!WorkisDone()) 
 	{
-		//================================================================ MOVING FROM NEW TO RDY ====================================//
 		MoveFromNewToRdy();
-		//=============================================================== HANDLING FCFS PROCESSORS ===================================//
+		//=================================== HANDLING FCFS ==================================//
 		for (int i = 0; i < FCFS_Count; i++)
-		{   //=========== MOVING TO RUN USING SCHEDULER ALGO =========//                                      
+		{   /////////////////////////////////////////////
+			/////////// Calling Schedule algo ///////////
+			/////////////////////////////////////////////                                      
 			FCFS* P = nullptr;
 			Process* proc = nullptr;
 			FCFS_Processors->Traversal(P, i);
-			P->ScheduleAlgo(CurrentTimestep);         //Move From RDY To RUN if no operation done in this cts or busy or empty
+			P->ScheduleAlgo(CurrentTimestep);         
 			proc = P->GetRUN();
 			if (P->IsBusy())
 			{
 				ActualRUN->Enqueue(proc);
 				ActualRUNcount++;
 			}
-			//=============== HANDLING THE RUN STATE ================//                            
 			if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
 			{
 				int timeleft = 0;                                               //there is requests to be done? true : No-> nothimg to be done          
@@ -80,6 +83,11 @@ void Scheduler::SIMULATOR()
 					P->KillRUN();
 				}
 			}
+			/////////////////////////////////////////////
+			////////// Processes Migration 2 ////////////
+			/////////////////////////////////////////////    
+
+			
 		}
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
 		/*for (int i = 0; i < SJF_Count; i++)
@@ -92,6 +100,9 @@ void Scheduler::SIMULATOR()
 		//======================================= HANDLING RR PROCESSORS ===================================//	
 		for (int i = 0; i < RR_Count; i++)
 		{
+			/////////////////////////////////////////////
+			/////////// Calling Schedule algo ///////////
+			/////////////////////////////////////////////
 			RR* R = nullptr;
 			Process* p;
 			RR_Processors->Traversal(R, i);
@@ -106,9 +117,19 @@ void Scheduler::SIMULATOR()
 				}
 				else if (p->MustbeTerminated() && MovetoTRM(p))
 				{
-						R->KillRUN();
+					R->KillRUN();
 				}
 			}
+			/////////////////////////////////////////////
+			////////// Processes Migration  /////////////
+			/////////////////////////////////////////////
+			/*SJF* firstSJF = nullptr;
+			int a = 0;
+			SJF_Processors->Traversal(firstSJF, a);
+			if (R->ProcessMigration(firstSJF, RTF))
+			{
+				RTFcount++;
+			}*/
 		}
 		
 		//============================== HANDLING BLK list ============================//
@@ -270,7 +291,7 @@ bool Scheduler::MoveToRDY(Process* p)                       // me7taga tet3adel 
 	return (c != 0);
 }
 
-void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}
+//void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}
 
 void Scheduler::Work_stealing() {}
 
