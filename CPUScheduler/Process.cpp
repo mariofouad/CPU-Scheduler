@@ -116,6 +116,12 @@ bool Process::MustMigrateToRR(int MaxW)
 	return false;
 }
 
+void Process::CalcStatistics(int&wt,int&rt,int&tt)
+{
+	wt = WT;
+	rt = RT;
+	tt = TT;
+}
 Process::~Process()
 {
 }
@@ -125,6 +131,11 @@ ostream& operator << (ostream& Out, Process* P) {
 	return Out;
 }
 
+ostream& operator <= (ostream& Out, Process* P)
+{
+	Out << P->TT << "\t" << P->PID << "\t" << P->AT << "\t" << P->CT << "\t" << P->TotalIOD << "\t" << P->WT << "\t" << P->RT << "\t" << P->TRT;
+	return Out;
+}
 int Process::GetAT()
 {
 	return AT;

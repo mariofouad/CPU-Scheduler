@@ -47,8 +47,7 @@ void Scheduler::SIMULATOR()
 		RR_Processors->InsertEnd(P);
 		AllProcessors->add(Pproc);
 	}
-	////////////////////////////////////////////////////////////////////////////////////
-
+	//===========================================================================================================================//
 	while (!WorkisDone()) 
 	{
 		MoveFromNewToRdy();
@@ -90,13 +89,13 @@ void Scheduler::SIMULATOR()
 			
 		}
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
-		/*for (int i = 0; i < SJF_Count; i++)
+		for (int i = 0; i < SJF_Count; i++)
 		{
 			SJF* P = nullptr;
 			SJF_Processors->Traversal(P, i);
 			P->ScheduleAlgo(CurrentTimestep);
 
-		}*/
+		}
 		//======================================= HANDLING RR PROCESSORS ===================================//	
 		for (int i = 0; i < RR_Count; i++)
 		{
@@ -316,6 +315,50 @@ bool Scheduler::FileisFound() {
 	}
 	else {
 		return false;
+	}
+}
+
+string Scheduler::OutputFileName() //here make the user enters the name of the file and I will call the function in output file function
+{
+	return "TestOutputFile.txt";
+}
+
+void Scheduler::OutputFile()
+{	
+	std::ofstream outputfile(OutputFileName());
+	if (outputfile.is_open())
+	{
+		Process* P = new Process;
+		int wt = 0, rt = 0, tt = 0;
+		int AvgWT = 0, AvgRT = 0, AvgTT = 0;
+		outputfile << "TT" << "\t" << "PID" << "\t" << "AT" << "\t" << "CT" << "\t" << "IO_D" << "\t" << "WT" << "\t" << "RT" << "\t" << "TRT" << std::endl;
+		while (TRM->Dequeue(P))
+		{
+			int wtp = 0, rtp = 0, ttp = 0;
+			outputfile <= P;
+			outputfile << std::endl;
+			P->CalcStatistics(wtp, rtp, ttp);
+			wt += wtp;
+			rt += rtp;
+			tt += ttp;
+		}
+		outputfile << std::endl;
+		outputfile << "Processes: " << tempProc_count << endl;
+		outputfile << "Avg WT = " << (AvgWT = wt / tempProc_count) << "," << "\t" << "Avg RT = " << (AvgRT = rt / tempProc_count) << "," << "\t" << "Avg TT = " << (AvgTT = tt / tempProc_count) << std::endl;
+		outputfile << "Migration %: " << "RTF = " << RTFcount << "%," << "\t" << "MaxW = " << MaxW << "%" << std::endl; //need to be handeled
+		outputfile << "Work Steal %:" << "%" << std::endl;//need to be handeled
+		outputfile << "Forked Process:" << "%" << std::endl;//need to be handeled
+		outputfile << "Killed Process:" << "%" << std::endl;//need to be handeled
+		outputfile << std::endl;
+		outputfile << "Processors: " << Processor_count << " [" << FCFS_Count << " FCFS, " << SJF_Count << " SJF, " << RR_Count << " RR" << "]" << std::endl;
+		outputfile << "Processors Load:" << std::endl;//need to be handeled
+		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
+		outputfile << "Avg Utilization = " << "%" << std::endl;//need to be handeled
+		outputfile.close();
+	}
+	else 
+	{
+		return;
 	}
 }
 

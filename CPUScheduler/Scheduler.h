@@ -70,6 +70,10 @@ public:
 
 	bool FileisFound();										 //Returns true if file is found
 
+	string OutputFileName();
+
+	void OutputFile();
+
 	void ReadFile();										 //responsible for reading the data needed from the input file
 
 	void PrintWindow();										 //this function would be called from the UI using a pointer from scheduler because Scheduler is the only class that should had access over data needed
@@ -103,6 +107,7 @@ public:
 	bool MoveFromBLKToRDY();
 
 	bool KillFromFCFS();
+
 
 	~Scheduler();
 };
