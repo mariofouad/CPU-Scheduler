@@ -3,6 +3,7 @@
 #pragma once
 #include <iostream>
 
+
 using namespace std;
 
 class Process
@@ -22,9 +23,11 @@ private:
 	int* IO_D;					//I|O Duration time
 	int Randomization = 0;		//Returns a number from 1-100 used for managing what to do with the process
 	friend ostream& operator << (ostream& Out, Process* p);
+	friend ostream& operator <= (ostream& Out, Process* P);
 	int LastOpDone=0;
 	int ReqDone = 0;
 	int TimeInRun = 0;
+	int TotalIOD=0;
 
 public:
 
@@ -64,6 +67,8 @@ public:
 
 	bool MustMigrateToRR(int MaxW);					    //Returns TRue if WT > MaxW , ready to be migrated from FCFS to RR
 	
+	void CalcStatistics(int& wt, int& rt, int& tt);
+
 	~Process();
 };
 #endif
