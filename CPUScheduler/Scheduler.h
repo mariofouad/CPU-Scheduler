@@ -49,7 +49,7 @@ private:
 	int RR_Count = 0;					                     //Number of RR_count
 	int MaxW = 0;						                     //Data needed to do the process migration would be provided from the input file
 	int RTF = 0;						                     //Data needed to do the process migration would be provided from the input file
-	SL_PriorityQueue<Processor*>* AllProcessors = nullptr;
+	Processor** AllProcessors;
 	int TimeSliceRR = 0;
 	int STL = 0;
 	int ForkProb = 0;

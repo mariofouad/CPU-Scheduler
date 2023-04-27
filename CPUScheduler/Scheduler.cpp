@@ -11,7 +11,6 @@ Scheduler::Scheduler() {
 	FCFS_Processors = new LinkedList<FCFS*>;
 	SJF_Processors = new LinkedList<SJF*>;
 	RR_Processors = new LinkedList<RR*>;
-	AllProcessors = new SL_PriorityQueue<Processor*>;
 }
 
 Scheduler::~Scheduler() {
@@ -31,21 +30,21 @@ void Scheduler::SIMULATOR()
 		FCFS* P = new FCFS(id++);
 		Processor* Pproc = P;
 		FCFS_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
+		AllProcessors[i] = P;
 	}
 	for (int i = 0; i < SJF_Count; i++)
 	{
 		SJF* P = new SJF(id++);
 		Processor* Pproc = P;
 		SJF_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
+		AllProcessors[FCFS_Count+i] = P;
 	}
 	for (int i = 0; i < RR_Count; i++)
 	{
 		RR* P = new RR(id++, TimeSliceRR);
 		Processor* Pproc = P;
 		RR_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
+		AllProcessors[FCFS_Count + SJF_Count + i] = P;
 	}
 	//===========================================================================================================================//
 	while (!WorkisDone()) 
@@ -373,6 +372,7 @@ void Scheduler::ReadFile()
 		std::stringstream firstline(line);
 		firstline >> FCFS_Count >> SJF_Count >> RR_Count;
 		Processor_count = FCFS_Count + SJF_Count + RR_Count;
+		AllProcessors = new Processor*[Processor_count];
 
 		//Second line in text file
 		std::getline(inputfile, line);
@@ -548,48 +548,48 @@ void Scheduler::PrintWindow()
 //================================================================================================================================//
 //================================================================= PHASE-1 ======================================================//
 //================================================================================================================================//
-void Scheduler::Phase1Simulator()
-{
-	//============================================================ READ_FILE =====================================================//
-	int id = 1;
-	ReadFile();
-	for (int i = 0; i < FCFS_Count; i++)
-	{
-		FCFS* P = new FCFS(id++);
-		Processor* Pproc = P;
-		FCFS_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
-	}
-	for (int i = 0; i < SJF_Count; i++)
-	{
-		SJF* P = new SJF(id++);
-		Processor* Pproc = P;
-		SJF_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
-	}
-	for (int i = 0; i < RR_Count; i++)
-	{
-		RR* P = new RR(id++);
-		Processor* Pproc = P;
-		RR_Processors->InsertEnd(P);
-		AllProcessors->add(Pproc);
-	}
-	while (!WorkisDone())
-	{
-		//============================================================= i  =========================================================//(DONE)
-		MoveFromNewToRdy();
-		//============================================================= ii  ========================================================//(DONE) 
-		DistToRUN();
-		//============================================================= iii ========================================================//(DONE)
-		Blk_Rdy_Trm();
-		//============================================================= iv =========================================================//(DONE)
-		MoveFromBLKToRDY();
-		//=============================================================  v  ========================================================//(DONE)
-		GetInterface()->UpdateInterface();
-		CurrentTimestep++;
-		//==========================================================================================================================//
-	}
-}
+//void Scheduler::Phase1Simulator()
+//{
+//	//============================================================ READ_FILE =====================================================//
+//	int id = 1;
+//	ReadFile();
+//	for (int i = 0; i < FCFS_Count; i++)
+//	{
+//		FCFS* P = new FCFS(id++);
+//		Processor* Pproc = P;
+//		FCFS_Processors->InsertEnd(P);
+//		AllProcessors->add(Pproc);
+//	}
+//	for (int i = 0; i < SJF_Count; i++)
+//	{
+//		SJF* P = new SJF(id++);
+//		Processor* Pproc = P;
+//		SJF_Processors->InsertEnd(P);
+//		AllProcessors->add(Pproc);
+//	}
+//	for (int i = 0; i < RR_Count; i++)
+//	{
+//		RR* P = new RR(id++);
+//		Processor* Pproc = P;
+//		RR_Processors->InsertEnd(P);
+//		AllProcessors->add(Pproc);
+//	}
+//	while (!WorkisDone())
+//	{
+//		//============================================================= i  =========================================================//(DONE)
+//		MoveFromNewToRdy();
+//		//============================================================= ii  ========================================================//(DONE) 
+//		DistToRUN();
+//		//============================================================= iii ========================================================//(DONE)
+//		Blk_Rdy_Trm();
+//		//============================================================= iv =========================================================//(DONE)
+//		MoveFromBLKToRDY();
+//		//=============================================================  v  ========================================================//(DONE)
+//		GetInterface()->UpdateInterface();
+//		CurrentTimestep++;
+//		//==========================================================================================================================//
+//	}
+//}
 
 int Scheduler::GenerateRandom()
 {
@@ -610,22 +610,22 @@ int Scheduler::GenerateRandom()
 	return 0;
 }
 
-void Scheduler::SetActualRUN() {
-	int i = 1;
-	Processor* temp = nullptr;
-	while (AllProcessors->remove(temp)) {
-
-		if (temp->IsBusy())
-		{
-			ActualRUNcount++;
-		}
-		Process* prtemp = temp->GetRUN();
-		ActualRUN->Enqueue(prtemp);
-		AllProcessors->add(temp);
-		i++;
-		if (i == Processor_count) break;
-	}
-}
+//void Scheduler::SetActualRUN() {
+//	int i = 1;
+//	Processor* temp = nullptr;
+//	while (AllProcessors->remove(temp)) {
+//
+//		if (temp->IsBusy())
+//		{
+//			ActualRUNcount++;
+//		}
+//		Process* prtemp = temp->GetRUN();
+//		ActualRUN->Enqueue(prtemp);
+//		AllProcessors->add(temp);
+//		i++;
+//		if (i == Processor_count) break;
+//	}
+//}
 
 bool Scheduler::DistToRUN()
 {
@@ -671,45 +671,45 @@ bool Scheduler::DistToRUN()
 	return (c != 0);
 }
 
-bool Scheduler::Blk_Rdy_Trm()
-{
-	int c = 0;
-	Process* Rtemp = nullptr;
-	Processor* Atemp = nullptr;
-	int i = 0;
-	while (AllProcessors->remove(Atemp))
-	{
-		Rtemp = Atemp->GetRUN();
-		if (Rtemp == nullptr)
-		{
-		}
-		else if (!Rtemp->IsOpDone(CurrentTimestep))
-		{
-			if (GenerateRandom() == 1)
-			{
-				MoveToBlk(Rtemp);
-				Atemp->KillRUN();
-				c++;
-			}
-			if (GenerateRandom() == 2)
-			{
-				MoveToRDY(Rtemp);
-				Atemp->KillRUN();
-				c++;
-			}
-			if (GenerateRandom() == 3)
-			{
-				MovetoTRM(Rtemp);
-				Atemp->KillRUN();
-				c++;
-			}
-		}
-		AllProcessors->add(Atemp);
-		i++;
-		if (i == Processor_count) break;
-	}
-	return (c != 0);
-}
+//bool Scheduler::Blk_Rdy_Trm()
+//{
+//	int c = 0;
+//	Process* Rtemp = nullptr;
+//	Processor* Atemp = nullptr;
+//	int i = 0;
+//	while (AllProcessors->remove(Atemp))
+//	{
+//		Rtemp = Atemp->GetRUN();
+//		if (Rtemp == nullptr)
+//		{
+//		}
+//		else if (!Rtemp->IsOpDone(CurrentTimestep))
+//		{
+//			if (GenerateRandom() == 1)
+//			{
+//				MoveToBlk(Rtemp);
+//				Atemp->KillRUN();
+//				c++;
+//			}
+//			if (GenerateRandom() == 2)
+//			{
+//				MoveToRDY(Rtemp);
+//				Atemp->KillRUN();
+//				c++;
+//			}
+//			if (GenerateRandom() == 3)
+//			{
+//				MovetoTRM(Rtemp);
+//				Atemp->KillRUN();
+//				c++;
+//			}
+//		}
+//		AllProcessors->add(Atemp);
+//		i++;
+//		if (i == Processor_count) break;
+//	}
+//	return (c != 0);
+//}
 
 bool Scheduler::KillFromFCFS()
 {
