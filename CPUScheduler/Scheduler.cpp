@@ -5,7 +5,7 @@
 Scheduler::Scheduler() {
 	UserInterface = new UI(this);
 	NEW = new LinkedQueue<Process*>;
-	BLK = new LinkedList<Process*>;
+	BLK = new LinkedQueue<Process*>;
 	TRM = new LinkedQueue<Process*>;
 	ActualRUN = new LinkedQueue<Process*>;
 	FCFS_Processors = new LinkedList<FCFS*>;
@@ -174,7 +174,7 @@ bool Scheduler::MoveToBlk(Process* p)
 	else
 	{
 		p->OpIsDone(CurrentTimestep);
-		BLK->InsertEnd(p);
+		BLK->Enqueue(p);
 		BLK_count++;
 		return true;
 	}
@@ -248,7 +248,7 @@ bool Scheduler::MoveFromBLKToRDY()                                  //Me7taga te
 	BLK->peek(p);
 	if (random_num1 < 10 && !BLK->IsEmpty() && !p->IsOpDone(CurrentTimestep))
 	{
-		BLK->DeleteFirst(p);
+		BLK->Dequeue(p);
 		BLK_count--;
 		p->OpIsDone(CurrentTimestep);
 		MoveToRDY(p);
@@ -478,7 +478,7 @@ void Scheduler::PrintWindow()
 
 	std::cout << "---------------------- BLK processes ----------------------" << '\n';
 	std::cout << BLK_count << " BLK: ";
-	BLK->PrintList();
+	BLK->print();
 	std::cout << '\n';
 
 	std::cout << "---------------------- RUN processes ----------------------" << '\n';

@@ -33,7 +33,7 @@ private:
 	LinkedQueue<Process*>* NEW = nullptr;				     //A container for all the processes just before their arrival to CPU
 	int Proc_count = 0;				                         //Total number of processes in NEW before anything occurs 
 	int tempProc_count = 0;
-	LinkedList<Process*>* BLK = nullptr;				     //A container for all processses in blocked state
+	LinkedQueue<Process*>* BLK = nullptr;				     //A container for all processses in blocked state
 	int BLK_count = 0;
 	LinkedQueue<Process*>* TRM = nullptr;				     //A container for all terminated processes
 	int TRM_count = 0;
