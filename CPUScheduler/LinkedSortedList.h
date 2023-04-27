@@ -94,36 +94,26 @@ Node<ItemType>* LinkedSortedList<ItemType>::copyChain(const Node<ItemType>* orig
 	return copiedChainPtr;
 } // end copyChain
 
-template<class ItemType>
-void LinkedSortedList<ItemType>::insertSorted(const ItemType& newEntry)
-{
-	Node<ItemType>* newNodePtr = new Node<ItemType>(newEntry);
-	Node<ItemType>* prevPtr = getNodeBefore(newEntry);
-	Node<ItemType>* curPtr = nullptr;
 
-	// If the list is empty or newEntry is greater than or equal to the last node,
-	// add the new node at the end of the list
-	if (isEmpty() || prevPtr == nullptr) {
-		if (isEmpty()) {
+	template < class ItemType>
+	void LinkedSortedList<ItemType>::insertSorted(const ItemType & newEntry)
+	{
+		Node<ItemType>* newNodePtr = new Node<ItemType>(newEntry);
+		Node<ItemType>* prevPtr = getNodeBefore(newEntry);
+		if (isEmpty() || (prevPtr == nullptr)) // Add at beginning
+		{
+			newNodePtr->setNext(headPtr);
 			headPtr = newNodePtr;
 		}
-		else {
-			curPtr = headPtr;
-			while (curPtr->getNext() != nullptr) {
-				curPtr = curPtr->getNext();
-			}
-			curPtr->setNext(newNodePtr);
-		}
-	}
-	// Otherwise, add the new node before the node that is greater than newEntry
-	else {
-		newNodePtr->setNext(prevPtr->getNext());
-		prevPtr->setNext(newNodePtr);
-	}
+		else // Add after node before
+		{
+			Node<ItemType>* aftPtr = prevPtr->getNext();
+			newNodePtr->setNext(aftPtr);
+			prevPtr->setNext(newNodePtr);
+		} // end if
+		itemCount++;
+	} // end insertSorted
 
-	itemCount++;
-	return;
-}
 
 template < class ItemType>
 Node<ItemType>* LinkedSortedList<ItemType>::getNodeBefore(const ItemType& anEntry) const
