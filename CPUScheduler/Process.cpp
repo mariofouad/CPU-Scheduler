@@ -140,3 +140,8 @@ int Process::GetAT()
 {
 	return AT;
 }
+
+int Process::GetCT()
+{
+	return CT;
+}

@@ -49,6 +49,12 @@ public:
 
 	virtual string returntypename() = 0;
 
+	void AddTime(Process* p);
+
+	int TotalTime();
+
+	void RemTime(Process* p);
+
 	~Processor();                                            //Default Destructor
 };
 #endif 

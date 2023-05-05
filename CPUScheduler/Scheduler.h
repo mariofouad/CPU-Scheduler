@@ -80,7 +80,7 @@ public:
 
 	/*void Process_Migartion1(RR* R, SJF* p2);	*/				 //this fn will be responsible for migrating processes through different processors
 
-	void Phase1Simulator();									 //simulator function for phase 1
+	//void Phase1Simulator();									 //simulator function for phase 1
 
 	void SIMULATOR();										 //The real simulator that will do real scheduling						
 
@@ -98,11 +98,11 @@ public:
 
 	bool MoveToBlk(Process* p);								 //This function will move a process to the BLK state
 
-	void SetActualRUN();
+	//void SetActualRUN();
 
 	bool DistToRUN();
 
-	bool Blk_Rdy_Trm();
+	//bool Blk_Rdy_Trm();
 
 	bool MoveFromBLKToRDY();
 
