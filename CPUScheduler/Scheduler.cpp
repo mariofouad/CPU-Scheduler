@@ -486,13 +486,11 @@ void Scheduler::ReadFile()
 		int i = 0;
 		int kt;
 		int kd;
-		while (!inputfile.eof())
+		while (inputfile.eof())
 		{
 			std::getline(inputfile, line);
 			std::stringstream KillLines(line);
-			KillLines >> kt >> kd;
-			KillTime[i] = kt;
-			KillPID[i] = kd;
+			KillLines >> KillTime[i] >> KillPID[i];
 			inputfile.close();
 			i++;
 		}
