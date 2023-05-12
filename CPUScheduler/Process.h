@@ -69,6 +69,12 @@ public:
 	
 	void CalcStatistics(int& wt, int& rt, int& tt);
 
+	int ID();
+
+	int GetCT();
+
+	int proTRT();
+
 	~Process();
 };
 #endif

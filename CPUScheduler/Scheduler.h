@@ -54,11 +54,14 @@ private:
 	int STL = 0;
 	int ForkProb = 0;
 	int RTFcount = 0;
-	int KillPID = 0;
-	int KillTime = 0;
+	int *KillPID ;
+	int *KillTime ;
+	int killindex = 0;
 	int Processor_count = 0;
 	int ProcessorI = 0;
 	int* tempcurrenttimestep = &CurrentTimestep;
+	int AllProcessesTRT = 0;
+	int* ProcessorLoad;
 
 public:
 
@@ -80,7 +83,7 @@ public:
 
 	/*void Process_Migartion1(RR* R, SJF* p2);	*/				 //this fn will be responsible for migrating processes through different processors
 
-	void Phase1Simulator();									 //simulator function for phase 1
+	//void Phase1Simulator();									 //simulator function for phase 1
 
 	void SIMULATOR();										 //The real simulator that will do real scheduling						
 
@@ -98,16 +101,19 @@ public:
 
 	bool MoveToBlk(Process* p);								 //This function will move a process to the BLK state
 
-	void SetActualRUN();
+	//void SetActualRUN();
 
 	bool DistToRUN();
 
-	bool Blk_Rdy_Trm();
+	//bool Blk_Rdy_Trm();
 
 	bool MoveFromBLKToRDY();
 
 	bool KillFromFCFS();
 
+	void KillSignal();
+
+	void Load();
 
 	~Scheduler();
 };

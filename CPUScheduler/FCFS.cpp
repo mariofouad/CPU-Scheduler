@@ -95,3 +95,27 @@ FCFS::~FCFS()                                               //Default Destructor
 	RDY->~LinkedList();
 	delete RDY;
 }
+
+bool FCFS::SearchForProcess(int id, Process*& p)
+{
+	if (RUN->ID() == id)
+	{
+		return true;
+	}
+	for (int i = 0; i < RDYcount; i++)
+	{
+		Process* ptemp;
+		RDY->DeleteFirst(ptemp);
+		if (ptemp->ID() == id)
+		{
+			ptemp = p;
+			RDY->InsertEnd(ptemp);
+			return true;
+		}
+		else
+		{
+			RDY->InsertEnd(ptemp);
+			return false;
+		}
+	}
+}

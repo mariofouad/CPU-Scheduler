@@ -79,3 +79,31 @@ ostream& operator<<(ostream& Out, Processor& P)
 	P1->PrintRDY();
 	return Out;
 }
+
+void Processor::AddTime(Process* p)
+{
+	ExpectedTime = ExpectedTime + p->GetCT();
+}
+
+int Processor::TotalTime()
+{
+	return ExpectedTime;
+}
+
+void Processor::RemTime(Process* p)
+{
+	ExpectedTime = ExpectedTime - p->GetCT();
+}
+
+void Processor::CalcBusyTime()
+{
+	if (IsBusy())
+	{
+		BusyTime++;
+	}
+}
+
+int Processor::GetBusyTime()
+{
+	return BusyTime;
+}
