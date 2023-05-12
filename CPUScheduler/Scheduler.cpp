@@ -444,24 +444,23 @@ void Scheduler::ReadFile()
 					while (Processline.get(c) && !isdigit(c));
 
 					// if a digit is found, put it back and read the number
-					if (isdigit(c))
-					{
-						Processline.putback(c);
-						Processline >> IOR;
 
-						// read until the second digit is found
-						while (Processline.get(c) && !isdigit(c));
 
-						// if a digit is found, put it back and read the number
-						if (isdigit(c))
-						{
-							Processline.putback(c);
-							Processline >> IOD;
+					Processline.putback(c);
+					Processline >> IOR;
 
-							// set input data for the process
-							P->SetInputData(IOR, IOD, i);
-						}
-					}
+					// read until the second digit is found
+					while (Processline.get(c) && !isdigit(c));
+
+					// if a digit is found, put it back and read the number
+
+
+					Processline.putback(c);
+					Processline >> IOD;
+
+					// set input data for the process
+					P->SetInputData(IOR, IOD, i);
+
 				}
 
 			}
