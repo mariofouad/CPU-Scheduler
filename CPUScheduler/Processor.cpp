@@ -94,3 +94,16 @@ void Processor::RemTime(Process* p)
 {
 	ExpectedTime = ExpectedTime - p->GetCT();
 }
+
+void Processor::CalcBusyTime()
+{
+	if (IsBusy())
+	{
+		BusyTime++;
+	}
+}
+
+int Processor::GetBusyTime()
+{
+	return BusyTime;
+}

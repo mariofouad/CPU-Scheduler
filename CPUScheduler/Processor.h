@@ -12,10 +12,11 @@ class Processor
 {
 protected:
 
-	int ID;							                         //Processor identifiers
-	int RDYcount;					                         //number of Ready processes
-	Process* RUN;					                         //that should contain only process I think because every process can only excute one
-	int ExpectedTime = 0;									 //Summation of CPUT of its RDY Processes
+	int ID;							                        //Processor identifiers
+	int RDYcount;					                        //number of Ready processes
+	Process* RUN;					                        //that should contain only process I think because every process can only excute one
+	int ExpectedTime = 0;									//Summation of CPUT of its RDY Processes
+	int BusyTime = 0;										//Total busy time
 
 public:
 
@@ -54,6 +55,10 @@ public:
 	int TotalTime();
 
 	void RemTime(Process* p);
+
+	void CalcBusyTime();
+
+	int GetBusyTime();
 
 	~Processor();                                            //Default Destructor
 };

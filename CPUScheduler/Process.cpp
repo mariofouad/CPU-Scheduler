@@ -145,3 +145,13 @@ int Process::GetCT()
 {
 	return CT;
 }
+
+int Process::ID()
+{
+	return PID;
+}
+
+int Process::proTRT()
+{
+	return TRT;
+}

@@ -54,11 +54,14 @@ private:
 	int STL = 0;
 	int ForkProb = 0;
 	int RTFcount = 0;
-	int KillPID = 0;
-	int KillTime = 0;
+	int *KillPID ;
+	int *KillTime ;
+	int killindex = 0;
 	int Processor_count = 0;
 	int ProcessorI = 0;
 	int* tempcurrenttimestep = &CurrentTimestep;
+	int AllProcessesTRT = 0;
+	int* ProcessorLoad;
 
 public:
 
@@ -108,6 +111,9 @@ public:
 
 	bool KillFromFCFS();
 
+	void KillSignal();
+
+	void Load();
 
 	~Scheduler();
 };

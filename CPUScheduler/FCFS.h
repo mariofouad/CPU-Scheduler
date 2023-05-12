@@ -34,5 +34,9 @@ public:
 
 	bool ProcIsFound(Process* p);
 
+	bool SearchForProcess(int id, Process*& p);
+
+
+
 	~FCFS();                                                 //Default Destructor
 };

@@ -160,6 +160,11 @@ void Scheduler::SIMULATOR()
 			}
 			
 		}*/
+		for (int i = 0; i < Processor_count; i++)
+		{
+			AllProcessors[i]->CalcBusyTime();
+		}
+		KillSignal();
 		GetInterface()->UpdateInterface();
 		CurrentTimestep++;
 	}
@@ -192,6 +197,7 @@ bool Scheduler::MovetoTRM(Process* p)
 	{
 		p->OpIsDone(CurrentTimestep);
 		p->TerminationTime(CurrentTimestep);
+		AllProcessesTRT = AllProcessesTRT + p->proTRT();
 		TRM->Enqueue(p);
 		TRM_count++;
 		return true;
@@ -386,6 +392,11 @@ void Scheduler::OutputFile()
 		outputfile << std::endl;
 		outputfile << "Processors: " << Processor_count << " [" << FCFS_Count << " FCFS, " << SJF_Count << " SJF, " << RR_Count << " RR" << "]" << std::endl;
 		outputfile << "Processors Load:" << std::endl;//need to be handeled
+		Load();
+		for (int i = 0; i < Processor_count; i++)
+		{
+			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
+		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
 		outputfile << "Avg Utilization = " << "%" << std::endl;//need to be handeled
 		outputfile.close();
@@ -408,6 +419,9 @@ void Scheduler::ReadFile()
 		firstline >> FCFS_Count >> SJF_Count >> RR_Count;
 		Processor_count = FCFS_Count + SJF_Count + RR_Count;
 		AllProcessors = new Processor*[Processor_count];
+		ProcessorLoad = new int[Processor_count];
+
+
 
 		//Second line in text file
 		std::getline(inputfile, line);
@@ -424,6 +438,8 @@ void Scheduler::ReadFile()
 		std::stringstream fourthline(line);
 		fourthline >> Proc_count;
 		tempProc_count = Proc_count;
+		KillPID = new int[Proc_count];
+		KillTime = new int[Proc_count];
 
 		for (int i = 0; i < Proc_count; i++)
 		{
@@ -468,15 +484,19 @@ void Scheduler::ReadFile()
 			NEW->Enqueue(P);
 		}
 		//Bfore last line in text file
-		std::getline(inputfile, line);
-		std::stringstream Beforelastline(line);
-		Beforelastline >> KillPID;
-
-		//Last line in text file
-		std::getline(inputfile, line);
-		std::stringstream Lastline(line);
-		Lastline >> KillTime;
-		inputfile.close();
+		int i = 0;
+		int kt;
+		int kd;
+		while (!inputfile.eof())
+		{
+			std::getline(inputfile, line);
+			std::stringstream KillLines(line);
+			KillLines >> kt >> kd;
+			KillTime[i] = kt;
+			KillPID[i] = kd;
+			inputfile.close();
+			i++;
+		}
 	}
 	else
 	{
@@ -763,4 +783,32 @@ bool Scheduler::KillFromFCFS()
 		}
 	}
 	return false;
+}
+
+void Scheduler::KillSignal()
+{
+	if (KillTime[killindex] == CurrentTimestep)
+	{
+		for (int i = 0; i < FCFS_Count; i++)
+		{
+			Process* ptemp = NULL;
+			FCFS* temp = NULL;
+			FCFS_Processors->DeleteFirst(temp);
+			FCFS_Processors->InsertEnd(temp);
+			if (temp->SearchForProcess(KillPID[i], ptemp))
+			{
+				MovetoTRM(ptemp);
+				killindex++;
+			}
+		}
+	}
+}
+
+void Scheduler::Load()
+{
+	for (int i = 0; i < Processor_count; i++)
+	{
+		int BS = AllProcessors[i]->GetBusyTime();
+		ProcessorLoad[i] = BS / AllProcessesTRT;
+	}
 }
