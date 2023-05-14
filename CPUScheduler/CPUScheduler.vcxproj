@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BTree.h" />
     <ClInclude Include="FCFS.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="LinkedListADT.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="LinkedQueueADT.h" />
     <ClInclude Include="LinkedSortedList.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeBT.h" />
     <ClInclude Include="PrioQueueADT.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="Processor.h" />

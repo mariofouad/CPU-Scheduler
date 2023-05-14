@@ -14,6 +14,17 @@ Process::Process(int art, int id, int cpt)
 	LastOpDone = AT;
 	ReqDone = 0;
 	TimeInRun = 0;
+	TimesForked = 0;
+}
+
+void Process::SetRoot(BTree<Process*>*P)
+{
+	Root = P;
+}
+
+BTree<Process*>* Process::GetRoot()
+{
+	return Root;
 }
 
 bool Process::IsNew(int& CTS)
@@ -26,7 +37,7 @@ void Process::OpIsDone(int& CTS)
 	LastOpDone = CTS;
 }
 
-bool Process::IsOpDone(int&CTS)
+bool Process::IsOpDone(int CTS) const
 {
 	if (LastOpDone==CTS)
 	{
@@ -144,6 +155,34 @@ int Process::GetAT()
 int Process::GetCT()
 {
 	return CT;
+}
+void Process::SetForkedProc()
+{
+	ForkedProc = true;
+}
+
+bool Process::CreateForkList()
+{
+	if ((TimesForked == 0) && !ForkedProc) //Parent w ma3mlsh fork 
+		return true;
+	return false;
+}
+
+bool Process::ForkFromParent()
+{
+	if (!(TimesForked == 0) && !ForkedProc)
+		return true;
+	return false;
+}
+
+void Process::ForkOpIsDone()
+{
+	TimesForked++;
+}
+
+bool Process::ProcessCanFork(int CTS) const
+{
+	return ((TimesForked < 2) && (IsOpDone(CTS)));
 }
 
 int Process::ID()

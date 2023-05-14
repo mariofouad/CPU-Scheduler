@@ -1,8 +1,8 @@
 #ifndef PROCESS
 #define PROCESS
 #pragma once
+#include"BTree.h"
 #include <iostream>
-
 
 using namespace std;
 
@@ -28,18 +28,24 @@ private:
 	int ReqDone = 0;
 	int TimeInRun = 0;
 	int TotalIOD=0;
+	int TimesForked=0;
+	bool ForkedProc = false;
+	BTree<Process*>* Root = nullptr;
 
 public:
-
 	Process();
 
 	Process(int art, int id, int cpt);
+
+	void SetRoot(BTree<Process*>* P);
+
+	BTree<Process*>* GetRoot();
 
 	bool IsNew(int& CTS);
 
 	void OpIsDone(int& CTS); //me7tageen neshoof law el op 7asal 3aleeha 7aga han3raf lama ne update el time el operation 7asal feeh bel CTS
 
-	bool IsOpDone(int&CTS);
+	bool IsOpDone(int CTS) const;
 
 	void SetNumberOfRequests(int n);
 
@@ -72,6 +78,16 @@ public:
 	int ID();
 
 	int GetCT();
+
+	void SetForkedProc();
+
+	bool CreateForkList();
+
+	bool ForkFromParent();
+
+	void ForkOpIsDone();
+
+	bool ProcessCanFork(int CTS) const;
 
 	int proTRT();
 
