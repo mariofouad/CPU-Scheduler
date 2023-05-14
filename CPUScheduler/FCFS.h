@@ -1,7 +1,10 @@
 #pragma once
 #include "Processor.h"
 #include "LinkedList.h"
-
+#include <iostream>
+#include <cstdlib> // required for rand() function
+#include <ctime>   // required for time() function
+using namespace std;
 //====================================================================================================================//
 //======================================================== CLASS FUNCTIONS ===========================================//
 //====================================================================================================================//
@@ -32,11 +35,13 @@ public:
 
 	string returntypename();
 
+	int GenerateRandom();
+
+	bool ProcessorCanFork(Process*P, int CTS, int ForkProb);
+
 	bool ProcIsFound(Process* p);
 
 	bool SearchForProcess(int id, Process*& p);
-
-
 
 	~FCFS();                                                 //Default Destructor
 };

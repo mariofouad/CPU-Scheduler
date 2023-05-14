@@ -2,7 +2,8 @@
 //===================================================================================================================================//
 //=========================================================== CLASS IMPLIMENTATION ==================================================//
 //===================================================================================================================================//
-Scheduler::Scheduler() {
+Scheduler::Scheduler()
+{
 	UserInterface = new UI(this);
 	NEW = new LinkedQueue<Process*>;
 	BLK = new LinkedQueue<Process*>;
@@ -11,9 +12,12 @@ Scheduler::Scheduler() {
 	FCFS_Processors = new LinkedList<FCFS*>;
 	SJF_Processors = new LinkedList<SJF*>;
 	RR_Processors = new LinkedList<RR*>;
+	//ForkTree = new BTree<Process*>;
+	Treeptrs = new LinkedList<BTree<Process*>*>;
 }
 
-Scheduler::~Scheduler() {
+Scheduler::~Scheduler() 
+{
 	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface;
 }
 //===================================================================================================================================//
@@ -21,7 +25,6 @@ Scheduler::~Scheduler() {
 //===================================================================================================================================//
 void Scheduler::SIMULATOR()
 {
-
 	//=================================== READ FILE ==================================//
 	int id = 1;
 	ReadFile();
@@ -52,19 +55,15 @@ void Scheduler::SIMULATOR()
 		MoveFromNewToRdy();
 		//=================================== HANDLING FCFS ==================================//
 		for (int i = 0; i < FCFS_Count; i++)
-		{   /////////////////////////////////////////////
-			/////////// Calling Schedule algo ///////////
-			/////////////////////////////////////////////                                      
+		{   
+			//Calling Scheduler Algo                                      
 			FCFS* P = nullptr;
 			Process* proc = nullptr;
 			FCFS_Processors->Traversal(P, i);
-			P->ScheduleAlgo(CurrentTimestep);         
+			P->ScheduleAlgo(CurrentTimestep);
+
+			//Handle BLK and TRM operation on RUN
 			proc = P->GetRUN();
-			if (P->IsBusy())
-			{
-				ActualRUN->Enqueue(proc);
-				ActualRUNcount++;
-			}
 			if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
 			{
 				int timeleft = 0;                                               //there is requests to be done? true : No-> nothimg to be done          
@@ -82,11 +81,11 @@ void Scheduler::SIMULATOR()
 					P->KillRUN();
 				}
 			}
-			/////////////////////////////////////////////
-			////////// Processes Migration 2 ////////////
-			/////////////////////////////////////////////    
-
 			
+			//Process Forking 
+			ProcessForking(P);
+			
+			//Process Migration
 		}
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
 		for (int i = 0; i < SJF_Count; i++)
@@ -138,28 +137,6 @@ void Scheduler::SIMULATOR()
 		//+ conditon en maikonsh 7asal 3aleeha ai operation tani f same current time step fa IsOpDone teb2a false 
 		//law kolo true han move lel rdy list el expexted to finish eariler w call OpIsDone(CurrentTimeStep)
 		//=============================================================================//
-		/*Process* ptemp = nullptr;
-		int temp = ActualRUNcount;
-		for (int i = 0; i < temp; i++)
-		{
-			ActualRUN->Dequeue(ptemp);
-			if (ptemp->MustbeBlocked())
-			{
-				MoveToBlk(ptemp);
-				ActualRUNcount++;
-			}
-			else if (ptemp->MustbeTerminated())
-			{
-				MovetoTRM(ptemp);
-				ActualRUNcount++;
-			}
-			else 
-			{
-				ActualRUN->Enqueue(ptemp);
-				ActualRUNcount++;
-			}
-			
-		}*/
 		for (int i = 0; i < Processor_count; i++)
 		{
 			AllProcessors[i]->CalcBusyTime();
@@ -172,6 +149,67 @@ void Scheduler::SIMULATOR()
 }
 	
 //================================================================ USED FUNCTIONS IN PHASE2 ======================================//
+
+void Scheduler::ProcessForking(FCFS* P)
+{
+	Process* proc = P->GetRUN();
+	if (P->ProcessorCanFork(proc, CurrentTimestep, ForkProb))
+	{
+		//Create the Forked Process and set the data of the child
+		int ForkedCT = 0;
+		ForkedCT = proc->GetCT();
+		//proc->OpIsDone(CurrentTimestep);
+		Process* ForkedProc = new Process(CurrentTimestep, ++Proc_count, ForkedCT);
+		ForkedProc->SetForkedProc();
+		
+		//Move to Shortest FCFS processor
+		MoveToShFCFS(ForkedProc);
+
+		//Handle The Parents Lists (Tree)
+		BTree<Process*>* Tree = nullptr;  //Ptr of type tree is created 
+		if (proc->CreateForkList())       //Law el Process ne2dar ne3mel meno forked list --> law parent w ma3mlsh fork abl keda
+		{
+			Tree = new BTree<Process*>;   //create el tree
+			TreeCount++;
+		
+			Tree->insertBT(proc);         //Insert awel process PARENT to all coming processes of this list
+			Tree->insertBT(ForkedProc);   //Insert the forked process in the tree  note will be inserted left as it is the fst node
+
+			proc->SetRoot(Tree);
+			ForkedProc->SetRoot(Tree);	  //insert the ptr to the tree to the forked process
+
+			Treeptrs->InsertEnd(Tree);    //Insert ptr to the tree in the list of trees created
+		}
+		else if (proc->ForkFromParent())  //Law el process hia parent w bet3mel fork lelmara el tania
+		{
+			for (int i = 0; i < TreeCount; i++)  //loop on the tree ptrs
+			{
+				Treeptrs->DeleteFirst(Tree); 
+				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
+				{
+
+					Tree->insertBT(ForkedProc); // sa3etha ha insert el child
+				}
+				Treeptrs->InsertEnd(Tree);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < TreeCount; i++)  //loop on the tree ptrs
+			{
+				Treeptrs->DeleteFirst(Tree);
+				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
+				{
+					
+					Tree->find(ForkedProc); // sa3etha ha insert el child
+				}
+				Treeptrs->InsertEnd(Tree);
+			}
+		}
+		proc->ForkOpIsDone();
+	}
+}
+
 bool Scheduler::MoveToBlk(Process* p)
 {
 	if (p == nullptr || p->IsOpDone(CurrentTimestep))
@@ -204,7 +242,7 @@ bool Scheduler::MovetoTRM(Process* p)
 	}
 }
 
-void Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel rdy el expected to finish earliear
+void Scheduler::MoveFromNewToRdy()
 {
 	Process* ptemp = nullptr;
 	FCFS* Ftemp = nullptr;
@@ -220,42 +258,6 @@ void Scheduler::MoveFromNewToRdy()        //Need to be editted enna newadi lel r
 			Proc_count--;
 
 			MoveToRDY(ptemp);
-
-		/*	int minprocessor = AllProcessors[0]->TotalTime();
-			int minprocessori = 0;
-			for (int i = 0; i < Processor_count; i++)
-			{
-				if (AllProcessors[i]->TotalTime() < minprocessor)
-				{
-					minprocessor = AllProcessors[i]->TotalTime();
-					minprocessori = i;
-				}
-			}*/
-
-			/*AllProcessors[minprocessori]->AddTime(ptemp);
-			AllProcessors[minprocessori]->InserttoRDY(ptemp);*/
-
-			//if (ProcessorI < FCFS_Count)
-			//{
-			//	FCFS_Processors->Traversal(Ftemp, ProcessorI);
-			//	Ftemp->InserttoRDY(ptemp);
-			//}
-
-			//if (ProcessorI >= (FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count))
-			//{
-			//	int is = ProcessorI - FCFS_Count;
-			//	SJF_Processors->Traversal(Stemp, is);
-			//	Stemp->InserttoRDY(ptemp);
-
-			//}
-
-			//if (ProcessorI >= (SJF_Count + FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count + RR_Count))
-			//{
-			//	int ir = ProcessorI - SJF_Count - FCFS_Count;
-			//	RR_Processors->Traversal(Rtemp, ir);
-			//	Rtemp->InserttoRDY(ptemp);
-			//}
-			//ProcessorI++;
 		}
 		else
 		{
@@ -281,16 +283,9 @@ bool Scheduler::MoveFromBLKToRDY()                                  //Me7taga te
 	return false;
 }
 
-bool Scheduler::MoveToRDY(Process* p)                       // me7taga tet3adel law hanmove men el blk bel shortest list(expected to finish earlier)
+bool Scheduler::MoveToRDY(Process* p)
 {
 	if (p == nullptr) return false;
-	//srand(time(0));   // seed the random number generator with current time
-	//int ProcessorI = (rand() % Processor_count) + 1;
-	//int c = 0;
-	//FCFS* Ftemp = nullptr;
-	//SJF* Stemp = nullptr;
-	//RR* Rtemp = nullptr;
-
 	int minprocessor = AllProcessors[0]->TotalTime();
 	int minprocessori = 0;
 	for (int i = 0; i < Processor_count; i++)
@@ -305,31 +300,26 @@ bool Scheduler::MoveToRDY(Process* p)                       // me7taga tet3adel 
 	AllProcessors[minprocessori]->AddTime(p);
 	AllProcessors[minprocessori]->InserttoRDY(p);
 	return true;
-
-
-	/*if (ProcessorI < FCFS_Count)
-	{
-		FCFS_Processors->Traversal(Ftemp, ProcessorI);
-		Ftemp->InserttoRDY(p);
-		c++;
-	}
-	else if (ProcessorI >= (FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count))
-	{
-		int is = ProcessorI - FCFS_Count;
-		SJF_Processors->Traversal(Stemp, is);
-		Stemp->InserttoRDY(p);
-		c++;
-	}
-	else if (ProcessorI >= (SJF_Count + FCFS_Count) && ProcessorI < (FCFS_Count + SJF_Count + RR_Count))
-	{
-		int ir = ProcessorI - SJF_Count - FCFS_Count;
-		RR_Processors->Traversal(Rtemp, ir);
-		Rtemp->InserttoRDY(p);
-		c++;
-	}
-	return (c != 0);*/
 }
 
+bool Scheduler::MoveToShFCFS(Process* p)
+{
+	if (p == nullptr) return false;
+	int minprocessor = AllProcessors[0]->TotalTime();
+	int minprocessori = 0;
+	for (int i = 0; i < FCFS_Count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < minprocessor)
+		{
+			minprocessor = AllProcessors[i]->TotalTime();
+			minprocessori = i;
+		}
+	}
+	p->OpIsDone(CurrentTimestep);
+	AllProcessors[minprocessori]->AddTime(p);
+	AllProcessors[minprocessori]->InserttoRDY(p);
+	return true;
+}
 //void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}
 
 void Scheduler::Work_stealing() {}
@@ -420,9 +410,7 @@ void Scheduler::ReadFile()
 		Processor_count = FCFS_Count + SJF_Count + RR_Count;
 		AllProcessors = new Processor*[Processor_count];
 		ProcessorLoad = new int[Processor_count];
-
-
-
+		
 		//Second line in text file
 		std::getline(inputfile, line);
 		std::stringstream secondline(line);
@@ -482,7 +470,7 @@ void Scheduler::ReadFile()
 			}
 			NEW->Enqueue(P);
 		}
-		//Bfore last line in text file
+		//Reading kill signals
 		int i = 0;
 		int kt;
 		int kd;
@@ -593,193 +581,14 @@ void Scheduler::PrintWindow()
 	TRM->print();
 	std::cout << '\n';
 }
-//================================================================================================================================//
-//============================================================== END OF PHASE-2 ==================================================//
-//================================================================================================================================//
 
-//================================================================================================================================//
-//================================================================= PHASE-1 ======================================================//
-//================================================================================================================================//
-//void Scheduler::Phase1Simulator()
-//{
-//	//============================================================ READ_FILE =====================================================//
-//	int id = 1;
-//	ReadFile();
-//	for (int i = 0; i < FCFS_Count; i++)
-//	{
-//		FCFS* P = new FCFS(id++);
-//		Processor* Pproc = P;
-//		FCFS_Processors->InsertEnd(P);
-//		AllProcessors->add(Pproc);
-//	}
-//	for (int i = 0; i < SJF_Count; i++)
-//	{
-//		SJF* P = new SJF(id++);
-//		Processor* Pproc = P;
-//		SJF_Processors->InsertEnd(P);
-//		AllProcessors->add(Pproc);
-//	}
-//	for (int i = 0; i < RR_Count; i++)
-//	{
-//		RR* P = new RR(id++);
-//		Processor* Pproc = P;
-//		RR_Processors->InsertEnd(P);
-//		AllProcessors->add(Pproc);
-//	}
-//	while (!WorkisDone())
-//	{
-//		//============================================================= i  =========================================================//(DONE)
-//		MoveFromNewToRdy();
-//		//============================================================= ii  ========================================================//(DONE) 
-//		DistToRUN();
-//		//============================================================= iii ========================================================//(DONE)
-//		Blk_Rdy_Trm();
-//		//============================================================= iv =========================================================//(DONE)
-//		MoveFromBLKToRDY();
-//		//=============================================================  v  ========================================================//(DONE)
-//		GetInterface()->UpdateInterface();
-//		CurrentTimestep++;
-//		//==========================================================================================================================//
-//	}
-//}
-
-int Scheduler::GenerateRandom()
+void Scheduler::Load()
 {
-	srand(time(0));                                                 // seed the random number generator with current time
-	int random_num = rand() % 100 + 1;
-	if (random_num >= 1 && random_num <= 15)
-	{
-		return 1;
-	}
-	if (random_num >= 20 && random_num <= 30)
-	{
-		return 2;
-	}
-	if (random_num >= 50 && random_num <= 60)
-	{
-		return 3;
-	}
-	return 0;
-}
-
-//void Scheduler::SetActualRUN() {
-//	int i = 1;
-//	Processor* temp = nullptr;
-//	while (AllProcessors->remove(temp)) {
-//
-//		if (temp->IsBusy())
-//		{
-//			ActualRUNcount++;
-//		}
-//		Process* prtemp = temp->GetRUN();
-//		ActualRUN->Enqueue(prtemp);
-//		AllProcessors->add(temp);
-//		i++;
-//		if (i == Processor_count) break;
-//	}
-//}
-
-bool Scheduler::DistToRUN()
-{
-	int c = 0;
-	bool done = true;
 	for (int i = 0; i < Processor_count; i++)
 	{
-		if (i < FCFS_Count)
-		{
-			FCFS* Fproc = nullptr;
-			FCFS_Processors->Traversal(Fproc, i);
-			if (!Fproc->IsBusy() && !Fproc->IsIdeal())
-			{
-				done = Fproc->MoveFromRDYToRUN(CurrentTimestep);
-				if (done) c++;
-			}
-		}
-
-		if (i >= (FCFS_Count) && i < (FCFS_Count + SJF_Count))
-		{
-			int is = i - FCFS_Count;
-			SJF* Sproc = nullptr;
-			SJF_Processors->Traversal(Sproc, is);
-			if (!Sproc->IsBusy() && !Sproc->IsIdeal())
-			{
-				done = Sproc->MoveFromRDYToRUN(CurrentTimestep);
-				if (done) c++;
-			}
-		}
-
-		if (i >= (SJF_Count + FCFS_Count) && i < (FCFS_Count + SJF_Count + RR_Count))
-		{
-			int ir = i - FCFS_Count - SJF_Count;
-			RR* Rproc = nullptr;
-			RR_Processors->Traversal(Rproc, ir);
-			if (!Rproc->IsBusy() && !Rproc->IsIdeal())
-			{
-				done = Rproc->MoveFromRDYToRUN(CurrentTimestep);
-				if (done) c++;
-			}
-		}
+		int BS = AllProcessors[i]->GetBusyTime();
+		ProcessorLoad[i] = BS / AllProcessesTRT;
 	}
-	return (c != 0);
-}
-
-//bool Scheduler::Blk_Rdy_Trm()
-//{
-//	int c = 0;
-//	Process* Rtemp = nullptr;
-//	Processor* Atemp = nullptr;
-//	int i = 0;
-//	while (AllProcessors->remove(Atemp))
-//	{
-//		Rtemp = Atemp->GetRUN();
-//		if (Rtemp == nullptr)
-//		{
-//		}
-//		else if (!Rtemp->IsOpDone(CurrentTimestep))
-//		{
-//			if (GenerateRandom() == 1)
-//			{
-//				MoveToBlk(Rtemp);
-//				Atemp->KillRUN();
-//				c++;
-//			}
-//			if (GenerateRandom() == 2)
-//			{
-//				MoveToRDY(Rtemp);
-//				Atemp->KillRUN();
-//				c++;
-//			}
-//			if (GenerateRandom() == 3)
-//			{
-//				MovetoTRM(Rtemp);
-//				Atemp->KillRUN();
-//				c++;
-//			}
-//		}
-//		AllProcessors->add(Atemp);
-//		i++;
-//		if (i == Processor_count) break;
-//	}
-//	return (c != 0);
-//}
-
-bool Scheduler::KillFromFCFS()
-{
-	srand(time(0));
-	int random_num2 = rand() % tempProc_count + 1;
-	Process pfind(0, random_num2, 0);
-	for (int i = 0; i < FCFS_Count; i++)
-	{
-		FCFS* temp;
-		FCFS_Processors->Traversal(temp, i);
-		if (temp->ProcIsFound(&pfind) && !pfind.IsOpDone(CurrentTimestep))
-		{
-			pfind.OpIsDone(CurrentTimestep);
-			MovetoTRM(&pfind);
-			return true;
-		}
-	}
-	return false;
 }
 
 void Scheduler::KillSignal()
@@ -801,11 +610,6 @@ void Scheduler::KillSignal()
 	}
 }
 
-void Scheduler::Load()
-{
-	for (int i = 0; i < Processor_count; i++)
-	{
-		int BS = AllProcessors[i]->GetBusyTime();
-		ProcessorLoad[i] = BS / AllProcessesTRT;
-	}
-}
+//================================================================================================================================//
+//============================================================== END OF PHASE-2 ==================================================//
+//================================================================================================================================//

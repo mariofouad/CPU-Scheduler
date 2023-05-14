@@ -63,6 +63,12 @@
     <ClInclude Include="RR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NodeBT.h">
+      <Filter>Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="BTree.h">
+      <Filter>Data Structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FCFS.cpp">

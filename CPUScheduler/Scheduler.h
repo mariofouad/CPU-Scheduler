@@ -5,8 +5,9 @@
 //======================================================== CLASS INCLUDES ============================================//
 //====================================================================================================================//
 #include"LinkedList.h"
-#include "LinkedQueue.h"                                    //DATA_STRUCTURES INCLUDES
-#include "SL_PriorityQueue.h"
+#include"LinkedQueue.h"                                    //DATA_STRUCTURES INCLUDES
+#include"SL_PriorityQueue.h"
+#include"BTree.h"
 //====================================================================================================================//
 #include <fstream>                           
 #include <iostream>                                         //READ_FILE INCLUDES
@@ -62,6 +63,9 @@ private:
 	int* tempcurrenttimestep = &CurrentTimestep;
 	int AllProcessesTRT = 0;
 	int* ProcessorLoad;
+	//BTree<Process*>* ForkTree = nullptr;
+	LinkedList<BTree<Process*>*>* Treeptrs = nullptr;
+	int TreeCount=0;
 
 public:
 
@@ -87,8 +91,6 @@ public:
 
 	void SIMULATOR();										 //The real simulator that will do real scheduling						
 
-	int GenerateRandom();									 //Generates a random number used in Phase1simulator function				 
-
 	void Work_stealing();									 //will manage the work stealing
 
 	bool WorkisDone();                                       //returns true if all processes are terminated		
@@ -111,9 +113,13 @@ public:
 
 	bool KillFromFCFS();
 
-	void KillSignal();
+	void ProcessForking(FCFS* P);
 
 	void Load();
+
+	void KillSignal();
+
+	bool MoveToShFCFS(Process* p);
 
 	~Scheduler();
 };

@@ -1,23 +1,21 @@
-#include <iostream>
 #include "FCFS.h"
-#include "LinkedList.h"
-#include "Scheduler.h"
-using namespace std;
 
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
 
 //========================================================== CONSTRUCTORS ============================================//
-FCFS::FCFS() {
+FCFS::FCFS()
+{
 	RDY = new LinkedList<Process*>;
 }
 
-FCFS::FCFS(int id) {
+FCFS::FCFS(int id)
+{
 	ID = id;
 	RDY = new LinkedList<Process*>;
 }
-//========================================================== SCHEDULER ALGORITHM ======================================//
+//========================================================== SCHEDULER ALGORITHM ============================================//
 void FCFS::ScheduleAlgo(int& CTS)                             //Overloaded Scheduler Algorithem for FCFS processors
 {
 	Process *P;
@@ -73,6 +71,22 @@ bool FCFS::IsIdeal()
 string FCFS::returntypename()
 {
 	return "[FCFS]";
+}
+
+int FCFS::GenerateRandom()
+{
+	// seed the random number generator
+	srand(time(0));
+
+	// generate a random number between 1 and 100
+	return (rand() % 100 + 1);
+}
+
+
+bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
+{
+	if (P == nullptr) return false;
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
 }
 
 bool FCFS::ProcIsFound(Process* p)
