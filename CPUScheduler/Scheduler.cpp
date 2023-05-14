@@ -427,7 +427,7 @@ void Scheduler::OutputFile()
 		{
 			outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " ";
 		}
-		outputfile << "Avg Utilization = " << "%" << std::endl;//need to be handeled
+		outputfile << "Avg Utilization = " << AvgUti() << "%" << std::endl;//need to be handeled
 		outputfile.close();
 	}
 	else 
