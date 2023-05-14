@@ -17,7 +17,7 @@ protected:
 	Process* RUN;					                        //that should contain only process I think because every process can only excute one
 	int ExpectedTime = 0;									//Summation of CPUT of its RDY Processes
 	int BusyTime = 0;										//Total busy time
-
+	int IdleTime = 0;
 public:
 
 	Processor();                                             //Default constructor
@@ -59,6 +59,10 @@ public:
 	void CalcBusyTime();
 
 	int GetBusyTime();
+
+	int GetIdleTime();
+
+	void CalcIdleTime();
 
 	~Processor();                                            //Default Destructor
 };

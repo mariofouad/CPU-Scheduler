@@ -84,7 +84,41 @@ void Scheduler::SIMULATOR()
 			
 			//Process Forking 
 			ProcessForking(P);
-			
+			FCFS* P = NULL;
+			int kid = 0;
+			bool multkillsig = false;
+			while (!multkillsig)
+			{
+				if (P->KillSignal(CurrentTimestep))
+				{
+					kid = P->KillSignalID(CurrentTimestep);
+					for (int i = 0; i < FCFS_Count; i++)
+					{
+						bool processfound = false;
+						Process* ptemp = NULL;
+						FCFS* temp = NULL;
+						FCFS_Processors->DeleteFirst(temp);
+						FCFS_Processors->InsertEnd(temp);
+						if (temp->SearchForProcess(kid, ptemp))
+						{
+							processfound = true;
+							MovetoTRM(ptemp);
+							temp->KillRUN();
+							if (P->KillAgain(CurrentTimestep))
+							{
+								multkillsig = true;
+								break;
+							}
+						}
+					}
+					if (P->KillAgain(CurrentTimestep))
+					{
+						multkillsig = true;
+					}
+				}
+				else
+					break;
+			}
 			//Process Migration
 		}
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
@@ -140,8 +174,8 @@ void Scheduler::SIMULATOR()
 		for (int i = 0; i < Processor_count; i++)
 		{
 			AllProcessors[i]->CalcBusyTime();
+			AllProcessors[i]->CalcIdleTime();
 		}
-		KillSignal();
 		GetInterface()->UpdateInterface();
 		CurrentTimestep++;
 	}
@@ -388,6 +422,11 @@ void Scheduler::OutputFile()
 			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
 		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
+		Uti();
+		for (int i = 0; i < Processor_count; i++)
+		{
+			outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " ";
+		}
 		outputfile << "Avg Utilization = " << "%" << std::endl;//need to be handeled
 		outputfile.close();
 	}
@@ -474,13 +513,15 @@ void Scheduler::ReadFile()
 		int i = 0;
 		int kt;
 		int kd;
-		while (inputfile.eof())
+		while (!inputfile.eof())
 		{
+			int kt;
+			int kd;
+			FCFS* P = NULL;
 			std::getline(inputfile, line);
 			std::stringstream KillLines(line);
-			KillLines >> KillTime[i] >> KillPID[i];
-			inputfile.close();
-			i++;
+			KillLines >> kt >> kd;
+			P->SetKillList(kd, kt);
 		}
 	}
 	else
@@ -591,23 +632,25 @@ void Scheduler::Load()
 	}
 }
 
-void Scheduler::KillSignal()
+void Scheduler::Uti()
 {
-	if (KillTime[killindex] == CurrentTimestep)
+	for (int i = 0; i < Processor_count; i++)
 	{
-		for (int i = 0; i < FCFS_Count; i++)
-		{
-			Process* ptemp = NULL;
-			FCFS* temp = NULL;
-			FCFS_Processors->DeleteFirst(temp);
-			FCFS_Processors->InsertEnd(temp);
-			if (temp->SearchForProcess(KillPID[i], ptemp))
-			{
-				MovetoTRM(ptemp);
-				killindex++;
-			}
-		}
+		int BS = AllProcessors[i]->GetBusyTime();
+		int IT = AllProcessors[i]->GetIdleTime();
+		ProcessorUti[i] = BS / (BS + IT);
 	}
+}
+
+int Scheduler::AvgUti()
+{
+	int sum = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		sum = ProcessorUti[i] + sum;
+	}
+	int avg = sum / Processor_count;
+	return avg;
 }
 
 //================================================================================================================================//

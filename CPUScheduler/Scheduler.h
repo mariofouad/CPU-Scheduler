@@ -66,6 +66,7 @@ private:
 	//BTree<Process*>* ForkTree = nullptr;
 	LinkedList<BTree<Process*>*>* Treeptrs = nullptr;
 	int TreeCount=0;
+	int* ProcessorUti;
 
 public:
 
@@ -117,9 +118,13 @@ public:
 
 	void Load();
 
-	void KillSignal();
+	void Uti();
+
+	int AvgUti();
 
 	bool MoveToShFCFS(Process* p);
+
+	int AvgUti();
 
 	~Scheduler();
 };

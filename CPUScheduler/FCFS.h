@@ -4,10 +4,21 @@
 #include <iostream>
 #include <cstdlib> // required for rand() function
 #include <ctime>   // required for time() function
+#include "LinkedQueue.h"
 using namespace std;
 //====================================================================================================================//
 //======================================================== CLASS FUNCTIONS ===========================================//
 //====================================================================================================================//
+
+
+struct KillList
+{
+	int killtime;
+	int killid;
+};
+
+static LinkedQueue<KillList>* list = new LinkedQueue<KillList>;
+
 
 class FCFS : public Processor
 {
@@ -42,6 +53,14 @@ public:
 	bool ProcIsFound(Process* p);
 
 	bool SearchForProcess(int id, Process*& p);
+
+	int KillSignalID(int curr);
+
+	bool KillAgain(int curr);
+
+	void SetKillList(int id, int t);
+
+	bool KillSignal(int curr);
 
 	~FCFS();                                                 //Default Destructor
 };

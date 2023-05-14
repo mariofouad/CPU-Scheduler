@@ -107,3 +107,16 @@ int Processor::GetBusyTime()
 {
 	return BusyTime;
 }
+
+int Processor::GetIdleTime()
+{
+	return IdleTime;
+}
+
+void Processor::CalcIdleTime()
+{
+	if (IsIdeal())
+	{
+		IdleTime++;
+	}
+}
