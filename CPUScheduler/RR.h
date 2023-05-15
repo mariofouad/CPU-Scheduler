@@ -46,6 +46,8 @@ public:
 	bool ProcessMigrationToSJF(SJF* reciever, int RTF, int slice);			 //Will migrate 1 process from the RDY queue of RR to SJF
 	void ResetTMslice();									 //A function resets TMslice  
 
+	void StealProcess(Processor* p);
+
 
 	~RR();                                                   //Default Destructor
 };

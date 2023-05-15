@@ -82,6 +82,10 @@ ostream& operator<<(ostream& Out, Processor& P)
 
 void Processor::AddTime(Process* p)
 {
+	if (p == nullptr)
+	{
+		return;
+	}
 	ExpectedTime = ExpectedTime + p->GetCT();
 }
 
@@ -91,7 +95,10 @@ int Processor::TotalTime()
 }
 
 void Processor::RemTime(Process* p)
+{if(p==nullptr)
 {
+	return;
+}
 	ExpectedTime = ExpectedTime - p->GetCT();
 }
 
@@ -125,3 +132,4 @@ void Processor::DecrementET()
 {
 	ExpectedTime--;
 }
+

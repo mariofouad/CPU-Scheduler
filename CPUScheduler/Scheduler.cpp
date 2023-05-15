@@ -183,7 +183,8 @@ void Scheduler::SIMULATOR()
 			i++;
 			if (i == RR_Count) break;
 		}
-		
+		//============================== Work_Stealing ============================//
+		Work_stealing();
 		//============================== HANDLING BLK list ============================//
 		//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
 		//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
@@ -377,6 +378,15 @@ bool Scheduler::MoveToShFCFS(Process* p)
 }
 
 void Scheduler::Work_stealing() {
+	Processor *LQF = AllProcessors[LongestQueue()];
+	Processor* SQF = AllProcessors[ShortestQueue()];
+	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() > 0.4)) && CurrentTimestep%STL==0 && )
+	{
+		LQF->StealProcess(SQF);
+		LQF = AllProcessors[LongestQueue()];
+		SQF = AllProcessors[ShortestQueue()];
+	
+	}
 
 }
 
@@ -737,6 +747,20 @@ int Scheduler::ShortestQueue()
 		}
 	}
 	return minprocessori;
+}
+int Scheduler::LongestQueue()
+{
+	int maxprocessor = AllProcessors[0]->TotalTime();
+	int maxprocessori = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() > maxprocessor)
+		{
+			maxprocessor = AllProcessors[i]->TotalTime();
+			maxprocessori = i;
+		}
+	}
+	return maxprocessori;
 }
 
 //================================================================================================================================//

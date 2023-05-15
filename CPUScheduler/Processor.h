@@ -46,6 +46,8 @@ public:
 
 	virtual bool ProcIsFound(Process* p) = 0;
 
+	virtual void StealProcess(Processor* p) = 0;
+
 	void KillRUN();
 
 	virtual string returntypename() = 0;

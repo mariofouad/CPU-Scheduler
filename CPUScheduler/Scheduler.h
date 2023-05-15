@@ -134,6 +134,7 @@ public:
 	void KillSig();
 
 	int ShortestQueue();
+	int LongestQueue();
 
 	~Scheduler();
 };
