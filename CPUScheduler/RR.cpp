@@ -35,8 +35,10 @@ void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 			RDY->Dequeue(ptorun);
 			RDYcount--;
 			RUN = ptorun;
+			RemTime(ptorun);
 			if (RUN->MustMigrateToSJF(MigrationParameter) || RUN->MustBeBlocked(CTS) || RUN->MustbeTerminated()) return;
 			ptorun->excute1TimeStep();
+			//DecrementET();
 			TMslice--;
 			ptorun->OpIsDone(CTS);
 			if (ptorun->RR_RUN1st())
@@ -49,12 +51,13 @@ void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 	else if (IsBusy() && TMslice > 0)
 	{
 		RUN->excute1TimeStep();
-		DecrementET();
+		//DecrementET();
 		TMslice--;
 		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS)) ResetTMslice();
 	}
 	else if (IsBusy() && TMslice <= 0)
 	{
+		AddTime(RUN);
 		RDY->Enqueue(RUN);
 		RDYcount++;
 		KillRUN();

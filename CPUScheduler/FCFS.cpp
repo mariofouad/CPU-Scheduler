@@ -24,6 +24,7 @@ void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)                       
 	{
 		RDY->DeleteFirst(P);
 		RDYcount--;
+		RemTime(P);
 		P->SetResponceTime(CTS);
 		P->OpIsDone(CTS);
 		RUN = P;
