@@ -24,8 +24,9 @@ private:
 	static void rec_postorder_traverse(NodeBT<T>* subRoot);
 	
 	static void rec_destroy_tree(NodeBT<T>*& subRoot);
+
 	
-	static void rec_find(NodeBT<T>* subRoot, T key);
+	static void rec_find(NodeBT<T>* subRoot, T key, T fork);
 	
 	static NodeBT<T>* rec_find_min(NodeBT<T>* subRoot);
 	
@@ -52,7 +53,7 @@ public:
 	
 	void destroy_tree();
 
-	void find(T key) const;
+	void find(T key, T fork) const;
 	
 	NodeBT<T>* find_min() const;
 	
@@ -130,21 +131,21 @@ void BTree<T>::rec_destroy_tree(NodeBT<T>*& subRoot)
 }
 
 template<typename T>
-void BTree<T>::rec_find(NodeBT<T>* subRoot, T key)
+void BTree<T>::rec_find(NodeBT<T>* subRoot, T key, T fork)
 {
 	if (subRoot == nullptr)
 		return;
 	else if (subRoot->getdata() == key)
 	{
 		if (!subRoot->getleft())
-			subRoot->setleft(new NodeBT<T>(key));
+			subRoot->setleft(new NodeBT<T>(fork));
 		else
-			subRoot->setright(new NodeBT<T>(key));
+			subRoot->setright(new NodeBT<T>(fork));
 	}
 	else
 	{
-		rec_find(subRoot->getleft(), key);
-		rec_find(subRoot->getright(), key);
+		rec_find(subRoot->getleft(), key, fork);
+		rec_find(subRoot->getright(), key, fork);
 	}
 }
 
@@ -240,9 +241,9 @@ void BTree<T>::printBT()
 }
 
 template<typename T>
-void BTree<T>::find(T key) const // return a pointer to the NodeBT that hold the maximum value in binary search tree.
+void BTree<T>::find(T key, T fork) const // return a pointer to the NodeBT that hold the maximum value in binary search tree.
 {
-	rec_find(root,key);
+	rec_find(root,key, fork);
 }
 
 template<typename T>

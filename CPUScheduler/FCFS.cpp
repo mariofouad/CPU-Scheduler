@@ -121,19 +121,19 @@ bool FCFS::SearchForProcess(int id, Process*& p, int Curr)
 			p = RUN;
 			return !found;
 		}
-		for (int i = 0; i < RDYcount; i++)
+	}
+	for (int i = 0; i < RDYcount; i++)
+	{
+		Process* ptemp;
+		RDY->DeleteFirst(ptemp);
+		if ((ptemp->ID() == id) && !(ptemp->IsOpDone(Curr)))
 		{
-			Process* ptemp;
-			RDY->DeleteFirst(ptemp);
-			if ((ptemp->ID() == id) && !(ptemp->IsOpDone(Curr)))
-			{
-				p = ptemp;
-				found = true;
-			}
-			else
-			{
-				RDY->InsertEnd(ptemp);
-			}
+			p = ptemp;
+			found = true;
+		}
+		else
+		{
+			RDY->InsertEnd(ptemp);
 		}
 	}
 	if (found)
