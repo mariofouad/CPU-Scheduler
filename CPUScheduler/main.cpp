@@ -3,7 +3,16 @@
 using namespace std;
 
 int main()
-{	
-	Scheduler Sch1;
-	Sch1.SIMULATOR();
+{
+    Process* p1 = new Process(0, 1, 5);
+    Process* p2 = new Process(0, 2, 2);
+    Process* p3 = new Process(0, 3, 6);
+
+    SL_PriorityQueue<Process*>* q = new SL_PriorityQueue<Process*>;
+    q->add(p2, p2->GetCT());
+    q->add(p1, p1->GetCT());
+    q->add(p3, p3->GetCT());
+    q->print();
+	//Scheduler Sch1;
+	//Sch1.SIMULATOR();
 }

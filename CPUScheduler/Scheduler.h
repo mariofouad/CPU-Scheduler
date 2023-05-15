@@ -120,7 +120,7 @@ public:
 
 	void Uti();
 
-	int AvgUti();
+	
 
 	bool MoveToShFCFS(Process* p);
 

@@ -36,7 +36,7 @@
     <ClInclude Include="Node.h">
       <Filter>Data Structures</Filter>
     </ClInclude>
-    <ClInclude Include="PrioQueueADT.h">
+    <ClInclude Include="PrioNode.h">
       <Filter>Data Structures</Filter>
     </ClInclude>
     <ClInclude Include="SL_PriorityQueue.h">
