@@ -133,6 +133,8 @@ public:
 
 	void KillSig();
 
+	int ShortestQueue();
+
 	~Scheduler();
 };
 #endif

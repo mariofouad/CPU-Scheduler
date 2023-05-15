@@ -124,11 +124,13 @@ void Scheduler::SIMULATOR()
 				{
 					if (SP->MustBeBlocked(CurrentTimestep))
 					{
+						S->RemTime(SP);
 						MoveToBlk(SP);
 						S->KillRUN();
 					}
 					else if (SP->MustbeTerminated() && MovetoTRM(SP))
 					{
+						S->RemTime(SP);
 						SP->TerminationTime(CurrentTimestep);
 						S->KillRUN();
 					}
@@ -348,19 +350,10 @@ bool Scheduler::MoveFromBLKToRDY()                                  //Me7taga te
 bool Scheduler::MoveToRDY(Process* p)
 {
 	if (p == nullptr) return false;
-	int minprocessor = AllProcessors[0]->TotalTime();
-	int minprocessori = 0;
-	for (int i = 0; i < Processor_count; i++)
-	{
-		if (AllProcessors[i]->TotalTime() < minprocessor)
-		{
-			minprocessor = AllProcessors[i]->TotalTime();
-			minprocessori = i;
-		}
-	}
+	int i = ShortestQueue();
 
-	AllProcessors[minprocessori]->AddTime(p);
-	AllProcessors[minprocessori]->InserttoRDY(p);
+	AllProcessors[i]->AddTime(p);
+	AllProcessors[i]->InserttoRDY(p);
 	return true;
 }
 
@@ -729,6 +722,21 @@ void Scheduler::KillSig()
 		else
 			break;
 	}
+}
+
+int Scheduler::ShortestQueue()
+{
+	int minprocessor = AllProcessors[0]->TotalTime();
+	int minprocessori = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < minprocessor)
+		{
+			minprocessor = AllProcessors[i]->TotalTime();
+			minprocessori = i;
+		}
+	}
+	return minprocessori;
 }
 
 //================================================================================================================================//

@@ -49,6 +49,7 @@ void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 	else if (IsBusy() && TMslice > 0)
 	{
 		RUN->excute1TimeStep();
+		DecrementET();
 		TMslice--;
 		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS)) ResetTMslice();
 	}

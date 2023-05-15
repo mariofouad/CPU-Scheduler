@@ -31,6 +31,7 @@ void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                        
 			return;
 		}
 		RUN->excute1TimeStep();
+		DecrementET();
 	}
 	else if (IsBusy())
 	{
