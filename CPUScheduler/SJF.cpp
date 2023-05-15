@@ -26,12 +26,13 @@ void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                        
 		P->SetResponceTime(CTS);
 		P->OpIsDone(CTS);
 		RUN = P;
+		RemTime(P);
 		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS))
 		{
 			return;
 		}
 		RUN->excute1TimeStep();
-		DecrementET();
+		//DecrementET();
 	}
 	else if (IsBusy())
 	{
@@ -40,7 +41,7 @@ void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                        
 			return;
 		}
 		RUN->excute1TimeStep();
-		
+		//DecrementET();
 	}
 }
 

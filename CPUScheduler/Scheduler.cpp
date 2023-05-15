@@ -74,7 +74,7 @@ void Scheduler::SIMULATOR()
 				{
 					MoveToBlk(proc);
 					proc->ExcutionTimeNeeded(timeleft);
-					P->RemTime(proc);
+					//P->RemTime(proc);
 					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
 					continue;
 				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
@@ -93,10 +93,10 @@ void Scheduler::SIMULATOR()
 				}
 
 				proc->ExcutionTimeNeeded(timeleft);
-				P->DecrementET();
+				//P->DecrementET();
 				if (timeleft <= 0 && MovetoTRM(proc))
 				{
-					P->RemTime(proc);
+					//P->RemTime(proc);
 					P->KillRUN();
 				}
 			}
@@ -124,13 +124,13 @@ void Scheduler::SIMULATOR()
 				{
 					if (SP->MustBeBlocked(CurrentTimestep))
 					{
-						S->RemTime(SP);
+						//S->RemTime(SP);
 						MoveToBlk(SP);
 						S->KillRUN();
 					}
 					else if (SP->MustbeTerminated() && MovetoTRM(SP))
 					{
-						S->RemTime(SP);
+						//S->RemTime(SP);
 						SP->TerminationTime(CurrentTimestep);
 						S->KillRUN();
 					}
@@ -709,11 +709,12 @@ void Scheduler::KillSig()
 					processfound = true;
 					MovetoTRM(ptemp);
 					temp->KillIsDone();
+					if (!(temp->ProcIsRun(ptemp)))
+						temp->RemTime(ptemp);
 					if (temp->ProcIsRun(ptemp))
 					{
 						temp->KillRUN();
 					}
-					temp->RemTime(ptemp);
 					if (P->KillAgain(CurrentTimestep))
 					{
 						multkillsig = true;
