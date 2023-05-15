@@ -64,6 +64,8 @@ public:
 
 	void CalcIdleTime();
 
+	void DecrementET();
+
 	~Processor();                                            //Default Destructor
 };
 #endif 

@@ -71,10 +71,12 @@ void Scheduler::SIMULATOR()
 				{
 					MoveToBlk(proc);
 					proc->ExcutionTimeNeeded(timeleft);
+					P->RemTime(proc);
 					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
 					continue;
 				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
 				proc->ExcutionTimeNeeded(timeleft);
+				P->DecrementET();
 				if (timeleft <= 0 && MovetoTRM(proc))
 				{
 					P->RemTime(proc);
@@ -83,44 +85,10 @@ void Scheduler::SIMULATOR()
 			}
 			
 			//Process Forking 
-			ProcessForking(P);
-			FCFS* P = NULL;
-			int kid = 0;
-			bool multkillsig = false;
-			while (!multkillsig)
-			{
-				if (P->KillSignal(CurrentTimestep))
-				{
-					kid = P->KillSignalID(CurrentTimestep);
-					for (int i = 0; i < FCFS_Count; i++)
-					{
-						bool processfound = false;
-						Process* ptemp = NULL;
-						FCFS* temp = NULL;
-						FCFS_Processors->DeleteFirst(temp);
-						FCFS_Processors->InsertEnd(temp);
-						if (temp->SearchForProcess(kid, ptemp))
-						{
-							processfound = true;
-							MovetoTRM(ptemp);
-							temp->KillRUN();
-							if (P->KillAgain(CurrentTimestep))
-							{
-								multkillsig = true;
-								break;
-							}
-						}
-					}
-					if (P->KillAgain(CurrentTimestep))
-					{
-						multkillsig = true;
-					}
-				}
-				else
-					break;
-			}
+			//ProcessForking(P);
 			//Process Migration
 		}
+		KillSig();
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
 		for (int i = 0; i < SJF_Count; i++)
 		{
@@ -145,6 +113,7 @@ void Scheduler::SIMULATOR()
 				if (p->MustBeBlocked(CurrentTimestep))
 				{
 					MoveToBlk(p);
+					R->RemTime(p);
 					R->KillRUN();
 				}
 				else if (p->MustbeTerminated() && MovetoTRM(p))
@@ -510,9 +479,6 @@ void Scheduler::ReadFile()
 			NEW->Enqueue(P);
 		}
 		//Reading kill signals
-		int i = 0;
-		int kt;
-		int kd;
 		while (!inputfile.eof())
 		{
 			int kt;
@@ -523,6 +489,7 @@ void Scheduler::ReadFile()
 			KillLines >> kt >> kd;
 			P->SetKillList(kd, kt);
 		}
+		inputfile.close();
 	}
 	else
 	{
@@ -651,6 +618,46 @@ int Scheduler::AvgUti()
 	}
 	int avg = sum / Processor_count;
 	return avg;
+}
+
+void Scheduler::KillSig()
+{
+	FCFS* P = NULL;
+	int kid = 0;
+	bool multkillsig = false;
+	while (!multkillsig)
+	{
+		if (P->KillSignal(CurrentTimestep))
+		{
+			kid = P->KillSignalID(CurrentTimestep);
+			for (int i = 0; i < FCFS_Count; i++)
+			{
+				bool processfound = false;
+				Process* ptemp = NULL;
+				FCFS* temp = NULL;
+				FCFS_Processors->DeleteFirst(temp);
+				FCFS_Processors->InsertEnd(temp);
+				if (temp->SearchForProcess(kid, ptemp))
+				{
+					processfound = true;
+					MovetoTRM(ptemp);
+					temp->KillRUN();
+					temp->RemTime(ptemp);
+					if (P->KillAgain(CurrentTimestep))
+					{
+						multkillsig = true;
+						break;
+					}
+				}
+			}
+			if (P->KillAgain(CurrentTimestep))
+			{
+				multkillsig = true;
+			}
+		}
+		else
+			break;
+	}
 }
 
 //================================================================================================================================//
