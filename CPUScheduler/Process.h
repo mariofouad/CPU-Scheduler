@@ -3,9 +3,13 @@
 #pragma once
 #include"BTree.h"
 #include <iostream>
+#include "LinkedQueue.h"
 
 using namespace std;
-
+struct IOunit {
+	int IO_R;
+	int IO_D;
+};
 class Process
 {
 private:
@@ -30,6 +34,9 @@ private:
 	int TotalIOD=0;
 	int TimesForked=0;
 	bool ForkedProc = false;
+	LinkedQueue<IOunit>* IOrequests;
+	int NoofRR_RUN = 0;
+
 	BTree<Process*>* Root = nullptr;
 
 public:
@@ -69,10 +76,12 @@ public:
 	
 	bool MustbeTerminated();							//Returns true if the process is ready to be Terminated		 
 
-	bool MustMigrateToSJF(int RTF);						//Returns True if CT < RTF , ready to be migrated from RR to SJF
-
-	bool MustMigrateToRR(int MaxW);					    //Returns TRue if WT > MaxW , ready to be migrated from FCFS to RR
 	
+	
+	void IncrementRR_RUN();
+
+	bool RR_RUN1st();
+
 	void CalcStatistics(int& wt, int& rt, int& tt);
 
 	int ID();
@@ -90,6 +99,12 @@ public:
 	bool ProcessCanFork(int CTS) const;
 
 	int proTRT();
+
+	bool MustMigrateToSJF(int RTF);						//Returns True if CT < RTF , ready to be migrated from RR to SJF
+
+	bool MustMigrateToRR(int MaxW);					    //Returns TRue if WT > MaxW , ready to be migrated from FCFS to RR
+
+	void Increment1WT();								//Increases the Waiting Time by 1 timestep
 
 	~Process();
 };

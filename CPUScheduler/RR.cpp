@@ -21,40 +21,68 @@ RR::RR(int id) {
 	RDY = new LinkedQueue<Process*>;
 }
 
-void RR::ScheduleAlgo(int& CTS)                                      //Overloaded Scheduler Algorithem for RR processors
+
+///The idea of RR schedule algo is to control the Processes in RUN state by decrementing the TMslice untill it is equal to zero
+///Then the timeslice will be reset and process in RUN will go back to RDY and so on
+void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 {
-	Process *ptorun;
+	Process* ptorun = nullptr;
 	RDY->peek(ptorun);
-	if (!RDY->IsEmpty() && !IsBusy() && TMslice != 0)
+	if (!RDY->IsEmpty() && !IsBusy())
 	{
-		if (!(ptorun->IsOpDone(CTS))) 
+		if (!(ptorun->IsOpDone(CTS)))
 		{
 			RDY->Dequeue(ptorun);
 			RDYcount--;
 			RUN = ptorun;
+			if (RUN->MustMigrateToSJF(MigrationParameter) || RUN->MustBeBlocked(CTS) || RUN->MustbeTerminated()) return;
 			ptorun->excute1TimeStep();
-			ExpectedTime--;
 			TMslice--;
 			ptorun->OpIsDone(CTS);
-			/*ptorun->SetResponceTime(CTS);*/
+			if (ptorun->RR_RUN1st())
+			{
+				ptorun->SetResponceTime(CTS);
+			}
+			ptorun->IncrementRR_RUN();
 		}
 	}
-	else if (IsBusy() && TMslice != 0)
+	else if (IsBusy() && TMslice > 0)
 	{
 		RUN->excute1TimeStep();
-		ExpectedTime--;
 		TMslice--;
+		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS)) ResetTMslice();
 	}
-	else if (IsBusy() && TMslice == 0)
+	else if (IsBusy() && TMslice <= 0)
 	{
-		Process* p = RUN;
 		RDY->Enqueue(RUN);
 		RDYcount++;
 		KillRUN();
-		TMslice = tempSlice;
+		ResetTMslice();
 	}
 }
 
+bool RR::ProcessMigrationToSJF(SJF* receiver, int RTF, int slice)
+{
+	Process* p = nullptr;
+	if (!receiver || !RUN)
+	{
+		return false;
+	}
+	else
+	{
+		if (RUN->MustMigrateToSJF(RTF) && TMslice == slice)
+		{
+			receiver->InserttoRDY(RUN);
+			KillRUN();
+			ResetTMslice();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
 void RR::InserttoRDY(Process* P)
 {
 	RDY->Enqueue(P);
@@ -92,6 +120,12 @@ string RR::returntypename()
 	return "[RR  ]";
 }
 
+
+void RR::ResetTMslice()
+{
+	TMslice = tempSlice;
+}
+
 bool RR::ProcIsFound(Process* p)
 {
 	Process* pfind = nullptr;
@@ -109,22 +143,7 @@ void RR::SetTMslice(int timeslice)
 	TMslice = timeslice;
 }
 
-bool RR::ProcessMigration(SJF* receiver, int RTF)
-{
-	Process* p = nullptr;
-	for (int i = 0; i < RDYcount; i++)
-	{
-		RDY->peek(p);
-		if (p->MustMigrateToSJF(RTF))
-		{
-			RDY->Dequeue(p);
-			receiver->InserttoRDY(p);
-			RDYcount--;
-			return true;
-		}
-	}
-	return false;
-}
+
 
 RR::~RR()                                                   //Default Destructor
 {

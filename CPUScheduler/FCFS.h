@@ -5,6 +5,7 @@
 #include <cstdlib> // required for rand() function
 #include <ctime>   // required for time() function
 #include "LinkedQueue.h"
+#include "RR.h"
 using namespace std;
 //====================================================================================================================//
 //======================================================== CLASS FUNCTIONS ===========================================//
@@ -32,7 +33,7 @@ public:
 
 	FCFS(int id);
 
-	void ScheduleAlgo(int& CTS);        //Overloaded Scheduler Algorithem for FCFS processors
+	void ScheduleAlgo(int& CTS, int MigrationParameter);        //Overloaded Scheduler Algorithem for FCFS processors
 
 	void InserttoRDY(Process* P);					  //Virtual function responsible for inserting a Process to RDY list
 
@@ -61,6 +62,10 @@ public:
 	void SetKillList(int id, int t);
 
 	bool KillSignal(int curr);
+
+	void UpdateWT_RDY();
+	bool ProcessMigratonToRR(RR* receiver, int MaxW);  //Will migrate one process from RDY of FCFS to RDY of RR if that process has WT > MaxW
+
 
 	~FCFS();                                                 //Default Destructor
 };

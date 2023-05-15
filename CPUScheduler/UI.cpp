@@ -15,16 +15,20 @@ UI::UI(Scheduler* a)
 	//////////////////////////////////////////
 	//The user enters the input file name Here
 	string FnamefromUser;
+	string Ffinal;
 	cout << "Enter your input file name here: " << endl;
 	cin >> FnamefromUser;
-	S->setFileName(FnamefromUser);
+	Ffinal = FnamefromUser + ".txt";
+	S->setFileName(Ffinal);
 	while (!S->FileisFound())
 	{
 		cout << "File is not found , RE-ENTER file nmae: " << endl;
 		cin >> FnamefromUser;
-		S->setFileName(FnamefromUser);
+		Ffinal = FnamefromUser + ".txt";
+		S->setFileName(Ffinal);
 	}
 	cout << "You entered: " << FnamefromUser << endl;
+	cout << "Your file is found : " << Ffinal << "" << endl;
 	cout << "======================================" << endl;
 	cout << "There are Three Modes:" << endl << "Enter 1 For Interactive Mode" << endl << "Enter 2 For Step - by - step mode" << endl << "Enter 3 For Silent mode" << endl;
 	//The input file is now set by the user
@@ -47,7 +51,7 @@ UI::UI(Scheduler* a)
 }
 
 
-void UI::UpdateInterface() const {
+int UI::UpdateInterface() const {
 
 	char anykey;
 
@@ -59,7 +63,7 @@ void UI::UpdateInterface() const {
 		cout << "PRESS ANYKEY TO MOVE TO NEXT STEP!";
 		cin >> anykey;
 		cout << endl;
-		break;
+		return 1;
 
 	case STEPBYSTEP:
 		cout << endl;
@@ -67,16 +71,18 @@ void UI::UpdateInterface() const {
 		cout << "THE PROGRAM WILL MOVE TO THE NEXT STEP AUTOMATICALLY!";
 		cout << endl;
 		Sleep(1000);
-		break;
+		return 2;
 
 	case SILENT:
-		cout << endl;
-		cout << "=========================================";
-		cout << "silent mode........   Simulation Starts.." << endl;
-		cout << "Simulation ends, Output file created" << endl;
-		break;
+		return 3;
 	}
+}
 
+void UI::SilentMode() const {
+	cout << endl;
+	cout << "=========================================" << endl;
+	cout << "Silent mode...   Simulation Starts.." << endl;
+	cout << "Simulation ends, Output file created" << endl;
 }
 
 UI::~UI() {}

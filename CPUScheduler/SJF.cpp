@@ -15,31 +15,31 @@ SJF::SJF(int id) {
 
 
 
-void SJF::ScheduleAlgo(int& CTS)                                     //Overloaded Scheduler Algorithem for SJF processors
+void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                                     //Overloaded Scheduler Algorithem for SJF processors
 {
-	Process* P;
+	Process* P=new Process;
 	RDY->peek(P);
 	if (!IsIdeal() && !P->IsOpDone(CTS) && !IsBusy())
 	{
-		Process* LeastCTProcess = P;
-		int shortestTime = P->GetCT();
-
-		for (int i = 1; i < RDYcount; i++)
-		{
-			RDY->Traversal(P, i);
-
-			if (!P->IsOpDone(CTS) && !IsBusy() && P->GetCT() < shortestTime)
-			{
-				LeastCTProcess = P;
-				shortestTime = P->GetCT();
-			}
-		}
-
-		/*RDY->RemoveSorted(P);*/
+		RDY->RemoveSorted(P);
 		RDYcount--;
-		LeastCTProcess->SetResponceTime(CTS);
-		LeastCTProcess->OpIsDone(CTS);
-		RUN = LeastCTProcess;
+		P->SetResponceTime(CTS);
+		P->OpIsDone(CTS);
+		RUN = P;
+		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS))
+		{
+			return;
+		}
+		RUN->excute1TimeStep();
+	}
+	else if (IsBusy())
+	{
+		if (RUN->MustbeTerminated() || RUN->MustBeBlocked(CTS))
+		{
+			return;
+		}
+		RUN->excute1TimeStep();
+		
 	}
 }
 

@@ -16,7 +16,7 @@ FCFS::FCFS(int id)
 	RDY = new LinkedList<Process*>;
 }
 //========================================================== SCHEDULER ALGORITHM ============================================//
-void FCFS::ScheduleAlgo(int& CTS)                             //Overloaded Scheduler Algorithem for FCFS processors
+void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)                             //Overloaded Scheduler Algorithem for FCFS processors
 {
 	Process *P;
 	RDY->peek(P);
@@ -180,4 +180,31 @@ bool FCFS::KillSignal(int curr)
 		return true;
 	}
 	return false;
+}
+void FCFS::UpdateWT_RDY()
+{
+	Process* p = nullptr;
+	for (int i = 0; i < RDYcount; i++)
+	{
+		RDY->DeleteFirst(p);
+		p->Increment1WT();
+		RDY->InsertEnd(p);
+	}
+}
+bool FCFS::ProcessMigratonToRR(RR* receiver, int MaxW)
+{
+	if (!receiver || !IsBusy())
+	{
+		return false;
+	}
+	else
+	{
+		if (RUN->MustMigrateToRR(MaxW))
+		{
+			receiver->InserttoRDY(RUN);
+			KillRUN();
+			return true;
+		}
+		return false;
+	}
 }

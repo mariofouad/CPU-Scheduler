@@ -54,7 +54,7 @@ private:
 	int TimeSliceRR = 0;
 	int STL = 0;
 	int ForkProb = 0;
-	int RTFcount = 0;
+	
 	int *KillPID ;
 	int *KillTime ;
 	int killindex = 0;
@@ -67,7 +67,14 @@ private:
 	LinkedList<BTree<Process*>*>* Treeptrs = nullptr;
 	int TreeCount=0;
 	int* ProcessorUti;
-
+	double RTFpercentage = 0;
+	double MaxWpercentage = 0;
+	int ShortestEver = 0;
+	int ShortestSJF = 0;
+	int ShortestRR = 0;
+	int ShortestFCFS = 0;
+	int RTFcount = 0;
+	int maxWcount = 0;
 public:
 
 	Scheduler();

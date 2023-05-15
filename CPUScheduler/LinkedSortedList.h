@@ -26,7 +26,9 @@ public:
 	LinkedSortedList(const LinkedSortedList<ItemType>& aList);
 	virtual ~LinkedSortedList();
 	void insertSorted(const ItemType& newEntry, int prio);
-	bool removeSorted(const ItemType& anEntry);
+
+	bool remove(const ItemType& anEntry);
+	void RemoveSorted(ItemType& anEntry);
 	int getPosition(const ItemType& newEntry) const;
 	// The following methods are the same as given in ListInterface:
 	bool isEmpty() const;
@@ -131,7 +133,7 @@ PrioNode<ItemType>* LinkedSortedList<ItemType>::getNodeBefore(const ItemType& an
 } // end getNodeBefore
 
 template <class ItemType>
-bool LinkedSortedList<ItemType>::removeSorted(const ItemType& anEntry)
+bool LinkedSortedList<ItemType>::remove(const ItemType& anEntry)
 {
 	PrioNode<ItemType>* nodeToRemovePtr = headPtr;
 	PrioNode<ItemType>* prevPtr = nullptr;
@@ -169,7 +171,19 @@ bool LinkedSortedList<ItemType>::removeSorted(const ItemType& anEntry)
 
 	return canRemove;
 }
+template<class ItemType>
+void LinkedSortedList<ItemType>::RemoveSorted(ItemType& anEntry) {
 
+	if (isEmpty())
+	{
+		return;
+	}
+	PrioNode<ItemType>* delptr = headPtr;
+	anEntry = headPtr->getValue();
+	headPtr = headPtr->getNext();
+	itemCount--;
+	delete delptr;
+}
 template <class ItemType>
 bool LinkedSortedList<ItemType>::isEmpty() const
 {

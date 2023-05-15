@@ -33,7 +33,7 @@ public:
 
 	int CountOccurance(T value);							//no of repertition of a number
 
-	void DeleteFirst(T& value);                             //Delete a node at the begining
+	bool DeleteFirst(T& value);                             //Delete a node at the begining
 
 	bool DeleteNode(const T& value);								//Delete a specific node with a value passed by user
 
@@ -201,17 +201,18 @@ int LinkedList<T>::CountOccurance(T value)           //no of repertition of a nu
 }
 
 template <typename T>
-void LinkedList<T>::DeleteFirst(T& value)                           //Delete a node at the begining
+bool LinkedList<T>::DeleteFirst(T& value)                           //Delete a node at the begining
 {
 	if (IsEmpty())
 	{
-		return;
+		return false;
 	}
 	Node<T>* delptr = Head;
 	value = Head->getValue();
 	Head = Head->getNext();
 	count--;
 	delete delptr;
+	return true;
 }
 
 template <typename T>

@@ -28,7 +28,9 @@ public:
 
 	UI(Scheduler* a);
 
-	void UpdateInterface() const;
+	int UpdateInterface() const;
+
+	void SilentMode() const;
 
 	~UI();
 };

@@ -109,11 +109,9 @@ void SL_PriorityQueue<ItemType>::RemoveSorted(ItemType& anEntry)                
 	{
 		return;
 	}
-	PrioNode<ItemType>* delptr = slistPtr->headPtr;
-	anEntry = slistPtr->headPtr->getValue();
-	slistPtr->headPtr = slistPtr->headPtr->getNext();
-	slistPtr->itemCount--;
-	delete delptr;
+	else {
+		slistPtr->RemoveSorted(anEntry);
+	}
 }
 template<class ItemType>
 bool SL_PriorityQueue<ItemType>::peek(ItemType& entry) {
