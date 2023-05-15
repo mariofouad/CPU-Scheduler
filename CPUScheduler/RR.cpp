@@ -147,6 +147,23 @@ void RR::SetTMslice(int timeslice)
 	TMslice = timeslice;
 }
 
+void RR::StealProcess(Processor* p)
+{
+	if (p == nullptr)
+	{
+		return;
+	}
+	Process* Proc = nullptr;
+	RDY->Dequeue(Proc);
+	RDYcount--;
+	RemTime(Proc);
+	p->InserttoRDY(Proc);
+	p->AddTime(Proc);
+
+
+
+}
+
 
 
 RR::~RR()                                                   //Default Destructor

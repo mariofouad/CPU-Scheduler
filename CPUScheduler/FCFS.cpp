@@ -37,6 +37,22 @@ void FCFS::InserttoRDY(Process* P)
 	RDYcount++;
 }
 
+void FCFS::StealProcess(Processor* p)
+{if(p==nullptr)
+{
+	return;
+}
+	Process* Proc = nullptr;
+	RDY->DeleteFirst(Proc);
+	RDYcount--;
+	RemTime(Proc);
+	p->InserttoRDY(Proc);
+	p->AddTime(Proc);
+	
+	
+	
+}
+
 bool FCFS::MoveFromRDYToRUN(int& CTS)
 {
 	Process *P;

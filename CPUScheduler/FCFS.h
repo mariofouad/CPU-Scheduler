@@ -41,6 +41,8 @@ public:
 
 	void MoveFromBLKToRUN(Process* P);                //Virtual function responsible for moving a Process from BLK to RDY list
 
+	void StealProcess(Processor* p);
+
 	void PrintRDY();
 
 	bool IsIdeal();
@@ -64,6 +66,7 @@ public:
 	bool KillSignal(int curr);
 
 	void UpdateWT_RDY();
+
 	bool ProcessMigratonToRR(RR* receiver, int MaxW);  //Will migrate one process from RDY of FCFS to RDY of RR if that process has WT > MaxW
 
 	bool ProcIsRun(Process* p);

@@ -27,7 +27,8 @@ public:
 	void PrintRDY();
 
 	bool IsIdeal();
-
+	void StealProcess(Processor* p);
+	
 	bool MoveFromRDYToRUN(int& CTS);
 
 	string returntypename();
