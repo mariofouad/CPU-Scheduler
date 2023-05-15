@@ -182,7 +182,7 @@ void Process::ForkOpIsDone()
 
 bool Process::ProcessCanFork(int CTS) const
 {
-	return ((TimesForked < 2) && (IsOpDone(CTS)));
+	return ((TimesForked < 2) && (!IsOpDone(CTS)));
 }
 
 int Process::ID()

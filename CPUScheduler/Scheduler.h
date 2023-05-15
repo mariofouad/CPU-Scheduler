@@ -124,7 +124,7 @@ public:
 
 	bool MoveToShFCFS(Process* p);
 
-	int AvgUti();
+	void KillSig();
 
 	~Scheduler();
 };

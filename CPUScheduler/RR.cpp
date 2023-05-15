@@ -33,6 +33,7 @@ void RR::ScheduleAlgo(int& CTS)                                      //Overloade
 			RDYcount--;
 			RUN = ptorun;
 			ptorun->excute1TimeStep();
+			ExpectedTime--;
 			TMslice--;
 			ptorun->OpIsDone(CTS);
 			/*ptorun->SetResponceTime(CTS);*/
@@ -41,6 +42,7 @@ void RR::ScheduleAlgo(int& CTS)                                      //Overloade
 	else if (IsBusy() && TMslice != 0)
 	{
 		RUN->excute1TimeStep();
+		ExpectedTime--;
 		TMslice--;
 	}
 	else if (IsBusy() && TMslice == 0)

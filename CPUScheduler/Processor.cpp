@@ -120,3 +120,8 @@ void Processor::CalcIdleTime()
 		IdleTime++;
 	}
 }
+
+void Processor::DecrementET()
+{
+	ExpectedTime--;
+}

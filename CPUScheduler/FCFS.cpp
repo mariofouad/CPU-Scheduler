@@ -86,7 +86,7 @@ int FCFS::GenerateRandom()
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 100));
 }
 
 bool FCFS::ProcIsFound(Process* p)
@@ -156,7 +156,7 @@ bool FCFS::KillAgain(int curr)
 	list->Dequeue(klist);
 	KillList newklist;
 	list->peek(newklist);
-	if (newklist.killtime = curr)
+	if (newklist.killtime == curr)
 	{
 		return false;
 	}
