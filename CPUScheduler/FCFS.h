@@ -53,7 +53,7 @@ public:
 
 	bool ProcIsFound(Process* p);
 
-	bool SearchForProcess(int id, Process*& p);
+	bool SearchForProcess(int id, Process*& p, int Curr);
 
 	int KillSignalID(int curr);
 
@@ -65,6 +65,10 @@ public:
 
 	void UpdateWT_RDY();
 	bool ProcessMigratonToRR(RR* receiver, int MaxW);  //Will migrate one process from RDY of FCFS to RDY of RR if that process has WT > MaxW
+
+	bool ProcIsRun(Process* p);
+
+	void KillIsDone();
 
 
 	~FCFS();                                                 //Default Destructor

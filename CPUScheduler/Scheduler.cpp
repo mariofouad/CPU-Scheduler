@@ -685,31 +685,42 @@ void Scheduler::KillSig()
 	FCFS* P = NULL;
 	int kid = 0;
 	bool multkillsig = false;
+
 	while (!multkillsig)
 	{
+
 		if (P->KillSignal(CurrentTimestep))
 		{
 			kid = P->KillSignalID(CurrentTimestep);
+			int j = 0;
+			bool processfound = false;
 			for (int i = 0; i < FCFS_Count; i++)
 			{
-				bool processfound = false;
 				Process* ptemp = NULL;
 				FCFS* temp = NULL;
+				//processfound = false;
 				FCFS_Processors->DeleteFirst(temp);
 				FCFS_Processors->InsertEnd(temp);
-				if (temp->SearchForProcess(kid, ptemp))
+				if (temp->SearchForProcess(kid, ptemp, CurrentTimestep))
 				{
 					processfound = true;
 					MovetoTRM(ptemp);
-					temp->KillRUN();
+					temp->KillIsDone();
+					if (temp->ProcIsRun(ptemp))
+					{
+						temp->KillRUN();
+					}
 					temp->RemTime(ptemp);
 					if (P->KillAgain(CurrentTimestep))
 					{
 						multkillsig = true;
-						break;
+						//break;
 					}
 				}
 			}
+			if (processfound)
+				continue;
+			P->KillIsDone();
 			if (P->KillAgain(CurrentTimestep))
 			{
 				multkillsig = true;
@@ -718,7 +729,6 @@ void Scheduler::KillSig()
 		else
 			break;
 	}
-
 }
 
 //================================================================================================================================//

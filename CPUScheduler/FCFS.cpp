@@ -110,33 +110,38 @@ FCFS::~FCFS()                                               //Default Destructor
 	delete RDY;
 }
 
-bool FCFS::SearchForProcess(int id, Process*& p)
+bool FCFS::SearchForProcess(int id, Process*& p, int Curr)
 {
+	bool found = false;
 	if (RUN)
 	{
 		if (RUN->ID() == id)
 		{
 			p = RUN;
-			return true;
+			return !found;
 		}
 		for (int i = 0; i < RDYcount; i++)
 		{
 			Process* ptemp;
 			RDY->DeleteFirst(ptemp);
-			if (ptemp->ID() == id)
+			if ((ptemp->ID() == id) && !(ptemp->IsOpDone(Curr)))
 			{
 				p = ptemp;
-				RDYcount--;
-				return true;
+				found = true;
 			}
 			else
 			{
 				RDY->InsertEnd(ptemp);
-				return false;
 			}
 		}
 	}
-	return false;
+	if (found)
+	{
+		RDYcount--;
+		return true;
+	}
+	else
+		return false;
 }
 
 int FCFS::KillSignalID(int curr)
@@ -152,8 +157,6 @@ int FCFS::KillSignalID(int curr)
 
 bool FCFS::KillAgain(int curr)
 {
-	KillList klist;
-	list->Dequeue(klist);
 	KillList newklist;
 	list->peek(newklist);
 	if (newklist.killtime == curr)
@@ -207,4 +210,20 @@ bool FCFS::ProcessMigratonToRR(RR* receiver, int MaxW)
 		}
 		return false;
 	}
+}
+
+bool FCFS::ProcIsRun(Process* p)
+{
+	if (p == RUN)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+void FCFS::KillIsDone()
+{
+	KillList klist;
+	list->Dequeue(klist);
 }
