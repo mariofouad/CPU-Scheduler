@@ -87,7 +87,7 @@ bool RR::ProcessMigrationToSJF(Processor* receiver, int RTF, int slice)
 		}
 	}
 }
-void RR::InserttoRDY(Process* P)
+void RR::InserttoRDY(Process* P)                      //Function overridden to insert in RDY lists
 {
 	RDY->Enqueue(P);
 	RDYcount++;

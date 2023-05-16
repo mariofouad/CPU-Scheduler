@@ -63,7 +63,6 @@ private:
 	int* tempcurrenttimestep = &CurrentTimestep;
 	int AllProcessesTRT = 0;
 	int* ProcessorLoad;
-	//BTree<Process*>* ForkTree = nullptr;
 	LinkedList<BTree<Process*>*>* Treeptrs = nullptr;
 	int TreeCount=0;
 	int* ProcessorUti;

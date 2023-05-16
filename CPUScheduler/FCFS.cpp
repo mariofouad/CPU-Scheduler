@@ -5,22 +5,22 @@
 //====================================================================================================================//
 
 //========================================================== CONSTRUCTORS ============================================//
-FCFS::FCFS()
-{
+FCFS::FCFS()                                   //First come first serve processor constructor
+{   //create the FCFS RDY list 
 	RDY = new LinkedList<Process*>;
 }
 
-FCFS::FCFS(int id)
-{
+FCFS::FCFS(int id)                             //First come first serve processor constructor
+{	//create the FCFS RDY list and set the ID
 	ID = id;
 	RDY = new LinkedList<Process*>;
 }
-//========================================================== SCHEDULER ALGORITHM ============================================//
-void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)                             //Overloaded Scheduler Algorithem for FCFS processors
+//========================================================== SCHEDULER ALGORITHM =========================================//
+void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)            //Overloaded Scheduler Algorithem for FCFS processors
 {
 	Process *P;
 	RDY->peek(P);
-	if (!IsIdeal() && !P->IsOpDone(CTS) && !IsBusy())
+	if (!RDY->IsEmpty() && !P->IsOpDone(CTS) && !IsBusy())
 	{
 		RDY->DeleteFirst(P);
 		RDYcount--;
@@ -28,10 +28,16 @@ void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)                       
 		P->SetResponceTime(CTS);
 		P->OpIsDone(CTS);
 		RUN = P;
+		RUN->excute1TimeStep();
+	}
+	else if (IsBusy())
+	{
+		
+		RUN->excute1TimeStep();
 	}
 }
 //==========================================================================================================================//
-void FCFS::InserttoRDY(Process* P)
+void FCFS::InserttoRDY(Process* P)                                    //Function overridden to insert in RDY lists
 {
 	RDY->InsertEnd(P);
 	RDYcount++;
@@ -103,7 +109,7 @@ int FCFS::GenerateRandom()
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 100));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
 }
 
 bool FCFS::ProcIsFound(Process* p)
@@ -213,7 +219,7 @@ void FCFS::UpdateWT_RDY()
 }
 bool FCFS::ProcessMigratonToRR(Processor* receiver, int MaxW)
 {
-	if (!receiver || !IsBusy())
+	if (!receiver || !IsBusy() || receiver == this)
 	{
 		return false;
 	}
