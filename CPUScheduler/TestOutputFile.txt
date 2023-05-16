@@ -12,5 +12,5 @@ Killed Process:%
 
 Processors: 1 [1 FCFS, 0 SJF, 0 RR]
 Processors Load:
-p0=0%,  Processors Utiliz:
+p1=0%,  Processors Utiliz:
 Avg Utilization = 0%

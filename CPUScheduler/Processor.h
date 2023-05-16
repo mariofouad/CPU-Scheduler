@@ -38,13 +38,7 @@ public:
 
 	void PrintRUN();
 
-	virtual bool MoveFromRDYToRUN(int& CTS) = 0;
-
 	virtual bool IsBusy();
-
-	virtual bool IsIdeal() = 0;
-
-	virtual bool ProcIsFound(Process* p) = 0;
 
 	virtual void StealProcess(Processor* p) = 0;
 
@@ -66,7 +60,7 @@ public:
 
 	void CalcIdleTime();
 
-	void DecrementET();
+	virtual bool IsIdle() = 0;
 
 	~Processor();                                            //Default Destructor
 };

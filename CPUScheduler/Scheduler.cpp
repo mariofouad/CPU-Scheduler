@@ -472,13 +472,13 @@ void Scheduler::OutputFile()
 		Load();
 		for (int i = 0; i < Processor_count; i++)
 		{
-			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
+			outputfile << "p" << i+1 << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
 		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
 		Uti();
 		for (int i = 0; i < Processor_count; i++)
 		{
-		/*	outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
+		/*	outputfile << "p" << i+1 << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
 		}
 		outputfile << "Avg Utilization = " << AvgUti() << "%" << std::endl;//need to be handeled
 		outputfile.close();
@@ -867,9 +867,6 @@ void Scheduler::SetIndexof_ShortestRR()
 		}
 	}
 }
-
-
-
 //================================================================================================================================//
 //============================================================== END OF PHASE-2 ==================================================//
 //================================================================================================================================//
