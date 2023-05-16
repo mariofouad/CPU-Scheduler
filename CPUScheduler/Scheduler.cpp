@@ -178,7 +178,7 @@ void Scheduler::SIMULATOR()
 			if (i == RR_Count) break;
 		}
 		//============================== Work_Stealing ============================//
-		Work_stealing();
+		//Work_stealing();
 		//============================== HANDLING BLK list ============================//
 		//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
 		//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
@@ -380,7 +380,8 @@ void Scheduler::Work_stealing() {
 	{
 		return;
 	}
-	
+	int OldLindex = LongestIndex;
+	int OldSiindex = ShortestIndex;
 	Processor* LQF = AllProcessors[LongestIndex];
 	Processor* SQF = AllProcessors[ShortestIndex];
 	
@@ -392,6 +393,10 @@ void Scheduler::Work_stealing() {
 		LQF = AllProcessors[LongestIndex];
 		SQF = AllProcessors[ShortestIndex];
 		if (!LongestQueue() || !ShortestQueue())
+		{
+			return;
+		}
+		if (OldLindex == ShortestIndex && OldSiindex == LongestIndex)
 		{
 			return;
 		}
