@@ -50,11 +50,12 @@ void Scheduler::SIMULATOR()
 		AllProcessors[FCFS_Count + SJF_Count + i] = P;
 	}
 	//===========================================================================================================================//
-	int SJFindex = 0;   //The index of SJF that RR processes will migrate to
-	int RRindex = 0;    //The index of RR that FCFS process will migrate to
+
 	while (!WorkisDone()) 
 	{
 		MoveFromNewToRdy();
+		SetIndexof_ShortestRR();
+		SetIndexof_ShortestSJF();
 		//=================================== HANDLING FCFS ==================================//
 		for (int i = 0; i < FCFS_Count; i++)
 
@@ -78,18 +79,14 @@ void Scheduler::SIMULATOR()
 					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
 					continue;
 				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
-				/////////////////////////////////////////////
+			/////////////////////////////////////////////
 				////////// Processes Migration 2 ////////////
 				/////////////////////////////////////////////
-				RR* firstRR = nullptr;
-				RR_Processors->Traversal(firstRR, RRindex);
-				while (P->ProcessMigratonToRR(firstRR, MaxW))
+				while (P->ProcessMigratonToRR(AllProcessors[ShortestRR], MaxW))
 				{
 					maxWcount++;
 					P->ScheduleAlgo(CurrentTimestep, MaxW);
-					RRindex++;
-					if (RRindex == RR_Count) RRindex = 0;
-					RR_Processors->Traversal(firstRR, RRindex);
+					SetIndexof_ShortestRR();
 				}
 
 				proc->ExcutionTimeNeeded(timeleft);
@@ -98,6 +95,7 @@ void Scheduler::SIMULATOR()
 				{
 					//P->RemTime(proc);
 					P->KillRUN();
+				
 				}
 			}
 			
@@ -165,17 +163,13 @@ void Scheduler::SIMULATOR()
 					R->KillRUN();
 				}
 				/////////////////////////////////////////////
-				/////////  Processes Migration 1 ////////////
-				/////////////////////////////////////////////
-				SJF* firstSJF = nullptr;
-				SJF_Processors->Traversal(firstSJF, SJFindex);
-				while (R->ProcessMigrationToSJF(firstSJF, RTF, TimeSliceRR))
+					/////////  Processes Migration 1 ////////////
+					/////////////////////////////////////////////
+				while (R->ProcessMigrationToSJF(AllProcessors[ShortestSJF], RTF, TimeSliceRR))
 				{
 					RTFcount++;
 					R->ScheduleAlgo(CurrentTimestep, RTF);
-					SJFindex++;
-					if (SJFindex == SJF_Count) SJFindex = 0;
-					SJF_Processors->Traversal(firstSJF, SJFindex);
+					SetIndexof_ShortestSJF();
 				}
 
 			}
@@ -378,17 +372,32 @@ bool Scheduler::MoveToShFCFS(Process* p)
 }
 
 void Scheduler::Work_stealing() {
-	Processor *LQF = AllProcessors[LongestQueue()];
-	Processor* SQF = AllProcessors[ShortestQueue()];
-	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() > 0.4)) && CurrentTimestep%STL==0 && )
+	// Check if Processorcount <= 2
+	if (Processor_count<= 2) {
+		return;
+	}
+	if (!LongestSteal()  || !ShortestSteal())
+	{
+		return;
+	}
+	
+	Processor* LQF = AllProcessors[LongestIndex];
+	Processor* SQF = AllProcessors[ShortestIndex];
+	
+	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
 	{
 		LQF->StealProcess(SQF);
-		LQF = AllProcessors[LongestQueue()];
-		SQF = AllProcessors[ShortestQueue()];
-	
+		LongestSteal();
+		ShortestSteal();
+		LQF = AllProcessors[LongestIndex];
+		SQF = AllProcessors[ShortestIndex];
+		if (!LongestQueue() || !ShortestQueue())
+		{
+			return;
+		}
 	}
-
 }
+
 
 bool Scheduler::WorkisDone()
 {
@@ -739,20 +748,26 @@ int Scheduler::ShortestQueue()
 {
 	int minprocessor = AllProcessors[0]->TotalTime();
 	int minprocessori = 0;
+
+
 	for (int i = 0; i < Processor_count; i++)
 	{
 		if (AllProcessors[i]->TotalTime() < minprocessor)
 		{
 			minprocessor = AllProcessors[i]->TotalTime();
 			minprocessori = i;
+		
+
 		}
 	}
+	
 	return minprocessori;
 }
 int Scheduler::LongestQueue()
 {
 	int maxprocessor = AllProcessors[0]->TotalTime();
 	int maxprocessori = 0;
+	
 	for (int i = 0; i < Processor_count; i++)
 	{
 		if (AllProcessors[i]->TotalTime() > maxprocessor)
@@ -760,9 +775,87 @@ int Scheduler::LongestQueue()
 			maxprocessor = AllProcessors[i]->TotalTime();
 			maxprocessori = i;
 		}
+	
 	}
-	return maxprocessori;
+
+    return maxprocessori;
 }
+
+bool Scheduler::ShortestSteal()
+{
+	int minprocessor = AllProcessors[0]->TotalTime();
+	
+	int numMinProcessors = 1; // Number of processors with max TotalTime
+
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < minprocessor)
+		{
+			minprocessor = AllProcessors[i]->TotalTime();
+			 ShortestIndex= i;
+			numMinProcessors = 1;
+
+		}
+		else if (AllProcessors[i]->TotalTime() == minprocessor)
+		{
+			numMinProcessors++;
+		}
+	}
+	if (numMinProcessors >= 2)
+	{
+		return false; // Return false if at least two processors have the max TotalTime
+	}
+	return true;
+}
+bool Scheduler::LongestSteal()
+{
+	int maxprocessor = AllProcessors[0]->TotalTime();
+
+	int numMaxProcessors = 1; // Number of processors with max TotalTime
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() > maxprocessor)
+		{
+			maxprocessor = AllProcessors[i]->TotalTime();
+			LongestIndex = i;
+			numMaxProcessors = 1;
+		}
+		else if (AllProcessors[i]->TotalTime() == maxprocessor)
+		{
+			numMaxProcessors++;
+		}
+	}
+	if (numMaxProcessors >= 2)
+	{
+		return false; // Return false if at least two processors have the max TotalTime
+	}
+	return true;
+}
+
+	
+void Scheduler::SetIndexof_ShortestSJF()
+{
+	for (int i = FCFS_Count; i < SJF_Count + FCFS_Count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < INT_MAX)
+		{
+			ShortestSJF = i;
+		}
+	}
+}
+
+void Scheduler::SetIndexof_ShortestRR()
+{
+	for (int i = SJF_Count + FCFS_Count; i < SJF_Count + FCFS_Count + RR_Count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < INT_MAX)
+		{
+			ShortestRR = i;
+		}
+	}
+}
+
+
 
 //================================================================================================================================//
 //============================================================== END OF PHASE-2 ==================================================//

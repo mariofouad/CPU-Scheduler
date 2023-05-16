@@ -43,7 +43,7 @@ public:
 
 	void SetTMslice(int timeslice);							 //Sets the time slice of RR processors
 
-	bool ProcessMigrationToSJF(SJF* reciever, int RTF, int slice);			 //Will migrate 1 process from the RDY queue of RR to SJF
+	bool ProcessMigrationToSJF(Processor* reciever, int RTF, int slice);			 //Will migrate 1 process from the RDY queue of RR to SJF
 	void ResetTMslice();									 //A function resets TMslice  
 
 	void StealProcess(Processor* p);

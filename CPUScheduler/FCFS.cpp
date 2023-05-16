@@ -211,7 +211,7 @@ void FCFS::UpdateWT_RDY()
 		RDY->InsertEnd(p);
 	}
 }
-bool FCFS::ProcessMigratonToRR(RR* receiver, int MaxW)
+bool FCFS::ProcessMigratonToRR(Processor* receiver, int MaxW)
 {
 	if (!receiver || !IsBusy())
 	{

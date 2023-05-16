@@ -69,7 +69,8 @@ private:
 	int* ProcessorUti;
 	double RTFpercentage = 0;
 	double MaxWpercentage = 0;
-	int ShortestEver = 0;
+	int ShortestIndex = 0;
+	int LongestIndex = 0;
 	int ShortestSJF = 0;
 	int ShortestRR = 0;
 	int ShortestFCFS = 0;
@@ -135,6 +136,15 @@ public:
 
 	int ShortestQueue();
 	int LongestQueue();
+
+	bool ShortestSteal();
+	bool LongestSteal();
+
+
+
+	void SetIndexof_ShortestSJF();
+
+	void SetIndexof_ShortestRR();
 
 	~Scheduler();
 };
