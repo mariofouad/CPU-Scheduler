@@ -53,13 +53,6 @@ void Process::SetNumberOfRequests(int n)
 	IO_D = new int[n];
 }
 
-void Process::ExcutionTimeNeeded(int& timeleft)
-{
-	CT--;
-	TimeInRun++;
-	timeleft = CT;
-}
-
 bool Process::MustBeBlocked(int& CTS)
 {
 	if (ION == 0)

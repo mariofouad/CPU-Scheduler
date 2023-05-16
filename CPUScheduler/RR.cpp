@@ -164,7 +164,12 @@ void RR::StealProcess(Processor* p)
 
 }
 
-
+bool RR::IsIdle()
+{
+	if (!IsBusy() && RDY->IsEmpty())
+		return true;
+	return false;
+}
 
 RR::~RR()                                                   //Default Destructor
 {

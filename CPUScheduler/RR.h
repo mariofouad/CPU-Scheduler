@@ -48,6 +48,8 @@ public:
 
 	void StealProcess(Processor* p);
 
+	bool IsIdle();
+
 
 	~RR();                                                   //Default Destructor
 };

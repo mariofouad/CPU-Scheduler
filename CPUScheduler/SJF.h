@@ -36,6 +36,7 @@ public:
 	bool ProcIsFound(Process* p) { return 0; }
 
 	~SJF();                                                  //Default Destructor
+	bool IsIdle();
 };
 
 #endif

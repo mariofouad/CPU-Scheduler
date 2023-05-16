@@ -37,23 +37,17 @@ public:
 
 	void InserttoRDY(Process* P);					  //Virtual function responsible for inserting a Process to RDY list
 
-	bool MoveFromRDYToRUN(int& CTS);
-
 	void MoveFromBLKToRUN(Process* P);                //Virtual function responsible for moving a Process from BLK to RDY list
 
 	void StealProcess(Processor* p);
 
 	void PrintRDY();
 
-	bool IsIdeal();
-
 	string returntypename();
 
 	int GenerateRandom();
 
 	bool ProcessorCanFork(Process*P, int CTS, int ForkProb);
-
-	bool ProcIsFound(Process* p);
 
 	bool SearchForProcess(int id, Process*& p, int Curr);
 
@@ -73,6 +67,7 @@ public:
 
 	void KillIsDone();
 
+	bool IsIdle();
 
 	~FCFS();                                                 //Default Destructor
 };

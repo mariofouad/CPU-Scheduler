@@ -104,3 +104,9 @@ SJF::~SJF()
 {
 
 }
+bool SJF::IsIdle()
+{
+	if (!IsBusy() && RDY->isEmpty())
+		return true;
+	return false;
+}
