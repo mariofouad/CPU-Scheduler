@@ -76,6 +76,7 @@ private:
 	int ShortestFCFS = 0;
 	int RTFcount = 0;
 	int maxWcount = 0;
+	int ForkedProcID;
 public:
 
 	Scheduler();

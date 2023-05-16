@@ -100,7 +100,7 @@ void Scheduler::SIMULATOR()
 			}
 			
 			//Process Forking 
-			//ProcessForking(P);
+			ProcessForking(P);
 			//Process Migration
 		}
 		KillSig();
@@ -217,7 +217,7 @@ void Scheduler::ProcessForking(FCFS* P)
 		int ForkedCT = 0;
 		ForkedCT = proc->GetCT();
 		//proc->OpIsDone(CurrentTimestep);
-		Process* ForkedProc = new Process(CurrentTimestep, ++Proc_count, ForkedCT);
+		Process* ForkedProc = new Process(CurrentTimestep, ForkedProcID++, ForkedCT);
 		tempProc_count++;
 		ForkedProc->SetForkedProc();
 		
@@ -260,7 +260,7 @@ void Scheduler::ProcessForking(FCFS* P)
 				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
 				{
 					
-					Tree->find(ForkedProc); // sa3etha ha insert el child
+					Tree->find(proc, ForkedProc); // sa3etha ha insert el child
 				}
 				Treeptrs->InsertEnd(Tree);
 			}
@@ -505,6 +505,7 @@ void Scheduler::ReadFile()
 		std::getline(inputfile, line);
 		std::stringstream fourthline(line);
 		fourthline >> Proc_count;
+		ForkedProcID = Proc_count + 1;
 		tempProc_count = Proc_count;
 		KillPID = new int[Proc_count];
 		KillTime = new int[Proc_count];
