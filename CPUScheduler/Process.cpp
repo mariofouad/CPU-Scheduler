@@ -130,7 +130,7 @@ ostream& operator << (ostream& Out, Process* P) {
 
 ostream& operator <= (ostream& Out, Process* P)
 {
-	Out << P->TT << "\t" << P->PID << "\t" << P->AT << "\t" << P->CT << "\t" << P->TotalIOD << "\t" << P->WT << "\t" << P->RT << "\t" << P->TRT;
+	Out << P->TT << "\t" << P->PID << "\t" << P->AT << "\t" << P->tempCT << "\t" << P->TotalIOD << "\t" << P->WT << "\t" << P->RT << "\t" << P->TRT;
 	return Out;
 }
 int Process::GetAT()

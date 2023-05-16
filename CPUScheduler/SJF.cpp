@@ -15,7 +15,7 @@ SJF::SJF(int id) {
 
 
 
-void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                                     //Overloaded Scheduler Algorithem for SJF processors
+void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)        //Overloaded Scheduler Algorithem for SJF processors
 {
 	Process* P=new Process;
 	RDY->peek(P);
@@ -45,7 +45,7 @@ void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)                        
 	}
 }
 
-void SJF::InserttoRDY(Process* P)
+void SJF::InserttoRDY(Process* P)                               //Function overridden to insert in RDY lists
 {
 	RDY->add(P,P->GetCT());
 	RDYcount++;
