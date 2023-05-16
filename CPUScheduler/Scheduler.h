@@ -77,6 +77,7 @@ private:
 	int RTFcount = 0;
 	int maxWcount = 0;
 	int ForkedProcID;
+	int STLPERC = 0;
 public:
 
 	Scheduler();

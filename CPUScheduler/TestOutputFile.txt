@@ -1,33 +1,23 @@
 TT	PID	AT	CT	IO_D	WT	RT	TRT
-10	5	5	0	0	0	1	5
-12	6	6	0	0	0	1	6
-17	2	2	0	0	0	1	15
-17	7	7	0	0	3	4	10
-20	8	8	0	0	4	5	12
-29	12	12	0	0	5	6	17
-34	16	16	0	0	2	2	18
-34	14	14	0	0	6	7	20
-37	9	9	0	0	19	26	28
-40	4	4	0	0	32	34	36
-41	1	1	0	0	0	1	40
-44	11	11	0	0	22	32	33
-46	10	10	0	0	26	35	36
-49	20	20	0	0	9	10	29
-52	17	17	0	0	18	34	35
-54	3	3	0	0	48	50	51
-73	13	13	0	0	47	59	60
-90	18	18	0	0	54	70	72
-98	19	19	0	0	60	77	79
-101	15	15	0	0	71	84	86
+3	1	1	-1	0	1	1	2
+3	2	1	0	0	0	1	2
+6	3	1	0	0	2	3	5
+7	4	1	0	0	2	3	6
+11	5	1	0	0	5	6	10
+14	7	1	0	0	6	7	13
+14	6	1	0	0	7	11	13
+22	8	1	0	0	13	14	21
+25	9	1	0	0	15	22	24
+32	10	1	0	0	21	25	31
 
-Processes: 20
-Avg WT = 21,	Avg RT = 26,	Avg TT = 44
-Migration %: RTF = 10%,	MaxW = 10%
+Processes: 10
+Avg WT = 7,	Avg RT = 9,	Avg TT = 13
+Migration %: RTF = 2%,	MaxW = 10%
 Work Steal %:%
 Forked Process:%
 Killed Process:%
 
-Processors: 6 [2 FCFS, 2 SJF, 2 RR]
+Processors: 3 [1 FCFS, 1 SJF, 1 RR]
 Processors Load:
-p0=0%,  p1=0%,  p2=0%,  p3=0%,  p4=0%,  p5=0%,  Processors Utiliz:
+p0=0%,  p1=0%,  p2=0%,  Processors Utiliz:
 Avg Utilization = 0%

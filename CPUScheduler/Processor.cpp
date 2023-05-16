@@ -16,7 +16,7 @@ Processor::Processor(int id)                                 //Non-Default const
 	RUN = nullptr;
 }
 
-void ScheduleAlgo(int& CTS, int MigrationParameter)                                //Virtual function to be overloaded in each child processor
+Processor::~Processor()                                      //Default Destructor
 {
 }
 
@@ -26,6 +26,13 @@ bool Processor::operator<(const Processor& P)
 	return false;
 }
 
+ostream& operator<<(ostream& Out, Processor& P)
+{
+	Processor* P1 = &P;
+	Out << "Processor " << P1->ID << " " << P1->returntypename() << ": " << P1->RDYcount << " RDY: ";
+	P1->PrintRDY();
+	return Out;
+}
 
 Process* Processor::GetRUN()
 {
@@ -36,8 +43,6 @@ void Processor::PrintRUN()
 {
 	cout << RUN << "(P" << ID << ")";
 }
-
-
 
 bool Processor::IsBusy()
 {
@@ -51,33 +56,9 @@ bool Processor::IsBusy()
 	}
 }
 
-//bool Processor::IsIdeal()
-//{
-//	if (R)
-//	{
-//		return true;
-//	}
-//	else
-//	{
-//		return false;
-//	}
-//}
-
 void Processor::KillRUN()
 {
 	RUN = nullptr;
-}
-
-Processor::~Processor()                                      //Default Destructor
-{
-}
-
-ostream& operator<<(ostream& Out, Processor& P)
-{
-	Processor* P1 = &P;
-	Out << "Processor " << P1->ID << " " << P1->returntypename() << ": " << P1->RDYcount << " RDY: ";
-	P1->PrintRDY();
-	return Out;
 }
 
 void Processor::AddTime(Process* p)
@@ -95,10 +76,11 @@ int Processor::TotalTime()
 }
 
 void Processor::RemTime(Process* p)
-{if(p==nullptr)
 {
-	return;
-}
+	if (p == nullptr)
+	{
+		return;
+	}
 	ExpectedTime = ExpectedTime - p->GetCT();
 }
 
@@ -122,14 +104,8 @@ int Processor::GetIdleTime()
 
 void Processor::CalcIdleTime()
 {
-	if (IsIdeal())
+	/*if (IsIdle())
 	{
 		IdleTime++;
-	}
+	}*/
 }
-
-void Processor::DecrementET()
-{
-	ExpectedTime--;
-}
-
