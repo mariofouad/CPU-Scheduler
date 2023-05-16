@@ -16,7 +16,7 @@ Processor::Processor(int id)                                 //Non-Default const
 	RUN = nullptr;
 }
 
-void ScheduleAlgo(int& CTS)                                //Virtual function to be overloaded in each child processor
+void ScheduleAlgo(int& CTS, int MigrationParameter)                                //Virtual function to be overloaded in each child processor
 {
 }
 
@@ -82,6 +82,10 @@ ostream& operator<<(ostream& Out, Processor& P)
 
 void Processor::AddTime(Process* p)
 {
+	if (p == nullptr)
+	{
+		return;
+	}
 	ExpectedTime = ExpectedTime + p->GetCT();
 }
 
@@ -91,7 +95,10 @@ int Processor::TotalTime()
 }
 
 void Processor::RemTime(Process* p)
+{if(p==nullptr)
 {
+	return;
+}
 	ExpectedTime = ExpectedTime - p->GetCT();
 }
 
@@ -107,3 +114,22 @@ int Processor::GetBusyTime()
 {
 	return BusyTime;
 }
+
+int Processor::GetIdleTime()
+{
+	return IdleTime;
+}
+
+void Processor::CalcIdleTime()
+{
+	if (IsIdeal())
+	{
+		IdleTime++;
+	}
+}
+
+void Processor::DecrementET()
+{
+	ExpectedTime--;
+}
+

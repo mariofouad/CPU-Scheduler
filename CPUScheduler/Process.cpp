@@ -99,10 +99,6 @@ bool Process::operator==(const Process& p)
 	return false;
 }
 
-bool Process::operator<(const Process& other) const
-{
-	return CT > other.CT;
-}
 
 void Process::excute1TimeStep()
 {
@@ -115,17 +111,7 @@ bool Process::MustbeTerminated()
 	return false;
 }
 
-bool Process::MustMigrateToSJF(int RTF)
-{
-	if (CT < RTF) return true;
-	return false;
-}
 
-bool Process::MustMigrateToRR(int MaxW)
-{
-	if (WT > MaxW) return true;
-	return false;
-}
 
 void Process::CalcStatistics(int&wt,int&rt,int&tt)
 {
@@ -182,7 +168,7 @@ void Process::ForkOpIsDone()
 
 bool Process::ProcessCanFork(int CTS) const
 {
-	return ((TimesForked < 2) && (IsOpDone(CTS)));
+	return ((TimesForked < 2) && (!IsOpDone(CTS)));
 }
 
 int Process::ID()
@@ -193,4 +179,30 @@ int Process::ID()
 int Process::proTRT()
 {
 	return TRT;
+}
+
+bool Process::MustMigrateToSJF(int RTF)
+{
+	if (CT < RTF) return true;
+	return false;
+}
+
+bool Process::MustMigrateToRR(int MaxW)
+{
+	if (WT > MaxW) return true;
+	return false;
+}
+
+void Process::Increment1WT()
+{
+	WT++;
+}
+void Process::IncrementRR_RUN()
+{
+	NoofRR_RUN++;
+}
+
+bool Process::RR_RUN1st()
+{
+	return (NoofRR_RUN == 0);
 }

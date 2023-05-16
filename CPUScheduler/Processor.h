@@ -17,14 +17,14 @@ protected:
 	Process* RUN;					                        //that should contain only process I think because every process can only excute one
 	int ExpectedTime = 0;									//Summation of CPUT of its RDY Processes
 	int BusyTime = 0;										//Total busy time
-
+	int IdleTime = 0;
 public:
 
 	Processor();                                             //Default constructor
 
 	Processor(int ID);                                       //Non-Default constructor
 
-	virtual void ScheduleAlgo(int& CTS) = 0;                 //Virtual function to be overloaded in each derived processor
+	virtual void ScheduleAlgo(int& CTS, int MigrationParameter) = 0;                 //Virtual function to be overloaded in each derived processor
 
 	virtual void InserttoRDY(Process* P) = 0;				 //Virtual function responsible for inserting a Process to RDY list
 
@@ -46,6 +46,8 @@ public:
 
 	virtual bool ProcIsFound(Process* p) = 0;
 
+	virtual void StealProcess(Processor* p) = 0;
+
 	void KillRUN();
 
 	virtual string returntypename() = 0;
@@ -59,6 +61,12 @@ public:
 	void CalcBusyTime();
 
 	int GetBusyTime();
+
+	int GetIdleTime();
+
+	void CalcIdleTime();
+
+	void DecrementET();
 
 	~Processor();                                            //Default Destructor
 };

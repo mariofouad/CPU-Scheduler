@@ -27,7 +27,7 @@ public:
 
 	RR(int id , int TimeSlice);								 //ID , Time slice initializer 
 
-	void ScheduleAlgo(int& CTS);							 //Overloaded Scheduler Algorithem for RR processors
+	void ScheduleAlgo(int& CTS,int MigrationParameter);							 //Overloaded Scheduler Algorithem for RR processors
 
 	void InserttoRDY(Process* P);							 //This function will insert a Process into that processor RDY list
 
@@ -43,7 +43,11 @@ public:
 
 	void SetTMslice(int timeslice);							 //Sets the time slice of RR processors
 
-	bool ProcessMigration(SJF* reciever , int RTF);			 //Will migrate 1 process from the RDY queue of RR to SJF
+	bool ProcessMigrationToSJF(SJF* reciever, int RTF, int slice);			 //Will migrate 1 process from the RDY queue of RR to SJF
+	void ResetTMslice();									 //A function resets TMslice  
+
+	void StealProcess(Processor* p);
+
 
 	~RR();                                                   //Default Destructor
 };

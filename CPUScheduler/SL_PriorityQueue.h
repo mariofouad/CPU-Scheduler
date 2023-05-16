@@ -1,11 +1,10 @@
-/** ADT priority queue: ADT sorted list implementation.
-@file SL_PriorityQueue.h */
+
 #ifndef _PRIORITY_QUEUE
 #define _PRIORITY_QUEUE
 using namespace std;
 #include <iostream>
 #include "LinkedSortedList.h"
-#include "Node.h"
+
 template < class ItemType>
 class SL_PriorityQueue
 {
@@ -17,12 +16,13 @@ public:
 	SL_PriorityQueue(const SL_PriorityQueue& pq);
 	~SL_PriorityQueue();
 	bool isEmpty() const;
-	bool add(const ItemType& newEntry);
+	bool add(const ItemType& newEntry, int prio);
 	void print() const;
 	bool peek(ItemType& entry);
 	void Traversal(ItemType& entry, int position);
 	bool remove(ItemType& entry);
-	
+	void RemoveSorted(ItemType& entry);
+
 }; // end SL_PriorityQueue
 
 template<class ItemType>
@@ -41,7 +41,7 @@ void SL_PriorityQueue<ItemType>::Traversal(ItemType& entry, int position) {
 		}
 	}
 }
- 
+
 template <class ItemType>
 SL_PriorityQueue<ItemType>::SL_PriorityQueue() {
 	slistPtr = new LinkedSortedList<ItemType>();
@@ -61,9 +61,9 @@ SL_PriorityQueue<ItemType>::~SL_PriorityQueue()
 } // end destructor
 
 template < class ItemType>
-bool SL_PriorityQueue<ItemType>::add(const ItemType& newEntry)
+bool SL_PriorityQueue<ItemType>::add(const ItemType& newEntry, int prio)
 {
-	slistPtr->insertSorted(newEntry);
+	slistPtr->insertSorted(newEntry, prio);
 	return true;
 } // end add
 
@@ -102,7 +102,17 @@ void SL_PriorityQueue<ItemType>::print() const {
 
 	}
 }
-
+template<class ItemType>
+void SL_PriorityQueue<ItemType>::RemoveSorted(ItemType& anEntry)                           //Delete a node at the begining
+{
+	if (isEmpty())
+	{
+		return;
+	}
+	else {
+		slistPtr->RemoveSorted(anEntry);
+	}
+}
 template<class ItemType>
 bool SL_PriorityQueue<ItemType>::peek(ItemType& entry) {
 	if (isEmpty()) {

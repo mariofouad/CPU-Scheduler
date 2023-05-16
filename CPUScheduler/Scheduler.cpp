@@ -50,18 +50,21 @@ void Scheduler::SIMULATOR()
 		AllProcessors[FCFS_Count + SJF_Count + i] = P;
 	}
 	//===========================================================================================================================//
+	int SJFindex = 0;   //The index of SJF that RR processes will migrate to
+	int RRindex = 0;    //The index of RR that FCFS process will migrate to
 	while (!WorkisDone()) 
 	{
 		MoveFromNewToRdy();
 		//=================================== HANDLING FCFS ==================================//
 		for (int i = 0; i < FCFS_Count; i++)
+
 		{   
 			//Calling Scheduler Algo                                      
 			FCFS* P = nullptr;
 			Process* proc = nullptr;
 			FCFS_Processors->Traversal(P, i);
-			P->ScheduleAlgo(CurrentTimestep);
-
+			P->UpdateWT_RDY();
+			P->ScheduleAlgo(CurrentTimestep,MaxW);
 			//Handle BLK and TRM operation on RUN
 			proc = P->GetRUN();
 			if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
@@ -71,40 +74,83 @@ void Scheduler::SIMULATOR()
 				{
 					MoveToBlk(proc);
 					proc->ExcutionTimeNeeded(timeleft);
+					//P->RemTime(proc);
 					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
 					continue;
 				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
+				/////////////////////////////////////////////
+				////////// Processes Migration 2 ////////////
+				/////////////////////////////////////////////
+				RR* firstRR = nullptr;
+				RR_Processors->Traversal(firstRR, RRindex);
+				while (P->ProcessMigratonToRR(firstRR, MaxW))
+				{
+					maxWcount++;
+					P->ScheduleAlgo(CurrentTimestep, MaxW);
+					RRindex++;
+					if (RRindex == RR_Count) RRindex = 0;
+					RR_Processors->Traversal(firstRR, RRindex);
+				}
+
 				proc->ExcutionTimeNeeded(timeleft);
+				//P->DecrementET();
 				if (timeleft <= 0 && MovetoTRM(proc))
 				{
-					P->RemTime(proc);
+					//P->RemTime(proc);
 					P->KillRUN();
 				}
 			}
 			
 			//Process Forking 
 			ProcessForking(P);
-			
 			//Process Migration
 		}
+		KillSig();
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
-		for (int i = 0; i < SJF_Count; i++)
-		{
-			SJF* P = nullptr;
-			SJF_Processors->Traversal(P, i);
-			P->ScheduleAlgo(CurrentTimestep);
+		
+			SJF* S = nullptr;
+			Process* SP = nullptr;
+			int j = 0;
+		
+			
+			while (SJF_Processors->DeleteFirst(S))
+			{
+				/////////////////////////////////////////////
+				////////// Calling Scheduler algo ///////////
+				/////////////////////////////////////////////
+				S->ScheduleAlgo(CurrentTimestep, 0);
+				SP = S->GetRUN();
+				if (S->IsBusy())
+				{
+					if (SP->MustBeBlocked(CurrentTimestep))
+					{
+						//S->RemTime(SP);
+						MoveToBlk(SP);
+						S->KillRUN();
+					}
+					else if (SP->MustbeTerminated() && MovetoTRM(SP))
+					{
+						//S->RemTime(SP);
+						SP->TerminationTime(CurrentTimestep);
+						S->KillRUN();
+					}
+				}
+				SJF_Processors->InsertEnd(S);
+					j++;
+				if (j == SJF_Count) break;
+			}
 
-		}
-		//======================================= HANDLING RR PROCESSORS ===================================//	
-		for (int i = 0; i < RR_Count; i++)
+		
+		//======================================= HANDLING RR PROCESSORS ===================================//				
+		RR* R = nullptr;
+		Process* p = nullptr;
+		int i = 0;
+		while (RR_Processors->DeleteFirst(R))
 		{
 			/////////////////////////////////////////////
-			/////////// Calling Schedule algo ///////////
+			////////// Calling Scheduler algo ///////////
 			/////////////////////////////////////////////
-			RR* R = nullptr;
-			Process* p;
-			RR_Processors->Traversal(R, i);
-			R->ScheduleAlgo(CurrentTimestep);
+			R->ScheduleAlgo(CurrentTimestep, RTF);
 			p = R->GetRUN();
 			if (R->IsBusy())
 			{
@@ -115,22 +161,30 @@ void Scheduler::SIMULATOR()
 				}
 				else if (p->MustbeTerminated() && MovetoTRM(p))
 				{
-					R->RemTime(p);
+					p->TerminationTime(CurrentTimestep);
 					R->KillRUN();
 				}
+				/////////////////////////////////////////////
+				/////////  Processes Migration 1 ////////////
+				/////////////////////////////////////////////
+				SJF* firstSJF = nullptr;
+				SJF_Processors->Traversal(firstSJF, SJFindex);
+				while (R->ProcessMigrationToSJF(firstSJF, RTF, TimeSliceRR))
+				{
+					RTFcount++;
+					R->ScheduleAlgo(CurrentTimestep, RTF);
+					SJFindex++;
+					if (SJFindex == SJF_Count) SJFindex = 0;
+					SJF_Processors->Traversal(firstSJF, SJFindex);
+				}
+
 			}
-			/////////////////////////////////////////////
-			////////// Processes Migration  /////////////
-			/////////////////////////////////////////////
-			/*SJF* firstSJF = nullptr;
-			int a = 0;
-			SJF_Processors->Traversal(firstSJF, a);
-			if (R->ProcessMigration(firstSJF, RTF))
-			{
-				RTFcount++;
-			}*/
+			RR_Processors->InsertEnd(R);
+			i++;
+			if (i == RR_Count) break;
 		}
-		
+		//============================== Work_Stealing ============================//
+		Work_stealing();
 		//============================== HANDLING BLK list ============================//
 		//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
 		//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
@@ -140,11 +194,21 @@ void Scheduler::SIMULATOR()
 		for (int i = 0; i < Processor_count; i++)
 		{
 			AllProcessors[i]->CalcBusyTime();
+			AllProcessors[i]->CalcIdleTime();
 		}
-		KillSignal();
 		GetInterface()->UpdateInterface();
 		CurrentTimestep++;
 	}
+	if (UserInterface->UpdateInterface() == 3)
+	{
+		UserInterface->SilentMode();
+	}
+
+	////////////////CALCULATIONS////////////////
+	MaxWpercentage = (maxWcount / tempProc_count) * 100.00;
+	RTFpercentage = (RTFcount / tempProc_count) * 100.00;
+	//calloutputfile
+	OutputFile();
 	//=================================================================== END OF SCHEDULING ==========================================//
 }
 	
@@ -159,7 +223,8 @@ void Scheduler::ProcessForking(FCFS* P)
 		int ForkedCT = 0;
 		ForkedCT = proc->GetCT();
 		//proc->OpIsDone(CurrentTimestep);
-		Process* ForkedProc = new Process(CurrentTimestep, ++Proc_count, ForkedCT);
+		Process* ForkedProc = new Process(CurrentTimestep, ForkedProcID++, ForkedCT);
+		tempProc_count++;
 		ForkedProc->SetForkedProc();
 		
 		//Move to Shortest FCFS processor
@@ -201,7 +266,7 @@ void Scheduler::ProcessForking(FCFS* P)
 				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
 				{
 					
-					Tree->find(ForkedProc); // sa3etha ha insert el child
+					Tree->find(proc, ForkedProc); // sa3etha ha insert el child
 				}
 				Treeptrs->InsertEnd(Tree);
 			}
@@ -286,19 +351,10 @@ bool Scheduler::MoveFromBLKToRDY()                                  //Me7taga te
 bool Scheduler::MoveToRDY(Process* p)
 {
 	if (p == nullptr) return false;
-	int minprocessor = AllProcessors[0]->TotalTime();
-	int minprocessori = 0;
-	for (int i = 0; i < Processor_count; i++)
-	{
-		if (AllProcessors[i]->TotalTime() < minprocessor)
-		{
-			minprocessor = AllProcessors[i]->TotalTime();
-			minprocessori = i;
-		}
-	}
+	int i = ShortestQueue();
 
-	AllProcessors[minprocessori]->AddTime(p);
-	AllProcessors[minprocessori]->InserttoRDY(p);
+	AllProcessors[i]->AddTime(p);
+	AllProcessors[i]->InserttoRDY(p);
 	return true;
 }
 
@@ -320,9 +376,19 @@ bool Scheduler::MoveToShFCFS(Process* p)
 	AllProcessors[minprocessori]->InserttoRDY(p);
 	return true;
 }
-//void Scheduler::Process_Migartion(Processor* p1, Processor* p2) {}
 
-void Scheduler::Work_stealing() {}
+void Scheduler::Work_stealing() {
+	Processor *LQF = AllProcessors[LongestQueue()];
+	Processor* SQF = AllProcessors[ShortestQueue()];
+	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() > 0.4)) && CurrentTimestep%STL==0 && )
+	{
+		LQF->StealProcess(SQF);
+		LQF = AllProcessors[LongestQueue()];
+		SQF = AllProcessors[ShortestQueue()];
+	
+	}
+
+}
 
 bool Scheduler::WorkisDone()
 {
@@ -388,7 +454,12 @@ void Scheduler::OutputFile()
 			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
 		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
-		outputfile << "Avg Utilization = " << "%" << std::endl;//need to be handeled
+		Uti();
+		for (int i = 0; i < Processor_count; i++)
+		{
+		/*	outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
+		}
+		outputfile << "Avg Utilization = " << AvgUti() << "%" << std::endl;//need to be handeled
 		outputfile.close();
 	}
 	else 
@@ -425,6 +496,7 @@ void Scheduler::ReadFile()
 		std::getline(inputfile, line);
 		std::stringstream fourthline(line);
 		fourthline >> Proc_count;
+		ForkedProcID = Proc_count + 1;
 		tempProc_count = Proc_count;
 		KillPID = new int[Proc_count];
 		KillTime = new int[Proc_count];
@@ -471,19 +543,17 @@ void Scheduler::ReadFile()
 			NEW->Enqueue(P);
 		}
 		//Reading kill signals
-		int i = 0;
-		int kt;
-		int kd;
 		while (!inputfile.eof())
 		{
+			int kt;
+			int kd;
+			FCFS* P = NULL;
 			std::getline(inputfile, line);
 			std::stringstream KillLines(line);
 			KillLines >> kt >> kd;
-			KillTime[i] = kt;
-			KillPID[i] = kd;
-			inputfile.close();
-			i++;
+			P->SetKillList(kd, kt);
 		}
+		inputfile.close();
 	}
 	else
 	{
@@ -593,23 +663,106 @@ void Scheduler::Load()
 	}
 }
 
-void Scheduler::KillSignal()
-{
-	if (KillTime[killindex] == CurrentTimestep)
+void Scheduler::Uti()
+{/* exception ya mooza
+	for (int i = 0; i < Processor_count; i++)
 	{
-		for (int i = 0; i < FCFS_Count; i++)
+		int BS = AllProcessors[i]->GetBusyTime();
+		int IT = AllProcessors[i]->GetIdleTime();
+		ProcessorUti[i] = BS / (BS + IT);
+	}*/
+}
+
+int Scheduler::AvgUti()
+{
+	int sum = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		//sum = ProcessorUti[i] + sum; exception ya mooza
+	}
+	int avg = sum / Processor_count;
+	return avg;
+}
+
+void Scheduler::KillSig()
+{
+	FCFS* P = NULL;
+	int kid = 0;
+	bool multkillsig = false;
+
+	while (!multkillsig)
+	{
+
+		if (P->KillSignal(CurrentTimestep))
 		{
-			Process* ptemp = NULL;
-			FCFS* temp = NULL;
-			FCFS_Processors->DeleteFirst(temp);
-			FCFS_Processors->InsertEnd(temp);
-			if (temp->SearchForProcess(KillPID[i], ptemp))
+			kid = P->KillSignalID(CurrentTimestep);
+			int j = 0;
+			bool processfound = false;
+			for (int i = 0; i < FCFS_Count; i++)
 			{
-				MovetoTRM(ptemp);
-				killindex++;
+				Process* ptemp = NULL;
+				FCFS* temp = NULL;
+				//processfound = false;
+				FCFS_Processors->DeleteFirst(temp);
+				FCFS_Processors->InsertEnd(temp);
+				if (temp->SearchForProcess(kid, ptemp, CurrentTimestep))
+				{
+					processfound = true;
+					MovetoTRM(ptemp);
+					temp->KillIsDone();
+					if (!(temp->ProcIsRun(ptemp)))
+						temp->RemTime(ptemp);
+					if (temp->ProcIsRun(ptemp))
+					{
+						temp->KillRUN();
+					}
+					if (P->KillAgain(CurrentTimestep))
+					{
+						multkillsig = true;
+						//break;
+					}
+				}
+			}
+			if (processfound)
+				continue;
+			P->KillIsDone();
+			if (P->KillAgain(CurrentTimestep))
+			{
+				multkillsig = true;
 			}
 		}
+		else
+			break;
 	}
+}
+
+int Scheduler::ShortestQueue()
+{
+	int minprocessor = AllProcessors[0]->TotalTime();
+	int minprocessori = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() < minprocessor)
+		{
+			minprocessor = AllProcessors[i]->TotalTime();
+			minprocessori = i;
+		}
+	}
+	return minprocessori;
+}
+int Scheduler::LongestQueue()
+{
+	int maxprocessor = AllProcessors[0]->TotalTime();
+	int maxprocessori = 0;
+	for (int i = 0; i < Processor_count; i++)
+	{
+		if (AllProcessors[i]->TotalTime() > maxprocessor)
+		{
+			maxprocessor = AllProcessors[i]->TotalTime();
+			maxprocessori = i;
+		}
+	}
+	return maxprocessori;
 }
 
 //================================================================================================================================//
