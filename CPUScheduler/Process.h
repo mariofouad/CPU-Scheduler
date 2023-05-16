@@ -64,8 +64,6 @@ public:
 
 	void SetNumberOfRequests(int n);	
 
-	void ExcutionTimeNeeded(int& timeleft);
-
 	bool MustBeBlocked(int& CTS);
 
 	void TerminationTime(int& CTS);

@@ -68,7 +68,7 @@ void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 bool RR::ProcessMigrationToSJF(Processor* receiver, int RTF, int slice)
 {
 	Process* p = nullptr;
-	if (!receiver || !RUN)
+	if (!receiver || !RUN || receiver == this)
 	{
 		return false;
 	}
@@ -87,7 +87,7 @@ bool RR::ProcessMigrationToSJF(Processor* receiver, int RTF, int slice)
 		}
 	}
 }
-void RR::InserttoRDY(Process* P)
+void RR::InserttoRDY(Process* P)                      //Function overridden to insert in RDY lists
 {
 	RDY->Enqueue(P);
 	RDYcount++;
@@ -164,7 +164,12 @@ void RR::StealProcess(Processor* p)
 
 }
 
-
+bool RR::IsIdle()
+{
+	if (!IsBusy() && RDY->IsEmpty())
+		return true;
+	return false;
+}
 
 RR::~RR()                                                   //Default Destructor
 {

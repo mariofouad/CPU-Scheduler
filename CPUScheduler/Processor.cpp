@@ -76,11 +76,10 @@ int Processor::TotalTime()
 }
 
 void Processor::RemTime(Process* p)
+{if(p==nullptr)
 {
-	if (p == nullptr)
-	{
-		return;
-	}
+	return;
+}
 	ExpectedTime = ExpectedTime - p->GetCT();
 }
 
@@ -104,8 +103,8 @@ int Processor::GetIdleTime()
 
 void Processor::CalcIdleTime()
 {
-	/*if (IsIdle())
+	if (IsIdle())
 	{
 		IdleTime++;
-	}*/
+	}
 }

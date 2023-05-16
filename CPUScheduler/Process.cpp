@@ -53,13 +53,6 @@ void Process::SetNumberOfRequests(int n)
 	IO_D = new int[n];
 }
 
-void Process::ExcutionTimeNeeded(int& timeleft)
-{
-	CT--;
-	TimeInRun++;
-	timeleft = CT;
-}
-
 bool Process::MustBeBlocked(int& CTS)
 {
 	if (ION == 0)
@@ -130,7 +123,7 @@ ostream& operator << (ostream& Out, Process* P) {
 
 ostream& operator <= (ostream& Out, Process* P)
 {
-	Out << P->TT << "\t" << P->PID << "\t" << P->AT << "\t" << P->CT << "\t" << P->TotalIOD << "\t" << P->WT << "\t" << P->RT << "\t" << P->TRT;
+	Out << P->TT << "\t" << P->PID << "\t" << P->AT << "\t" << P->tempCT << "\t" << P->TotalIOD << "\t" << P->WT << "\t" << P->RT << "\t" << P->TRT;
 	return Out;
 }
 int Process::GetAT()
