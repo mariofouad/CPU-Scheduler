@@ -103,7 +103,7 @@ int FCFS::GenerateRandom()
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 100));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
 }
 
 bool FCFS::ProcIsFound(Process* p)
@@ -213,7 +213,7 @@ void FCFS::UpdateWT_RDY()
 }
 bool FCFS::ProcessMigratonToRR(Processor* receiver, int MaxW)
 {
-	if (!receiver || !IsBusy())
+	if (!receiver || !IsBusy() || receiver == this)
 	{
 		return false;
 	}

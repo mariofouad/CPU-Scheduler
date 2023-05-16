@@ -99,9 +99,7 @@ void Scheduler::SIMULATOR()
 				}
 			}
 			
-			//Process Forking 
 			ProcessForking(P);
-			//Process Migration
 		}
 		KillSig();
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
@@ -109,8 +107,6 @@ void Scheduler::SIMULATOR()
 			SJF* S = nullptr;
 			Process* SP = nullptr;
 			int j = 0;
-		
-			
 			while (SJF_Processors->DeleteFirst(S))
 			{
 				/////////////////////////////////////////////
