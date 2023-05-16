@@ -163,15 +163,14 @@ void Scheduler::SIMULATOR()
 					R->KillRUN();
 				}
 				/////////////////////////////////////////////
-					/////////  Processes Migration 1 ////////////
-					/////////////////////////////////////////////
+				/////////  Processes Migration 1 ////////////
+				/////////////////////////////////////////////
 				while (R->ProcessMigrationToSJF(AllProcessors[ShortestSJF], RTF, TimeSliceRR))
 				{
 					RTFcount++;
 					R->ScheduleAlgo(CurrentTimestep, RTF);
 					SetIndexof_ShortestSJF();
 				}
-
 			}
 			RR_Processors->InsertEnd(R);
 			i++;
@@ -197,10 +196,11 @@ void Scheduler::SIMULATOR()
 	{
 		UserInterface->SilentMode();
 	}
+	UserInterface->OutputPart();
 
 	////////////////CALCULATIONS////////////////
-	MaxWpercentage = (maxWcount / tempProc_count) * 100.00;
-	RTFpercentage = (RTFcount / tempProc_count) * 100.00;
+	MaxWpercentage = (static_cast<double>(maxWcount) / tempProc_count) * 100.00;
+	RTFpercentage = (static_cast<double>(RTFcount) / tempProc_count) * 100.00;
 	//calloutputfile
 	OutputFile();
 	//=================================================================== END OF SCHEDULING ==========================================//
@@ -372,30 +372,30 @@ bool Scheduler::MoveToShFCFS(Process* p)
 }
 
 void Scheduler::Work_stealing() {
-	// Check if Processorcount <= 2
-	if (Processor_count<= 2) {
-		return;
-	}
-	if (!LongestSteal()  || !ShortestSteal())
-	{
-		return;
-	}
-	
-	Processor* LQF = AllProcessors[LongestIndex];
-	Processor* SQF = AllProcessors[ShortestIndex];
-	
-	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
-	{
-		LQF->StealProcess(SQF);
-		LongestSteal();
-		ShortestSteal();
-		LQF = AllProcessors[LongestIndex];
-		SQF = AllProcessors[ShortestIndex];
-		if (!LongestQueue() || !ShortestQueue())
-		{
-			return;
-		}
-	}
+	//// Check if Processorcount <= 2
+	//if (Processor_count<= 2) {
+	//	return;
+	//}
+	//if (!LongestSteal()  || !ShortestSteal())
+	//{
+	//	return;
+	//}
+	//
+	//Processor* LQF = AllProcessors[LongestIndex];
+	//Processor* SQF = AllProcessors[ShortestIndex];
+	//
+	//while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
+	//{
+	//	LQF->StealProcess(SQF);
+	//	LongestSteal();
+	//	ShortestSteal();
+	//	LQF = AllProcessors[LongestIndex];
+	//	SQF = AllProcessors[ShortestIndex];
+	//	if (!LongestQueue() || !ShortestQueue())
+	//	{
+	//		return;
+	//	}
+	//}
 }
 
 
@@ -423,14 +423,14 @@ bool Scheduler::FileisFound() {
 	}
 }
 
-string Scheduler::OutputFileName() //here make the user enters the name of the file and I will call the function in output file function
+void Scheduler::SetOutputFName(string name)
 {
-	return "TestOutputFile.txt";
+	OutputFileName = name;
 }
 
 void Scheduler::OutputFile()
 {	
-	std::ofstream outputfile(OutputFileName());
+	std::ofstream outputfile(OutputFileName);
 	if (outputfile.is_open())
 	{
 		Process* P = new Process;

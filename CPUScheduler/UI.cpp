@@ -80,8 +80,19 @@ int UI::UpdateInterface() const {
 
 void UI::SilentMode() const {
 	cout << endl;
-	cout << "=========================================" << endl;
+	cout << "======================================" << endl;
 	cout << "Silent mode...   Simulation Starts.." << endl;
+}
+
+void UI::OutputPart() const
+{
+	string namefromuser;
+	cout << endl;
+	cout << "======================================" << endl;
+	cout << "ENTER THE OUTPUT FILE NAME HERE: " << endl;
+	cin >> namefromuser;
+	string FileName = namefromuser + ".txt";
+	S->SetOutputFName(FileName);
 	cout << "Simulation ends, Output file created" << endl;
 }
 

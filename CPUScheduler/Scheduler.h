@@ -54,7 +54,7 @@ private:
 	int TimeSliceRR = 0;
 	int STL = 0;
 	int ForkProb = 0;
-	
+	string OutputFileName;									 //The Output file name will be set by the user from the UI
 	int *KillPID ;
 	int *KillTime ;
 	int killindex = 0;
@@ -87,7 +87,7 @@ public:
 
 	bool FileisFound();										 //Returns true if file is found
 
-	string OutputFileName();
+	void SetOutputFName(string name);
 
 	void OutputFile();
 

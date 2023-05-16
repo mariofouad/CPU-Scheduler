@@ -26,13 +26,15 @@ private:
 
 public:
 
-	UI(Scheduler* a);
+	UI(Scheduler* a);					//Constructor
 
-	int UpdateInterface() const;
+	int UpdateInterface() const;		//Updates the Interface showing the data needed in the console ,to be called every timestep 
 
-	void SilentMode() const;
+	void SilentMode() const;			//Responsible for Silent Mode
 
-	~UI();
+	void OutputPart() const;			//Will take the outputfile name from the user
+
+	~UI();								//Destructor
 };
 
 #endif
