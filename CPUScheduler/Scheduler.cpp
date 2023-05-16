@@ -2,7 +2,7 @@
 //===================================================================================================================================//
 //=========================================================== CLASS IMPLIMENTATION ==================================================//
 //===================================================================================================================================//
-Scheduler::Scheduler()
+Scheduler::Scheduler()                      //Scheduler constructor where we create all list
 {
 	UserInterface = new UI(this);
 	NEW = new LinkedQueue<Process*>;
@@ -12,13 +12,12 @@ Scheduler::Scheduler()
 	FCFS_Processors = new LinkedList<FCFS*>;
 	SJF_Processors = new LinkedList<SJF*>;
 	RR_Processors = new LinkedList<RR*>;
-	//ForkTree = new BTree<Process*>;
 	Treeptrs = new LinkedList<BTree<Process*>*>;
 }
 
-Scheduler::~Scheduler() 
+Scheduler::~Scheduler()                     //Scheduler destructor where we delete all dynamic allocated lists
 {
-	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface;
+	delete NEW, BLK,TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface,Treeptrs;
 }
 //===================================================================================================================================//
 //================================================================= PHASE-2 =========================================================//
