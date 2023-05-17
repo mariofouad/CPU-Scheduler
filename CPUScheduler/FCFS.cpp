@@ -168,24 +168,38 @@ bool FCFS::IsIdle()
 	return false;
 }
 //============================================================ WORK STEALING ======================================//
-void FCFS::StealProcess(Processor* p)                                 //Work stealing function
+bool FCFS::StealProcess(Processor* p)                                 //Work stealing function
 {
+
 	if (p == nullptr)
 	{
-		return;
+		return false;
 	}
 	if (RDYcount == 1)
 	{
-		return;
-
+		return false;
 	}
 	Process* Proc = nullptr;
-	
+
+	RDY->peek(Proc);
+	int i= 1;
+	int cf = 0;
+	while (Proc->IsForkedProc())
+	{
+		RDY->Traversal(Proc, i);
+		cf++;
+		if (RDYcount == cf)
+		{
+			return false;
+		}
+		i++;
+	}
 	RDY->DeleteFirst(Proc);
 	RDYcount--;
 	RemTime(Proc);
 	p->InserttoRDY(Proc);
 	p->AddTime(Proc);
+	return true;
 }
 void FCFS::UpdateWT_RDY()
 {
@@ -233,4 +247,8 @@ void FCFS::MoveFromBLKToRUN(Process* P)                      //Virtual function 
 void FCFS::PrintRDY()
 {
 	RDY->PrintList();
+}
+int FCFS::getRDYCount()
+{
+	return RDYcount;
 }

@@ -60,7 +60,7 @@ public:
 	void KillIsDone();
 
 	//Work stealing
-	void StealProcess(Processor* p);
+	bool StealProcess(Processor* p);	
 	void UpdateWT_RDY();
 
 	//Rest of functions
@@ -70,5 +70,7 @@ public:
 	string returntypename();                                
 	void SetKillListOrphan(int id, int k);
 	bool IsIdle();                                              //Virtual overriden idle function
+	int getRDYCount();
+
 };
 #endif

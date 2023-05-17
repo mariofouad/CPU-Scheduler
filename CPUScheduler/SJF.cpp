@@ -66,16 +66,15 @@ bool SJF::MoveFromRDYToRUN(int& CTS)
 	}
 	return false;
 }
-void SJF::StealProcess(Processor* p)
+bool SJF::StealProcess(Processor* p)
 {
 	if (p == nullptr)
 	{
-		return;
+		return false;
 	}
 	if (RDYcount == 1)
 	{
-		return;
-
+		return false;
 	}
 	Process* Proc = nullptr;
 	RDY->remove(Proc);
@@ -83,10 +82,16 @@ void SJF::StealProcess(Processor* p)
 	RemTime(Proc);
 	p->InserttoRDY(Proc);
 	p->AddTime(Proc);
+	return true;
+
 }
 string SJF::returntypename()
 {
 	return "[SJF ]";
+}
+int SJF::getRDYCount()
+{
+	return RDYcount;
 }
 SJF::~SJF()
 {

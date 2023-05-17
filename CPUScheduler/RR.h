@@ -35,12 +35,14 @@ public:
 	bool ProcessMigrationToSJF(Processor* reciever, int RTF, int slice); //Will migrate 1 process from the RDY queue of RR to SJF
 
 	//Work Stealing
-	void StealProcess(Processor* p);
+	bool StealProcess(Processor* p);
 
 	//Rest of functions
 	bool IsIdle();
 	void InserttoRDY(Process* P);							              //This function will insert a Process into that processor RDY list
 	void PrintRDY();										              //Prints the data in the RDY list 
 	string returntypename();	                                          //Returna a string with the type name which is RR
+	int getRDYCount();
+	
 };
 #endif

@@ -34,6 +34,7 @@ private:
 	int TotalIOD=0;
 	int TimesForked=0;
 	bool ForkedProc = false;
+
 	LinkedQueue<IOunit>* IOrequests;
 	int NoofRR_RUN = 0;
 	BTree<Process*>* Root = nullptr;
@@ -110,6 +111,8 @@ public:
 	bool ForkFromParent();
 
 	void ForkOpIsDone();
+
+	bool IsForkedProc();
 
 	bool ProcessCanFork(int CTS) const;
 

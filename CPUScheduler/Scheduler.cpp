@@ -76,7 +76,6 @@ void Scheduler::SIMULATOR()
 				if (proc->MustBeBlocked(CurrentTimestep))                       
 				{
 					MoveToBlk(proc);
-					proc->ExcutionTimeNeeded(timeleft);
 					//P->RemTime(proc);
 					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
 					continue;
@@ -427,33 +426,40 @@ bool Scheduler::MoveToShFCFS(Process* p)
 	return true;
 }
 
-void Scheduler::Work_stealing() {
-	//// Check if Processorcount <= 2
-	//if (Processor_count<= 2) {
-	//	return;
-	//}
-	//if (!LongestSteal()  || !ShortestSteal())
-	//{
-	//	return;
-	//}
-	//
-	//Processor* LQF = AllProcessors[LongestIndex];
-	//Processor* SQF = AllProcessors[ShortestIndex];
-	//
-	//while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
-	//{
-	//	LQF->StealProcess(SQF);
-	//	LongestSteal();
-	//	ShortestSteal();
-	//	LQF = AllProcessors[LongestIndex];
-	//	SQF = AllProcessors[ShortestIndex];
-	//	if (!LongestQueue() || !ShortestQueue())
-	//	{
-	//		return;
-	//	}
-	//}
-}
 
+void Scheduler::Work_stealing() {
+	
+	if (!LongestSteal()  || !ShortestSteal())
+	{
+		return;
+	}
+	int OldLindex = LongestIndex;
+	int OldSiindex = ShortestIndex;
+	Processor* LQF = AllProcessors[LongestIndex];
+	Processor* SQF = AllProcessors[ShortestIndex];
+	
+	while (((((float)(LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0))
+	{
+		if (!(LQF->StealProcess(SQF)))
+		{
+			return;
+		}
+	
+		STL_Count++;
+		LongestSteal();
+		ShortestSteal();
+		LQF = AllProcessors[LongestIndex];
+		SQF = AllProcessors[ShortestIndex];
+		if (!LongestSteal() || !ShortestSteal())
+		{
+			return;
+		}
+		if (OldLindex == ShortestIndex && OldSiindex == LongestIndex)
+		{
+			return;
+		}
+	}
+}
 
 bool Scheduler::WorkisDone()
 {
@@ -479,20 +485,17 @@ bool Scheduler::FileisFound() {
 	}
 }
 
-string Scheduler::OutputFileName() //here make the user enters the name of the file and I will call the function in output file function
+void Scheduler::SetOutputFName(string name)
 {
-	return "TestOutputFile.txt";
+	OutputFileName = name;
 }
 
 void Scheduler::OutputFile()
 {
-	int STLPERCENTAGE = (STLPERC / tempProc_count) * 100;
-	std::ofstream outputfile(OutputFileName());
+	std::ofstream outputfile(OutputFileName);
 	if (outputfile.is_open())
 	{
 		Process* P = new Process;
-		int wt = 0, rt = 0, tt = 0;
-		int AvgWT = 0, AvgRT = 0, AvgTT = 0;
 		outputfile << "TT" << "\t" << "PID" << "\t" << "AT" << "\t" << "CT" << "\t" << "IO_D" << "\t" << "WT" << "\t" << "RT" << "\t" << "TRT" << std::endl;
 		while (TRM->Dequeue(P))
 		{
@@ -501,24 +504,24 @@ void Scheduler::OutputFile()
 		}
 		outputfile << std::endl;
 		outputfile << "Processes: " << tempProc_count << endl;
-		outputfile << "Avg WT = " << (AvgWT = wt / tempProc_count) << "," << "\t" << "Avg RT = " << (AvgRT = rt / tempProc_count) << "," << "\t" << "Avg TT = " << (AvgTT = tt / tempProc_count) << std::endl;
+		outputfile << "Avg WT = " << AvgWT << "," << "\t" << "Avg RT = " << AvgRT << "," << "\t" << "Avg TT = " << AvgTT << std::endl;
 		outputfile << "Migration %: " << "RTF = " << RTFpercentage << "%," << "\t" << "MaxW = " << MaxWpercentage << "%" << std::endl; //need to be handeled
-		outputfile << "Work Steal %:" << "%" << std::endl;//need to be handeled
-		outputfile << "Forked Process:" << "%" << std::endl;//need to be handeled
-		outputfile << "Killed Process:" << "%" << std::endl;//need to be handeled
+		outputfile << "Work Steal %: " << STL_Perc << "%" << std::endl;
+		outputfile << "Forked Process: " << ForkedPerc << "%" << std::endl;
+		outputfile << "Killed Process: " << KillPerc << "%" << std::endl;
 		outputfile << std::endl;
 		outputfile << "Processors: " << Processor_count << " [" << FCFS_Count << " FCFS, " << SJF_Count << " SJF, " << RR_Count << " RR" << "]" << std::endl;
 		outputfile << "Processors Load:" << std::endl;//need to be handeled
 		Load();
 		for (int i = 0; i < Processor_count; i++)
 		{
-			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
+			outputfile << "p" << i + 1 << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
 		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
 		Uti();
 		for (int i = 0; i < Processor_count; i++)
 		{
-			/*	outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
+			/*	outputfile << "p" << i+1 << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
 		}
 		outputfile << "Avg Utilization = " << AvgUti() << "%" << std::endl;//need to be handeled
 		outputfile.close();
@@ -528,7 +531,6 @@ void Scheduler::OutputFile()
 		return;
 	}
 }
-
 void Scheduler::ReadFile()
 {
 	std::string line;
@@ -841,7 +843,6 @@ bool Scheduler::ShortestSteal()
 {
 	int minprocessor = AllProcessors[0]->TotalTime();
 	ShortestIndex = 0;
-
 	int numMinProcessors = 1; // Number of processors with max TotalTime
 
 	for (int i = 1; i < Processor_count; i++)

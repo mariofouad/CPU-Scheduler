@@ -172,6 +172,10 @@ void Process::ForkOpIsDone()
 	TimesForked++;
 }
 
+bool Process::IsForkedProc()
+{
+	return ForkedProc;
+}
 bool Process::ProcessCanFork(int CTS) const
 {
 	return ((TimesForked < 2) && (!IsOpDone(CTS)));

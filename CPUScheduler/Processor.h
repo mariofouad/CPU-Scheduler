@@ -39,7 +39,9 @@ public:
 
 	virtual bool IsBusy();
 
-	virtual void StealProcess(Processor* p) = 0;
+	virtual int getRDYCount()=0;
+
+	virtual bool StealProcess(Processor* p) = 0;
 
 	void KillRUN();
 

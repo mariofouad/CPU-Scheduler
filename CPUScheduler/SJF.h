@@ -25,13 +25,17 @@ public:
 	void PrintRDY();
 
 	bool IsIdeal();
-	void StealProcess(Processor* p);
+
+	bool StealProcess(Processor* p);
 	
 	bool MoveFromRDYToRUN(int& CTS);
 
 	string returntypename();
 
 	bool ProcIsFound(Process* p) { return 0; }
+
+	int getRDYCount();
+	
 
 	~SJF();                                                  //Default Destructor
 	bool IsIdle();

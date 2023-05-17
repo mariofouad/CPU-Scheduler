@@ -103,16 +103,16 @@ void RR::SetTMslice(int timeslice)
 {
 	TMslice = timeslice;
 }
-void RR::StealProcess(Processor* p)
+bool RR::StealProcess(Processor* p)
 {
+
 	if (p == nullptr)
 	{
-		return;
+		return false;
 	}
 	if (RDYcount == 1)
 	{
-		return;
-
+		return false;
 	}
 	Process* Proc = nullptr;
 	RDY->Dequeue(Proc);
@@ -120,12 +120,17 @@ void RR::StealProcess(Processor* p)
 	RemTime(Proc);
 	p->InserttoRDY(Proc);
 	p->AddTime(Proc);
+	return true;
 }
 bool RR::IsIdle()
 {
 	if (!IsBusy() && RDY->IsEmpty())
 		return true;
 	return false;
+}
+int RR::getRDYCount()
+{
+	return RDYcount;
 }
 RR::~RR()                                                   //Default Destructor
 {
