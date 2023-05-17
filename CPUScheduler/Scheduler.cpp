@@ -2,7 +2,7 @@
 //===================================================================================================================================//
 //=========================================================== CLASS IMPLIMENTATION ==================================================//
 //===================================================================================================================================//
-Scheduler::Scheduler()                      //Scheduler constructor where we create all list
+Scheduler::Scheduler()
 {
 	UserInterface = new UI(this);
 	NEW = new LinkedQueue<Process*>;
@@ -12,23 +12,22 @@ Scheduler::Scheduler()                      //Scheduler constructor where we cre
 	FCFS_Processors = new LinkedList<FCFS*>;
 	SJF_Processors = new LinkedList<SJF*>;
 	RR_Processors = new LinkedList<RR*>;
+	//ForkTree = new BTree<Process*>;
 	Treeptrs = new LinkedList<BTree<Process*>*>;
 }
 
-Scheduler::~Scheduler()                     //Scheduler destructor where we delete all dynamic allocated lists
+Scheduler::~Scheduler()
 {
-	delete NEW, BLK,TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface,Treeptrs;
+	delete NEW, BLK, TRM, FCFS_Processors, RR_Processors, SJF_Processors, AllProcessors, ActualRUN, UserInterface;
 }
 //===================================================================================================================================//
 //================================================================= PHASE-2 =========================================================//
 //===================================================================================================================================//
 void Scheduler::SIMULATOR()
 {
-	//============================================================ READ FILE ========================================================//
-	
-	//Calling Read file function and insert all Processors
+	//=================================== READ FILE ==================================//
 	int id = 1;
-	ReadFile();                               
+	ReadFile();
 	for (int i = 0; i < FCFS_Count; i++)
 	{
 		FCFS* P = new FCFS(id++);
@@ -41,7 +40,7 @@ void Scheduler::SIMULATOR()
 		SJF* P = new SJF(id++);
 		Processor* Pproc = P;
 		SJF_Processors->InsertEnd(P);
-		AllProcessors[FCFS_Count+i] = P;
+		AllProcessors[FCFS_Count + i] = P;
 	}
 	for (int i = 0; i < RR_Count; i++)
 	{
@@ -50,45 +49,41 @@ void Scheduler::SIMULATOR()
 		RR_Processors->InsertEnd(P);
 		AllProcessors[FCFS_Count + SJF_Count + i] = P;
 	}
-	//============================================================== SCHEDULING ======================================================//
-	while (!WorkisDone()) 
+	//===========================================================================================================================//
+
+	while (!WorkisDone())
 	{
 		MoveFromNewToRdy();
 		SetIndexof_ShortestRR();
 		SetIndexof_ShortestSJF();
-
 		//=================================== HANDLING FCFS ==================================//
-
-		//Loop on FCFS Processors
 		for (int i = 0; i < FCFS_Count; i++)
-		{   
-			//Creating needed pointers                                    
+
+		{
+			//Calling Scheduler Algo                                      
 			FCFS* P = nullptr;
 			Process* proc = nullptr;
-
-			//Loop on FCFS processor by Delete fst
-			FCFS_Processors->DeleteFirst(P);
-			
-			//Process Migration update the waiting time
+			FCFS_Processors->Traversal(P, i);
 			P->UpdateWT_RDY();
-
-			//Calling Scheduler Algo 
-			P->ScheduleAlgo(CurrentTimestep,MaxW);
-
+			P->ScheduleAlgo(CurrentTimestep, MaxW);
 			//Handle BLK and TRM operation on RUN
 			proc = P->GetRUN();
-			if (P->IsBusy())                                                    
+			if (P->IsBusy())                                                    //Busy? yes -> make checks needed : No-> nothing to be done
 			{
 				                                                        
+				
 				//Check on BLK condition
 				if (proc->MustBeBlocked(CurrentTimestep))                       
 				{
-					MoveToBlk(proc);                            //Moving the process in RUN to BLK list               
+					MoveToBlk(proc);
+					proc->ExcutionTimeNeeded(timeleft);
 					//P->RemTime(proc);
-					P->KillRUN();                               //Remove the process from RUN                                            
-				}	                                                            
-
-				//=========== Process Migration 2 ============//
+					P->KillRUN();                                               //mmken gedan ba3d ma tefred eno hai3mel el req yetrefed bara 3ashan 
+					continue;
+				}	                                                            //Iorequested? true -> move to BLK : false ->nothing to be done
+			/////////////////////////////////////////////
+				////////// Processes Migration 2 ////////////
+				/////////////////////////////////////////////
 				while (P->ProcessMigratonToRR(AllProcessors[ShortestRR], MaxW))
 				{
 					maxWcount++;
@@ -96,30 +91,28 @@ void Scheduler::SIMULATOR()
 					SetIndexof_ShortestRR();
 				}
 
+				//P->DecrementET();
+
 				//Check on the termination condition
 				if (proc->MustbeTerminated() && MovetoTRM(proc))
 				{
-					if (P->GenerateKillSigToChild(proc))
-					{
-						ProcessOrphan(proc);
-					}
+					//P->RemTime(proc);
 					P->KillRUN();                                 //Remove the process from RUN
 				}
 			}
-			
+
 			//Process Forking 
-			ProcessForking(P);
-
-			//Return the FCFS processor back
-			FCFS_Processors->InsertEnd(P);
+			//ProcessForking(P);
+			//Process Migration
 		}
-
-		//Process Killing
 		KillSig();
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
+			
 			SJF* S = nullptr;
 			Process* SP = nullptr;
 			int j = 0;
+		
+			
 			while (SJF_Processors->DeleteFirst(S))
 			{
 				/////////////////////////////////////////////
@@ -147,7 +140,7 @@ void Scheduler::SIMULATOR()
 				if (j == SJF_Count) break;
 			}
 
-		
+
 		//======================================= HANDLING RR PROCESSORS ===================================//				
 		RR* R = nullptr;
 		Process* p = nullptr;
@@ -172,14 +165,15 @@ void Scheduler::SIMULATOR()
 					R->KillRUN();
 				}
 				/////////////////////////////////////////////
-				/////////  Processes Migration 1 ////////////
-				/////////////////////////////////////////////
+					/////////  Processes Migration 1 ////////////
+					/////////////////////////////////////////////
 				while (R->ProcessMigrationToSJF(AllProcessors[ShortestSJF], RTF, TimeSliceRR))
 				{
 					RTFcount++;
 					R->ScheduleAlgo(CurrentTimestep, RTF);
 					SetIndexof_ShortestSJF();
 				}
+
 			}
 			RR_Processors->InsertEnd(R);
 			i++;
@@ -205,33 +199,15 @@ void Scheduler::SIMULATOR()
 	{
 		UserInterface->SilentMode();
 	}
-	UserInterface->OutputPart();
 
 	////////////////CALCULATIONS////////////////
 	MaxWpercentage = (static_cast<double>(maxWcount) / tempProc_count) * 100.00;
 	RTFpercentage = (static_cast<double>(RTFcount) / tempProc_count) * 100.00;
-	Process* P;
-	int wtp, rtp, ttp = 0;
-	for (int i = 0; i < TRM_count; i++)
-	{
-		TRM->Dequeue(P);
-		P->CalcStatistics(wtp, rtp, ttp);
-		TotalWT += wtp;
-		TotalRT += rtp;
-		TotalTT += ttp;
-		TRM->Enqueue(P);
-	}
-	AvgWT = TotalWT / tempProc_count;
-	AvgRT = TotalRT / tempProc_count;
-	AvgTT = TotalTT / tempProc_count;
-	ForkedPerc = ((double(ForkedCount) / tempProc_count) * 100);
-	STL_Perc = (double(STL_Count) / tempProc_count) * 100;
-	KillPerc = (double(KillCount) / tempProc_count) * 100;
 	//calloutputfile
 	OutputFile();
 	//=============================================================== END OF SCHEDULING ==========================================//
 }
-	
+
 //================================================================ USED FUNCTIONS IN PHASE2 ======================================//
 //=================================================================== PROCESS FORKING ============================================//
 void Scheduler::ProcessForking(FCFS* P)
@@ -248,7 +224,7 @@ void Scheduler::ProcessForking(FCFS* P)
 		Proc_count++;
 		ForkedCount++;
 		ForkedProc->SetForkedProc();
-		
+
 		//Move to Shortest FCFS processor
 		MoveToShFCFS(ForkedProc);
 
@@ -261,7 +237,7 @@ void Scheduler::ProcessForking(FCFS* P)
 
 			Tree = new BTree<Process*>;   //create el tree
 			TreeCount++;
-		
+
 			Tree->insertBT(proc);         //Insert awel process PARENT to all coming processes of this list
 			Tree->insertBT(ForkedProc);   //Insert the forked process in the tree  note will be inserted left as it is the fst node
 
@@ -277,7 +253,7 @@ void Scheduler::ProcessForking(FCFS* P)
 
 			for (int i = 0; i < TreeCount; i++)  //loop on the tree ptrs
 			{
-				Treeptrs->DeleteFirst(Tree); 
+				Treeptrs->DeleteFirst(Tree);
 				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
 				{
 
@@ -296,7 +272,7 @@ void Scheduler::ProcessForking(FCFS* P)
 				Treeptrs->DeleteFirst(Tree);
 				if (Tree == proc->GetRoot())  // law el ptr = ptr (mafrood eno nafs el adress)
 				{
-					
+
 					Tree->find(proc, ForkedProc); // sa3etha ha insert el child
 				}
 				Treeptrs->InsertEnd(Tree);
@@ -450,34 +426,35 @@ bool Scheduler::MoveToShFCFS(Process* p)
 	AllProcessors[minprocessori]->InserttoRDY(p);
 	return true;
 }
-void Scheduler::Work_stealing() 
-{
-	// Check if Processorcount <= 2
-	if (Processor_count<= 2) {
-		return;
-	}
-	if (!LongestSteal()  || !ShortestSteal())
-	{
-		return;
-	}
-	
-	Processor* LQF = AllProcessors[LongestIndex];
-	Processor* SQF = AllProcessors[ShortestIndex];
-	
-	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
-	{
-		LQF->StealProcess(SQF);
-		LongestSteal();
-		ShortestSteal();
-		LQF = AllProcessors[LongestIndex];
-		SQF = AllProcessors[ShortestIndex];
-		if (!LongestQueue() || !ShortestQueue())
-		{
-			return;
-		}
-		STL_Count++;
-	}
+
+void Scheduler::Work_stealing() {
+	//// Check if Processorcount <= 2
+	//if (Processor_count<= 2) {
+	//	return;
+	//}
+	//if (!LongestSteal()  || !ShortestSteal())
+	//{
+	//	return;
+	//}
+	//
+	//Processor* LQF = AllProcessors[LongestIndex];
+	//Processor* SQF = AllProcessors[ShortestIndex];
+	//
+	//while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
+	//{
+	//	LQF->StealProcess(SQF);
+	//	LongestSteal();
+	//	ShortestSteal();
+	//	LQF = AllProcessors[LongestIndex];
+	//	SQF = AllProcessors[ShortestIndex];
+	//	if (!LongestQueue() || !ShortestQueue())
+	//	{
+	//		return;
+	//	}
+	//}
 }
+
+
 bool Scheduler::WorkisDone()
 {
 	if (NEW->IsEmpty() && BLK->IsEmpty() && TRM_count == tempProc_count) return true;
@@ -502,17 +479,20 @@ bool Scheduler::FileisFound() {
 	}
 }
 
-void Scheduler::SetOutputFName(string name)
+string Scheduler::OutputFileName() //here make the user enters the name of the file and I will call the function in output file function
 {
-	OutputFileName = name;
+	return "TestOutputFile.txt";
 }
 
 void Scheduler::OutputFile()
-{	
-	std::ofstream outputfile(OutputFileName);
+{
+	int STLPERCENTAGE = (STLPERC / tempProc_count) * 100;
+	std::ofstream outputfile(OutputFileName());
 	if (outputfile.is_open())
 	{
 		Process* P = new Process;
+		int wt = 0, rt = 0, tt = 0;
+		int AvgWT = 0, AvgRT = 0, AvgTT = 0;
 		outputfile << "TT" << "\t" << "PID" << "\t" << "AT" << "\t" << "CT" << "\t" << "IO_D" << "\t" << "WT" << "\t" << "RT" << "\t" << "TRT" << std::endl;
 		while (TRM->Dequeue(P))
 		{
@@ -521,29 +501,29 @@ void Scheduler::OutputFile()
 		}
 		outputfile << std::endl;
 		outputfile << "Processes: " << tempProc_count << endl;
-		outputfile << "Avg WT = " << AvgWT << "," << "\t" << "Avg RT = " << AvgRT << "," << "\t" << "Avg TT = " << AvgTT << std::endl;
+		outputfile << "Avg WT = " << (AvgWT = wt / tempProc_count) << "," << "\t" << "Avg RT = " << (AvgRT = rt / tempProc_count) << "," << "\t" << "Avg TT = " << (AvgTT = tt / tempProc_count) << std::endl;
 		outputfile << "Migration %: " << "RTF = " << RTFpercentage << "%," << "\t" << "MaxW = " << MaxWpercentage << "%" << std::endl; //need to be handeled
-		outputfile << "Work Steal %: " << STL_Perc << "%" << std::endl;
-		outputfile << "Forked Process: " << ForkedPerc << "%" << std::endl;
-		outputfile << "Killed Process: " << KillPerc << "%" << std::endl;
+		outputfile << "Work Steal %:" << "%" << std::endl;//need to be handeled
+		outputfile << "Forked Process:" << "%" << std::endl;//need to be handeled
+		outputfile << "Killed Process:" << "%" << std::endl;//need to be handeled
 		outputfile << std::endl;
 		outputfile << "Processors: " << Processor_count << " [" << FCFS_Count << " FCFS, " << SJF_Count << " SJF, " << RR_Count << " RR" << "]" << std::endl;
-		outputfile << "Processors Load:"<< std::endl;//need to be handeled
+		outputfile << "Processors Load:" << std::endl;//need to be handeled
 		Load();
 		for (int i = 0; i < Processor_count; i++)
 		{
-			outputfile << "p" << i+1 << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
+			outputfile << "p" << i << "=" << ProcessorLoad[i] << "%" << "," << " " << " ";
 		}
 		outputfile << "Processors Utiliz:" << std::endl;//need to be handeled
 		Uti();
 		for (int i = 0; i < Processor_count; i++)
 		{
-		/*	outputfile << "p" << i+1 << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
+			/*	outputfile << "p" << i << "=" << ProcessorUti[i] << "%" << "," << " " << " "; exception ya mooza*/
 		}
 		outputfile << "Avg Utilization = " << AvgUti() << "%" << std::endl;//need to be handeled
 		outputfile.close();
 	}
-	else 
+	else
 	{
 		return;
 	}
@@ -559,10 +539,12 @@ void Scheduler::ReadFile()
 		std::getline(inputfile, line);
 		std::stringstream firstline(line);
 		firstline >> FCFS_Count >> SJF_Count >> RR_Count;
+		ShortestSJF = FCFS_Count;
+		ShortestRR = FCFS_Count + SJF_Count;
 		Processor_count = FCFS_Count + SJF_Count + RR_Count;
-		AllProcessors = new Processor*[Processor_count];
+		AllProcessors = new Processor * [Processor_count];
 		ProcessorLoad = new int[Processor_count];
-		
+
 		//Second line in text file
 		std::getline(inputfile, line);
 		std::stringstream secondline(line);
@@ -584,11 +566,11 @@ void Scheduler::ReadFile()
 
 		for (int i = 0; i < Proc_count; i++)
 		{
-			int AT, PID, CT, N, IOR=0, IOD=0;
+			int AT, PID, CT, N, IOR = 0, IOD = 0;
 			std::getline(inputfile, line);
 			std::stringstream Processline(line);
 			Processline >> AT >> PID >> CT >> N;
-			Process* P=new Process(AT, PID, CT);
+			Process* P = new Process(AT, PID, CT);
 			P->SetNumberOfRequests(N);
 			if (N != 0)
 			{
@@ -830,18 +812,18 @@ int Scheduler::ShortestQueue()
 		{
 			minprocessor = AllProcessors[i]->TotalTime();
 			minprocessori = i;
-		
+
 
 		}
 	}
-	
+
 	return minprocessori;
 }
 int Scheduler::LongestQueue()
 {
 	int maxprocessor = AllProcessors[0]->TotalTime();
 	int maxprocessori = 0;
-	
+
 	for (int i = 0; i < Processor_count; i++)
 	{
 		if (AllProcessors[i]->TotalTime() > maxprocessor)
@@ -849,24 +831,25 @@ int Scheduler::LongestQueue()
 			maxprocessor = AllProcessors[i]->TotalTime();
 			maxprocessori = i;
 		}
-	
+
 	}
 
-    return maxprocessori;
+	return maxprocessori;
 }
 
 bool Scheduler::ShortestSteal()
 {
 	int minprocessor = AllProcessors[0]->TotalTime();
-	
+	ShortestIndex = 0;
+
 	int numMinProcessors = 1; // Number of processors with max TotalTime
 
-	for (int i = 0; i < Processor_count; i++)
+	for (int i = 1; i < Processor_count; i++)
 	{
 		if (AllProcessors[i]->TotalTime() < minprocessor)
 		{
 			minprocessor = AllProcessors[i]->TotalTime();
-			 ShortestIndex= i;
+			ShortestIndex = i;
 			numMinProcessors = 1;
 
 		}
@@ -884,9 +867,10 @@ bool Scheduler::ShortestSteal()
 bool Scheduler::LongestSteal()
 {
 	int maxprocessor = AllProcessors[0]->TotalTime();
-
+	LongestIndex = 0;
 	int numMaxProcessors = 1; // Number of processors with max TotalTime
-	for (int i = 0; i < Processor_count; i++)
+
+	for (int i = 1; i < Processor_count; i++)
 	{
 		if (AllProcessors[i]->TotalTime() > maxprocessor)
 		{
@@ -906,7 +890,7 @@ bool Scheduler::LongestSteal()
 	return true;
 }
 
-	
+
 void Scheduler::SetIndexof_ShortestSJF()
 {
 	for (int i = FCFS_Count; i < SJF_Count + FCFS_Count; i++)
@@ -928,6 +912,9 @@ void Scheduler::SetIndexof_ShortestRR()
 		}
 	}
 }
+
+
+
 //================================================================================================================================//
 //============================================================== END OF PHASE-2 ==================================================//
 //================================================================================================================================//
