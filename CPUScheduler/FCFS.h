@@ -22,7 +22,7 @@ struct KillList
 	int killtime;
 	int killid;
 };
-static LinkedQueue<KillList>* list = new LinkedQueue<KillList>;
+static LinkedList<KillList>* list = new LinkedList<KillList>;
 
 //start of the class
 class FCFS : public Processor
@@ -68,6 +68,7 @@ public:
 	void MoveFromBLKToRUN(Process* P);                          //Virtual function responsible for moving a Process from BLK to RDY list
 	void PrintRDY();
 	string returntypename();                                
+	void SetKillListOrphan(int id, int k);
 	bool IsIdle();                                              //Virtual overriden idle function
 };
 #endif

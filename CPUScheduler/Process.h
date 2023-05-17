@@ -6,17 +6,12 @@
 #include "LinkedQueue.h"
 
 using namespace std;
-// Struct containing the IO Request Time and IO Duration
 struct IOunit {
 	int IO_R;
 	int IO_D;
 };
-
 class Process
 {
-	//====================================================================================================================//
-	//======================================================== CLASS DATA MEMBERS  ===========================================//
-	//====================================================================================================================//
 private:
 
 	int PID = 0;				//Process Id
@@ -31,31 +26,30 @@ private:
 	int* IO_R;					//I|O Request time
 	int* IO_D;					//I|O Duration time
 	int Randomization = 0;		//Returns a number from 1-100 used for managing what to do with the process
-	friend ostream& operator << (ostream& Out, Process* p);  //Operator overloading for Cout in Console
-	friend ostream& operator <= (ostream& Out, Process* P); // Operator overloading for Cout in file
-	int LastOpDone=0;			//Sets the timestep of last operation done
-	int ReqDone = 0;			//Sets the timestep that the process need IO
-	int TimeInRun = 0;			//Sets the total time the process is in RUN
-	int TotalIOD=0;				//Total time the process is handed IO
-	int TimesForked=0;			//number of times the process forks
-	bool ForkedProc = false;    //Checks if a process  forked
-	LinkedQueue<IOunit>* IOrequests;	//A queue of IO requests blocks
-	int NoofRR_RUN = 0;		            //Number of timeslices for RR processor given to a process
-	BTree<Process*>* Root = nullptr;	//Binary tree of child processes
+	friend ostream& operator << (ostream& Out, Process* p);
+	friend ostream& operator <= (ostream& Out, Process* P);
+	int LastOpDone=0;
+	int ReqDone = 0;
+	int TimeInRun = 0;
+	int TotalIOD=0;
+	int TimesForked=0;
+	bool ForkedProc = false;
+	LinkedQueue<IOunit>* IOrequests;
+	int NoofRR_RUN = 0;
+	BTree<Process*>* Root = nullptr;
 	Process* Parent = nullptr;
 	Process* Child1 = nullptr;
 	Process* Child2 = nullptr;
-	//====================================================================================================================//
-	//======================================================== CLASS FUNCTIONS ===========================================//
-	//====================================================================================================================//
+	bool IsOrphaned=false;
+
 public:
-	Process();		//default constructor
+	Process();
 
-	Process(int art, int id, int cpt);		//Parameterized constructor
+	Process(int art, int id, int cpt);
 
-	void SetRoot(BTree<Process*>* P);		//Setter of binary root
+	void SetRoot(BTree<Process*>* P);
 
-	BTree<Process*>* GetRoot();				//Getter of binary root
+	BTree<Process*>* GetRoot();
 
 	void SetChild(Process* P);
 
@@ -67,14 +61,17 @@ public:
 
 	Process* GetRight();
 
-  bool IsNew(int& CTS);					//Checks if process came from new=======
+	void SetIsOrphaned();
 
+	bool GetIsOrphaned();
 
-	void OpIsDone(int& CTS);				//Sets Lastest opeation with current AT
+	bool IsNew(int& CTS);
 
-	bool IsOpDone(int CTS) const;			//checks if operation done
+	void OpIsDone(int& CTS); //me7tageen neshoof law el op 7asal 3aleeha 7aga han3raf lama ne update el time el operation 7asal feeh bel CTS
 
-	void SetNumberOfRequests(int n);	
+	bool IsOpDone(int CTS) const;
+
+	void SetNumberOfRequests(int n);
 
 	bool MustBeBlocked(int& CTS);
 

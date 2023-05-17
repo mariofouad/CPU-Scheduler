@@ -237,7 +237,7 @@ void Scheduler::SIMULATOR()
 void Scheduler::ProcessForking(FCFS* P)
 {
 	Process* proc = P->GetRUN();
-	if (P->ProcessorCanFork(proc, CurrentTimestep, ForkProb))
+	if (P->ProcessorCanFork(proc, CurrentTimestep, ForkProb) && !proc->GetIsOrphaned())
 	{
 		//Create the Forked Process and set the data of the child
 		int ForkedCT = 0;
@@ -331,7 +331,22 @@ void Scheduler::GenerateChildKillSig(Process*P)
 }
 void Scheduler::ProcessOrphan(Process * P)
 {
-	KillSig();
+	if (!P->GetLeft() && !P->GetRight())
+	{
+		FCFS* tempProcessor = nullptr;
+		tempProcessor->SetKillListOrphan(P->ID(), CurrentTimestep);
+		P->SetIsOrphaned();
+	}
+	else if (P->GetLeft() && !P->GetRight())
+	{
+		ProcessOrphan(P->GetLeft());
+	}
+	else if (P->GetLeft() && P->GetRight())
+	{
+		ProcessOrphan(P->GetLeft());
+		ProcessOrphan(P->GetRight());
+	}
+
 }
 //=======================================================================================================================//
 bool Scheduler::MoveToBlk(Process* p)
