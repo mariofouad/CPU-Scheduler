@@ -84,6 +84,11 @@ void SJF::StealProcess(Processor* p)
 	{
 		return;
 	}
+	if (RDYcount == 1)
+	{
+		return;
+
+	}
 	Process* Proc = nullptr;
 	RDY->remove(Proc);
 	RDYcount--;

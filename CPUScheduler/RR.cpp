@@ -153,6 +153,11 @@ void RR::StealProcess(Processor* p)
 	{
 		return;
 	}
+	if (RDYcount == 1)
+	{
+		return;
+
+	}
 	Process* Proc = nullptr;
 	RDY->Dequeue(Proc);
 	RDYcount--;

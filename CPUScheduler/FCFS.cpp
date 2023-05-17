@@ -163,7 +163,13 @@ void FCFS::StealProcess(Processor* p)                                 //Work ste
 	{
 		return;
 	}
+	if (RDYcount == 1)
+	{
+		return;
+
+	}
 	Process* Proc = nullptr;
+	
 	RDY->DeleteFirst(Proc);
 	RDYcount--;
 	RemTime(Proc);
