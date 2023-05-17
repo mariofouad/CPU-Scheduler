@@ -55,7 +55,7 @@ int FCFS::GenerateRandom()
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 100));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 25));
 }
 //========================================================== PROCESS ORPHAN ===========================================//
 bool FCFS::GenerateKillSigToChild(Process* P)
