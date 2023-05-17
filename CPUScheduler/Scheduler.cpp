@@ -172,15 +172,14 @@ void Scheduler::SIMULATOR()
 					R->KillRUN();
 				}
 				/////////////////////////////////////////////
-					/////////  Processes Migration 1 ////////////
-					/////////////////////////////////////////////
+				/////////  Processes Migration 1 ////////////
+				/////////////////////////////////////////////
 				while (R->ProcessMigrationToSJF(AllProcessors[ShortestSJF], RTF, TimeSliceRR))
 				{
 					RTFcount++;
 					R->ScheduleAlgo(CurrentTimestep, RTF);
 					SetIndexof_ShortestSJF();
 				}
-
 			}
 			RR_Processors->InsertEnd(R);
 			i++;
@@ -206,10 +205,11 @@ void Scheduler::SIMULATOR()
 	{
 		UserInterface->SilentMode();
 	}
+	UserInterface->OutputPart();
 
 	////////////////CALCULATIONS////////////////
-	MaxWpercentage = (maxWcount / tempProc_count) * 100.00;
-	RTFpercentage = (RTFcount / tempProc_count) * 100.00;
+	MaxWpercentage = (static_cast<double>(maxWcount) / tempProc_count) * 100.00;
+	RTFpercentage = (static_cast<double>(RTFcount) / tempProc_count) * 100.00;
 	Process* P;
 	int wtp, rtp, ttp = 0;
 	for (int i = 0; i < TRM_count; i++)
@@ -227,7 +227,6 @@ void Scheduler::SIMULATOR()
 	ForkedPerc = ((double(ForkedCount) / tempProc_count) * 100);
 	STL_Perc = (double(STL_Count) / tempProc_count) * 100;
 	KillPerc = (double(KillCount) / tempProc_count) * 100;
-
 	//calloutputfile
 	OutputFile();
 	//=============================================================== END OF SCHEDULING ==========================================//
@@ -436,7 +435,6 @@ bool Scheduler::MoveToShFCFS(Process* p)
 	AllProcessors[minprocessori]->InserttoRDY(p);
 	return true;
 }
-
 void Scheduler::Work_stealing() 
 {
 	// Check if Processorcount <= 2
@@ -465,8 +463,6 @@ void Scheduler::Work_stealing()
 		STL_Count++;
 	}
 }
-
-
 bool Scheduler::WorkisDone()
 {
 	if (NEW->IsEmpty() && BLK->IsEmpty() && TRM_count == tempProc_count) return true;
@@ -491,15 +487,14 @@ bool Scheduler::FileisFound() {
 	}
 }
 
-string Scheduler::OutputFileName() //here make the user enters the name of the file and I will call the function in output file function
+void Scheduler::SetOutputFName(string name)
 {
-	return "TestOutputFile.txt";
+	OutputFileName = name;
 }
 
 void Scheduler::OutputFile()
 {	
-	
-	std::ofstream outputfile(OutputFileName());
+	std::ofstream outputfile(OutputFileName);
 	if (outputfile.is_open())
 	{
 		Process* P = new Process;

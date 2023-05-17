@@ -62,7 +62,7 @@ void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
 bool RR::ProcessMigrationToSJF(Processor* receiver, int RTF, int slice)
 {
 	Process* p = nullptr;
-	if (!receiver || !RUN)
+	if (!receiver || !RUN || receiver == this)
 	{
 		return false;
 	}
