@@ -47,7 +47,15 @@ Process* Process::GetLeft()
 }
 Process* Process::GetRight()
 {
-	return Child1;
+	return Child2;
+}
+void Process::SetIsOrphaned()
+{
+	IsOrphaned = true;
+}
+bool Process::GetIsOrphaned()
+{
+	return IsOrphaned;
 }
 //====================================================================================================================//
 bool Process::IsNew(int& CTS)
@@ -112,6 +120,7 @@ void Process::SetInputData(int ir, int id, int i)
 void Process::excute1TimeStep()
 {
 	CT--;
+	TimeInRun++;
 }
 
 bool Process::MustbeTerminated()
