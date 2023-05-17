@@ -1,57 +1,46 @@
 #ifndef ROUNDROBIN
 #define ROUNDROBIN
+//====================================================================================================================//
+//======================================================== CLASS INCLUDES ============================================//
+//====================================================================================================================//
 #pragma once
 #include "Processor.h"
 #include "SJF.h"
 #include "LinkedQueue.h"
 #include <iostream>
-
 using namespace std;
 //====================================================================================================================//
-//=======================================================  CLASS FUNCTIONS ===========================================//
+//======================================================= CLASS FUNCTIONS ============================================//
 //====================================================================================================================//
-
 class RR : public Processor
 {
 private:
-
-	LinkedQueue<Process*>* RDY;								 //RDY list for RR proceses
-	int TMslice = 0;										 //Time Slice data will be set by the scheduler after reading the input file
-	int tempSlice;											 //A variable that saves a temporary integer with the value og the TMslice
-
+	LinkedQueue<Process*>* RDY;								            //RDY list for RR proceses
+	int TMslice = 0;										            //Time Slice data will be set by the scheduler after reading the input file
+	int tempSlice;											            //A variable that saves a temporary integer with the value og the TMslice
 public:
 
-	RR();                                                    //Default constructor
+	//Constructors
+	RR();                                                                //Default constructor
+	RR(int id);												             //ID initializer
+	RR(int id , int TimeSlice);							              	 //ID , Time slice initializer 
+	~RR();                                                               //Default Destructor
 
-	RR(int id);												 //ID initializer
+	//Scheduler Algo
+	void ScheduleAlgo(int& CTS,int MigrationParameter);		             //Overloaded Scheduler Algorithem for RR processors
+	void SetTMslice(int timeslice);							             //Sets the time slice of RR processors
+	void ResetTMslice();									             //A function resets TMslice  
 
-	RR(int id , int TimeSlice);								 //ID , Time slice initializer 
+	//Process Migration
+	bool ProcessMigrationToSJF(Processor* reciever, int RTF, int slice); //Will migrate 1 process from the RDY queue of RR to SJF
 
-	void ScheduleAlgo(int& CTS,int MigrationParameter);							 //Overloaded Scheduler Algorithem for RR processors
-
-	void InserttoRDY(Process* P);							 //This function will insert a Process into that processor RDY list
-
-	void PrintRDY();										 //Prints the data in the RDY list 
-
-	bool IsIdeal();											 //Returns true if the RDY list is empty
-
-	bool MoveFromRDYToRUN(int &CTS);						 //Moves the first process in The RDY queue to RUN state
-
-	string returntypename();								 //Returna a string with the type name which is RR
-
-	bool ProcIsFound(Process* p);							 //Returns true if a process is found in the RDY list
-
-	void SetTMslice(int timeslice);							 //Sets the time slice of RR processors
-
-	bool ProcessMigrationToSJF(Processor* reciever, int RTF, int slice);			 //Will migrate 1 process from the RDY queue of RR to SJF
-	void ResetTMslice();									 //A function resets TMslice  
-
+	//Work Stealing
 	void StealProcess(Processor* p);
 
+	//Rest of functions
 	bool IsIdle();
-
-
-	~RR();                                                   //Default Destructor
+	void InserttoRDY(Process* P);							              //This function will insert a Process into that processor RDY list
+	void PrintRDY();										              //Prints the data in the RDY list 
+	string returntypename();	                                          //Returna a string with the type name which is RR
 };
-
 #endif

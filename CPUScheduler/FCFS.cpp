@@ -1,5 +1,4 @@
 #include "FCFS.h"
-
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
@@ -53,11 +52,16 @@ int FCFS::GenerateRandom()
 	// generate a random number between 1 and 100
 	return (rand() % 100 + 1);
 }
-
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 100));
+}
+//========================================================== PROCESS ORPHAN ===========================================//
+bool FCFS::GenerateKillSigToChild(Process* P)
+{
+	if (P->IsParent()) return true;
+	return false;
 }
 //============================================================ KILL PROCESS ===========================================//
 bool FCFS::SearchForProcess(int id, Process*& p, int Curr)
@@ -204,18 +208,15 @@ void FCFS::InserttoRDY(Process* P)                                    //Function
 	RDY->InsertEnd(P);
 	RDYcount++;
 }
-
 string FCFS::returntypename()
 {
 	return "[FCFS]";
 }
-
 void FCFS::MoveFromBLKToRUN(Process* P)                      //Virtual function responsible for moving a Process from BLK to RDY list
 {
 	RDY->InsertEnd(P);
 	RDYcount++;
 }
-
 void FCFS::PrintRDY()
 {
 	RDY->PrintList();

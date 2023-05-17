@@ -1,20 +1,14 @@
 #include "SJF.h"
-
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
-
 SJF::SJF() {
 	RDY = new SL_PriorityQueue<Process*>;
 }
-
 SJF::SJF(int id) {
 	ID = id;
 	RDY = new SL_PriorityQueue<Process*>;
 }
-
-
-
 void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)        //Overloaded Scheduler Algorithem for SJF processors
 {
 	Process* P=new Process;
@@ -44,25 +38,20 @@ void SJF::ScheduleAlgo(int& CTS, int MigrationParameter)        //Overloaded Sch
 		//DecrementET();
 	}
 }
-
 void SJF::InserttoRDY(Process* P)                               //Function overridden to insert in RDY lists
 {
 	RDY->add(P,P->GetCT());
 	RDYcount++;
 }
-
 void SJF::PrintRDY()
 {
 	RDY->print();
 }
-
 bool SJF::IsIdeal()
 {
 	if (RDY->isEmpty()) return true;
 	return false;
 }
-
-
 bool SJF::MoveFromRDYToRUN(int& CTS)
 {
 	Process *prc;
@@ -77,7 +66,6 @@ bool SJF::MoveFromRDYToRUN(int& CTS)
 	}
 	return false;
 }
-
 void SJF::StealProcess(Processor* p)
 {
 	if (p == nullptr)
@@ -90,16 +78,11 @@ void SJF::StealProcess(Processor* p)
 	RemTime(Proc);
 	p->InserttoRDY(Proc);
 	p->AddTime(Proc);
-
-
-
 }
-
 string SJF::returntypename()
 {
 	return "[SJF ]";
 }
-
 SJF::~SJF()
 {
 

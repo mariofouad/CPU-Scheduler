@@ -80,7 +80,6 @@ void Scheduler::SIMULATOR()
 			if (P->IsBusy())                                                    
 			{
 				                                                        
-				
 				//Check on BLK condition
 				if (proc->MustBeBlocked(CurrentTimestep))                       
 				{
@@ -97,12 +96,13 @@ void Scheduler::SIMULATOR()
 					SetIndexof_ShortestRR();
 				}
 
-				//P->DecrementET();
-
 				//Check on the termination condition
 				if (proc->MustbeTerminated() && MovetoTRM(proc))
 				{
-					//P->RemTime(proc);
+					if (P->GenerateKillSigToChild(proc))
+					{
+						ProcessOrphan(proc);
+					}
 					P->KillRUN();                                 //Remove the process from RUN
 				}
 			}
@@ -117,12 +117,9 @@ void Scheduler::SIMULATOR()
 		//Process Killing
 		KillSig();
 		//====================================== HANDLING SJF PROCESSORS ===================================//	
-			
 			SJF* S = nullptr;
 			Process* SP = nullptr;
 			int j = 0;
-		
-			
 			while (SJF_Processors->DeleteFirst(S))
 			{
 				/////////////////////////////////////////////
@@ -189,7 +186,7 @@ void Scheduler::SIMULATOR()
 			if (i == RR_Count) break;
 		}
 		//============================== Work_Stealing ============================//
-		//Work_stealing();
+		Work_stealing();
 		//============================== HANDLING BLK list ============================//
 		//me7tageen ne move men blk lel rdy lists law 5alst el IOduration beta3etha 
 		//w da hait3mel b enna kol time step ne check eza kan ai process men el fel list 5alst el io duration
@@ -213,13 +210,30 @@ void Scheduler::SIMULATOR()
 	////////////////CALCULATIONS////////////////
 	MaxWpercentage = (static_cast<double>(maxWcount) / tempProc_count) * 100.00;
 	RTFpercentage = (static_cast<double>(RTFcount) / tempProc_count) * 100.00;
+	Process* P;
+	int wtp, rtp, ttp = 0;
+	for (int i = 0; i < TRM_count; i++)
+	{
+		TRM->Dequeue(P);
+		P->CalcStatistics(wtp, rtp, ttp);
+		TotalWT += wtp;
+		TotalRT += rtp;
+		TotalTT += ttp;
+		TRM->Enqueue(P);
+	}
+	AvgWT = TotalWT / tempProc_count;
+	AvgRT = TotalRT / tempProc_count;
+	AvgTT = TotalTT / tempProc_count;
+	ForkedPerc = ((double(ForkedCount) / tempProc_count) * 100);
+	STL_Perc = (double(STL_Count) / tempProc_count) * 100;
+	KillPerc = (double(KillCount) / tempProc_count) * 100;
 	//calloutputfile
 	OutputFile();
-	//=================================================================== END OF SCHEDULING ==========================================//
+	//=============================================================== END OF SCHEDULING ==========================================//
 }
 	
 //================================================================ USED FUNCTIONS IN PHASE2 ======================================//
-
+//=================================================================== PROCESS FORKING ============================================//
 void Scheduler::ProcessForking(FCFS* P)
 {
 	Process* proc = P->GetRUN();
@@ -231,6 +245,8 @@ void Scheduler::ProcessForking(FCFS* P)
 		//proc->OpIsDone(CurrentTimestep);
 		Process* ForkedProc = new Process(CurrentTimestep, ForkedProcID++, ForkedCT);
 		tempProc_count++;
+		Proc_count++;
+		ForkedCount++;
 		ForkedProc->SetForkedProc();
 		
 		//Move to Shortest FCFS processor
@@ -238,8 +254,11 @@ void Scheduler::ProcessForking(FCFS* P)
 
 		//Handle The Parents Lists (Tree)
 		BTree<Process*>* Tree = nullptr;  //Ptr of type tree is created 
-		if (proc->CreateForkList())       //Law el Process ne2dar ne3mel meno forked list --> law parent w ma3mlsh fork abl keda
+		if (proc->FstForkFromParent())       //Law el Process ne2dar ne3mel meno forked list --> law parent w ma3mlsh fork abl keda
 		{
+			proc->SetChild(ForkedProc);   //Pointing to the Child
+			ForkedProc->SetParent(proc);  //Pointing to the Parent 
+
 			Tree = new BTree<Process*>;   //create el tree
 			TreeCount++;
 		
@@ -253,6 +272,9 @@ void Scheduler::ProcessForking(FCFS* P)
 		}
 		else if (proc->ForkFromParent())  //Law el process hia parent w bet3mel fork lelmara el tania
 		{
+			proc->SetChild(ForkedProc);   //Pointing to the Child
+			ForkedProc->SetParent(proc);  //Pointing to the Parent 
+
 			for (int i = 0; i < TreeCount; i++)  //loop on the tree ptrs
 			{
 				Treeptrs->DeleteFirst(Tree); 
@@ -266,6 +288,9 @@ void Scheduler::ProcessForking(FCFS* P)
 		}
 		else
 		{
+			proc->SetChild(ForkedProc);   //Pointing to the Child
+			ForkedProc->SetParent(proc);  //Pointing to the Parent 
+
 			for (int i = 0; i < TreeCount; i++)  //loop on the tree ptrs
 			{
 				Treeptrs->DeleteFirst(Tree);
@@ -280,7 +305,35 @@ void Scheduler::ProcessForking(FCFS* P)
 		proc->ForkOpIsDone();
 	}
 }
+//=================================================================== PROCESS ORPHAN ====================================//
+void Scheduler::GenerateChildKillSig(Process*P)
+{
+	//if (!P->GetLeft())
+	//{
+	//	//Handle the kill sig here where you will generate a kill sig for this Processor P->ID and add it to the list 
+	//}
+	//if ()
+	//Process* LeftChildren = P->GetLeft();
+	//Process* RightChildren = P->GetRight();
 
+	//while (LeftChildren)
+	//{
+
+	//	LeftChildren = LeftChildren->GetLeft();
+	//	
+	//}
+	//while (RightChildren)
+	//{
+
+	//	RightChildren = RightChildren->GetLeft();
+
+	//}
+}
+void Scheduler::ProcessOrphan(Process * P)
+{
+	KillSig();
+}
+//=======================================================================================================================//
 bool Scheduler::MoveToBlk(Process* p)
 {
 	if (p == nullptr || p->IsOpDone(CurrentTimestep))
@@ -294,7 +347,7 @@ bool Scheduler::MoveToBlk(Process* p)
 		BLK_count++;
 		return true;
 	}
-} 
+}
 
 bool Scheduler::MovetoTRM(Process* p)
 {
@@ -382,35 +435,34 @@ bool Scheduler::MoveToShFCFS(Process* p)
 	AllProcessors[minprocessori]->InserttoRDY(p);
 	return true;
 }
-
-void Scheduler::Work_stealing() {
-	//// Check if Processorcount <= 2
-	//if (Processor_count<= 2) {
-	//	return;
-	//}
-	//if (!LongestSteal()  || !ShortestSteal())
-	//{
-	//	return;
-	//}
-	//
-	//Processor* LQF = AllProcessors[LongestIndex];
-	//Processor* SQF = AllProcessors[ShortestIndex];
-	//
-	//while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
-	//{
-	//	LQF->StealProcess(SQF);
-	//	LongestSteal();
-	//	ShortestSteal();
-	//	LQF = AllProcessors[LongestIndex];
-	//	SQF = AllProcessors[ShortestIndex];
-	//	if (!LongestQueue() || !ShortestQueue())
-	//	{
-	//		return;
-	//	}
-	//}
+void Scheduler::Work_stealing() 
+{
+	// Check if Processorcount <= 2
+	if (Processor_count<= 2) {
+		return;
+	}
+	if (!LongestSteal()  || !ShortestSteal())
+	{
+		return;
+	}
+	
+	Processor* LQF = AllProcessors[LongestIndex];
+	Processor* SQF = AllProcessors[ShortestIndex];
+	
+	while ((((LQF->TotalTime() - SQF->TotalTime()) / LQF->TotalTime() >= 0.4)) && CurrentTimestep % STL == 0)
+	{
+		LQF->StealProcess(SQF);
+		LongestSteal();
+		ShortestSteal();
+		LQF = AllProcessors[LongestIndex];
+		SQF = AllProcessors[ShortestIndex];
+		if (!LongestQueue() || !ShortestQueue())
+		{
+			return;
+		}
+		STL_Count++;
+	}
 }
-
-
 bool Scheduler::WorkisDone()
 {
 	if (NEW->IsEmpty() && BLK->IsEmpty() && TRM_count == tempProc_count) return true;
@@ -446,26 +498,19 @@ void Scheduler::OutputFile()
 	if (outputfile.is_open())
 	{
 		Process* P = new Process;
-		int wt = 0, rt = 0, tt = 0;
-		int AvgWT = 0, AvgRT = 0, AvgTT = 0;
 		outputfile << "TT" << "\t" << "PID" << "\t" << "AT" << "\t" << "CT" << "\t" << "IO_D" << "\t" << "WT" << "\t" << "RT" << "\t" << "TRT" << std::endl;
 		while (TRM->Dequeue(P))
 		{
-			int wtp = 0, rtp = 0, ttp = 0;
 			outputfile <= P;
 			outputfile << std::endl;
-			P->CalcStatistics(wtp, rtp, ttp);
-			wt += wtp;
-			rt += rtp;
-			tt += ttp;
 		}
 		outputfile << std::endl;
 		outputfile << "Processes: " << tempProc_count << endl;
-		outputfile << "Avg WT = " << (AvgWT = wt / tempProc_count) << "," << "\t" << "Avg RT = " << (AvgRT = rt / tempProc_count) << "," << "\t" << "Avg TT = " << (AvgTT = tt / tempProc_count) << std::endl;
+		outputfile << "Avg WT = " << AvgWT << "," << "\t" << "Avg RT = " << AvgRT << "," << "\t" << "Avg TT = " << AvgTT << std::endl;
 		outputfile << "Migration %: " << "RTF = " << RTFpercentage << "%," << "\t" << "MaxW = " << MaxWpercentage << "%" << std::endl; //need to be handeled
-		outputfile << "Work Steal %:" << "%" << std::endl;//need to be handeled
-		outputfile << "Forked Process:" << "%" << std::endl;//need to be handeled
-		outputfile << "Killed Process:" << "%" << std::endl;//need to be handeled
+		outputfile << "Work Steal %: " << STL_Perc << "%" << std::endl;
+		outputfile << "Forked Process: " << ForkedPerc << "%" << std::endl;
+		outputfile << "Killed Process: " << KillPerc << "%" << std::endl;
 		outputfile << std::endl;
 		outputfile << "Processors: " << Processor_count << " [" << FCFS_Count << " FCFS, " << SJF_Count << " SJF, " << RR_Count << " RR" << "]" << std::endl;
 		outputfile << "Processors Load:"<< std::endl;//need to be handeled
@@ -747,6 +792,7 @@ void Scheduler::KillSig()
 			if (processfound)
 				continue;
 			P->KillIsDone();
+			KillCount++;
 			if (P->KillAgain(CurrentTimestep))
 			{
 				multkillsig = true;

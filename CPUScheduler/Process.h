@@ -41,9 +41,10 @@ private:
 	bool ForkedProc = false;    //Checks if a process  forked
 	LinkedQueue<IOunit>* IOrequests;	//A queue of IO requests blocks
 	int NoofRR_RUN = 0;		            //Number of timeslices for RR processor given to a process
-
 	BTree<Process*>* Root = nullptr;	//Binary tree of child processes
-
+	Process* Parent = nullptr;
+	Process* Child1 = nullptr;
+	Process* Child2 = nullptr;
 	//====================================================================================================================//
 	//======================================================== CLASS FUNCTIONS ===========================================//
 	//====================================================================================================================//
@@ -56,7 +57,18 @@ public:
 
 	BTree<Process*>* GetRoot();				//Getter of binary root
 
-	bool IsNew(int& CTS);					//Checks if process came from new
+	void SetChild(Process* P);
+
+	void SetParent(Process* P);
+
+	bool IsParent();
+
+	Process* GetLeft();
+
+	Process* GetRight();
+
+  bool IsNew(int& CTS);					//Checks if process came from new=======
+
 
 	void OpIsDone(int& CTS);				//Sets Lastest opeation with current AT
 
@@ -96,7 +108,7 @@ public:
 
 	void SetForkedProc();
 
-	bool CreateForkList();
+	bool FstForkFromParent();
 
 	bool ForkFromParent();
 
