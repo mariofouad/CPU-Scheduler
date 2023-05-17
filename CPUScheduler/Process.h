@@ -36,8 +36,10 @@ private:
 	bool ForkedProc = false;
 	LinkedQueue<IOunit>* IOrequests;
 	int NoofRR_RUN = 0;
-
 	BTree<Process*>* Root = nullptr;
+	Process* Parent = nullptr;
+	Process* Child1 = nullptr;
+	Process* Child2 = nullptr;
 
 public:
 	Process();
@@ -47,6 +49,16 @@ public:
 	void SetRoot(BTree<Process*>* P);
 
 	BTree<Process*>* GetRoot();
+
+	void SetChild(Process* P);
+
+	void SetParent(Process* P);
+
+	bool IsParent();
+
+	Process* GetLeft();
+
+	Process* GetRight();
 
 	bool IsNew(int& CTS);
 
@@ -88,7 +100,7 @@ public:
 
 	void SetForkedProc();
 
-	bool CreateForkList();
+	bool FstForkFromParent();
 
 	bool ForkFromParent();
 
