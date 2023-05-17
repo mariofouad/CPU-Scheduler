@@ -1,3 +1,8 @@
+#ifndef FCFS_H
+#define FCFS_H
+//====================================================================================================================//
+//======================================================== CLASS INCLUDES ============================================//
+//====================================================================================================================//
 #pragma once
 #include "Processor.h"
 #include "LinkedList.h"
@@ -11,63 +16,59 @@ using namespace std;
 //======================================================== CLASS FUNCTIONS ===========================================//
 //====================================================================================================================//
 
-
-struct KillList
+//Struct for IOs
+struct KillList                     
 {
 	int killtime;
 	int killid;
 };
+static LinkedList<KillList>* list = new LinkedList<KillList>;
 
-static LinkedQueue<KillList>* list = new LinkedQueue<KillList>;
-
-
+//start of the class
 class FCFS : public Processor
 {
 private:
-
 	LinkedList<Process*>* RDY;
 
 public:
 
-	FCFS();											  //Default constructor
+	//Constructors
+	FCFS();											            //Default constructor
+	FCFS(int id);                                               //Non-Default constructor
+	~FCFS();                                                    //Default Destructor
 
-	FCFS(int id);
-
+	//Scheduler Algo
 	void ScheduleAlgo(int& CTS, int MigrationParameter);        //Overloaded Scheduler Algorithem for FCFS processors
 
-	void InserttoRDY(Process* P);					  //Virtual function responsible for inserting a Process to RDY list
+	//Process Migration
+	bool ProcessMigratonToRR(Processor* receiver, int MaxW);    //Will migrate one process from RDY of FCFS to RDY of RR if that process has WT > MaxW
 
-	void MoveFromBLKToRUN(Process* P);                //Virtual function responsible for moving a Process from BLK to RDY list
+	//Process Forking 
+	int GenerateRandom();                                       //Generate radom number from 1 to 100
+	bool ProcessorCanFork(Process* P, int CTS, int ForkProb);   //Boolean to ask the scheduler to create the forked process of true
 
-	void StealProcess(Processor* p);
+	//Process Orphan
+	bool GenerateKillSigToChild(Process* P);
 
-	void PrintRDY();
-
-	string returntypename();
-
-	int GenerateRandom();
-
-	bool ProcessorCanFork(Process*P, int CTS, int ForkProb);
-
-	bool SearchForProcess(int id, Process*& p, int Curr);
-
+	//Process killing
+	bool SearchForProcess(int id, Process*& p, int Curr);        
 	int KillSignalID(int curr);
-
 	bool KillAgain(int curr);
-
 	void SetKillList(int id, int t);
-
 	bool KillSignal(int curr);
-
-	void UpdateWT_RDY();
-
-	bool ProcessMigratonToRR(Processor* receiver, int MaxW);  //Will migrate one process from RDY of FCFS to RDY of RR if that process has WT > MaxW
-
 	bool ProcIsRun(Process* p);
-
 	void KillIsDone();
 
-	bool IsIdle();
+	//Work stealing
+	void StealProcess(Processor* p);
+	void UpdateWT_RDY();
 
-	~FCFS();                                                 //Default Destructor
+	//Rest of functions
+	void InserttoRDY(Process* P);					            //Virtual function responsible for inserting a Process to RDY list
+	void MoveFromBLKToRUN(Process* P);                          //Virtual function responsible for moving a Process from BLK to RDY list
+	void PrintRDY();
+	string returntypename();                                
+	void SetKillListOrphan(int id, int k);
+	bool IsIdle();                                              //Virtual overriden idle function
 };
+#endif

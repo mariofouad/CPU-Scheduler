@@ -1,5 +1,4 @@
 #include "FCFS.h"
-
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
@@ -40,7 +39,6 @@ void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)            //Overloade
 	//increment the time step if busy
 	else if (IsBusy())
 	{
-		
 		RUN->excute1TimeStep();
 	}
 }
@@ -53,11 +51,16 @@ int FCFS::GenerateRandom()
 	// generate a random number between 1 and 100
 	return (rand() % 100 + 1);
 }
-
 bool FCFS::ProcessorCanFork(Process* P, int CTS,int ForkProb)
 {
 	if (P == nullptr) return false;
-	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= ForkProb));
+	return((P->ProcessCanFork(CTS)) && (IsBusy()) && (GenerateRandom() <= 25));
+}
+//========================================================== PROCESS ORPHAN ===========================================//
+bool FCFS::GenerateKillSigToChild(Process* P)
+{
+	if (P->IsParent()) return true;
+	return false;
 }
 //============================================================ KILL PROCESS ===========================================//
 bool FCFS::SearchForProcess(int id, Process*& p, int Curr)
@@ -121,7 +124,7 @@ void FCFS::SetKillList(int id, int k)
 	KillList klist;
 	klist.killid = id;
 	klist.killtime = k;
-	list->Enqueue(klist);
+	list->InsertEnd(klist);
 }
 
 bool FCFS::KillSignal(int curr)
@@ -148,7 +151,15 @@ bool FCFS::ProcIsRun(Process* p)
 void FCFS::KillIsDone()
 {
 	KillList klist;
-	list->Dequeue(klist);
+	list->DeleteFirst(klist);
+}
+
+void FCFS::SetKillListOrphan(int id, int k)
+{
+	KillList klist;
+	klist.killid = id;
+	klist.killtime = k;
+	list->InsertBeg(klist);
 }
 bool FCFS::IsIdle()
 {
@@ -210,18 +221,15 @@ void FCFS::InserttoRDY(Process* P)                                    //Function
 	RDY->InsertEnd(P);
 	RDYcount++;
 }
-
 string FCFS::returntypename()
 {
 	return "[FCFS]";
 }
-
 void FCFS::MoveFromBLKToRUN(Process* P)                      //Virtual function responsible for moving a Process from BLK to RDY list
 {
 	RDY->InsertEnd(P);
 	RDYcount++;
 }
-
 void FCFS::PrintRDY()
 {
 	RDY->PrintList();

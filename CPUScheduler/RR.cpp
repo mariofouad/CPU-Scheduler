@@ -1,13 +1,10 @@
 #include "RR.h"
-
 //====================================================================================================================//
 //======================================================== CLASS IMPLIMENTATION ======================================//
 //====================================================================================================================//
-
 RR::RR() {
 	RDY = new LinkedQueue<Process*>;
 }
-
 RR::RR(int id, int TimeSlice)
 {
 	RDY = new LinkedQueue<Process*>;
@@ -15,13 +12,10 @@ RR::RR(int id, int TimeSlice)
 	SetTMslice(TimeSlice);
 	tempSlice = TimeSlice;
 }
-
 RR::RR(int id) {
 	ID = id;
 	RDY = new LinkedQueue<Process*>;
 }
-
-
 ///The idea of RR schedule algo is to control the Processes in RUN state by decrementing the TMslice untill it is equal to zero
 ///Then the timeslice will be reset and process in RUN will go back to RDY and so on
 void RR::ScheduleAlgo(int& CTS, int MigrationParameter)
@@ -97,56 +91,18 @@ void RR::PrintRDY()
 {
 	RDY->print();
 }
-
-bool RR::IsIdeal()
-{
-	if (RDY->IsEmpty()) return true;
-	return false;
-}
-
-bool RR::MoveFromRDYToRUN(int& CTS)
-{
-	Process *p;
-	RDY->peek(p);
-	if (!RDY->IsEmpty()&& !p->IsOpDone(CTS))
-	{
-		RDY->Dequeue(p);
-		p->OpIsDone(CTS);
-		RUN = p;
-		RDYcount--;
-		return true;
-	}
-	return false;
-}
-
 string RR::returntypename()
 {
 	return "[RR  ]";
 }
-
-
 void RR::ResetTMslice()
 {
 	TMslice = tempSlice;
 }
-
-bool RR::ProcIsFound(Process* p)
-{
-	Process* pfind = nullptr;
-	for (int i = 0; i < RDYcount; i++)
-	{
-		RDY->Dequeue(pfind);
-		RDY->Enqueue(pfind);
-		if (p == pfind) return true;
-	}
-	return false;
-}
-
 void RR::SetTMslice(int timeslice)
 {
 	TMslice = timeslice;
 }
-
 void RR::StealProcess(Processor* p)
 {
 	if (p == nullptr)
@@ -164,18 +120,13 @@ void RR::StealProcess(Processor* p)
 	RemTime(Proc);
 	p->InserttoRDY(Proc);
 	p->AddTime(Proc);
-
-
-
 }
-
 bool RR::IsIdle()
 {
 	if (!IsBusy() && RDY->IsEmpty())
 		return true;
 	return false;
 }
-
 RR::~RR()                                                   //Default Destructor
 {
 

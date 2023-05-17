@@ -75,8 +75,19 @@ private:
 	int ShortestFCFS = 0;
 	int RTFcount = 0;
 	int maxWcount = 0;
-	int ForkedProcID;
-	int STLPERC = 0;
+	int ForkedProcID = 0;
+	int ForkedCount = 0;
+	int STL_Perc = 0;
+	int STL_Count = 0;
+	int AvgWT = 0;
+	int AvgRT = 0;
+	int AvgTT = 0;
+	int TotalWT = 0;
+	int TotalRT = 0;
+	int TotalTT = 0;
+	int ForkedPerc = 0;
+	int KillCount = 0;
+	int KillPerc = 0;
 public:
 
 	Scheduler();
@@ -95,9 +106,7 @@ public:
 
 	void PrintWindow();										 //this function would be called from the UI using a pointer from scheduler because Scheduler is the only class that should had access over data needed
 
-	/*void Process_Migartion1(RR* R, SJF* p2);	*/				 //this fn will be responsible for migrating processes through different processors
-
-	//void Phase1Simulator();									 //simulator function for phase 1
+	/*void Process_Migartion1(RR* R, SJF* p2);	*/		     //this fn will be responsible for migrating processes through different processors
 
 	void SIMULATOR();										 //The real simulator that will do real scheduling						
 
@@ -107,23 +116,20 @@ public:
 
 	void MoveFromNewToRdy();								 //This function is responsible for distributimg NEW processes into RDY lists of each processor
 
-	bool MovetoTRM(Process* p);								 //This function will terminate a process
+	bool MovetoTRM(Process* p);							     //This function will terminate a process
 
 	bool MoveToRDY(Process* p);								 //This function will move a process into RDY state in a processor
 
 	bool MoveToBlk(Process* p);								 //This function will move a process to the BLK state
 
-	//void SetActualRUN();
-
-	bool DistToRUN();
-
-	//bool Blk_Rdy_Trm();
-
 	bool MoveFromBLKToRDY();
 
-	bool KillFromFCFS();
-
+	//Process Forking
 	void ProcessForking(FCFS* P);
+
+	//Process Orphan
+	void GenerateChildKillSig(Process* P);
+	void ProcessOrphan(Process* P);
 
 	void Load();
 
@@ -140,8 +146,6 @@ public:
 
 	bool ShortestSteal();
 	bool LongestSteal();
-
-
 
 	void SetIndexof_ShortestSJF();
 
