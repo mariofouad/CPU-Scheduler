@@ -39,7 +39,6 @@ void FCFS::ScheduleAlgo(int& CTS, int MigrationParameter)            //Overloade
 	//increment the time step if busy
 	else if (IsBusy())
 	{
-		
 		RUN->excute1TimeStep();
 	}
 }
@@ -125,7 +124,7 @@ void FCFS::SetKillList(int id, int k)
 	KillList klist;
 	klist.killid = id;
 	klist.killtime = k;
-	list->Enqueue(klist);
+	list->InsertEnd(klist);
 }
 
 bool FCFS::KillSignal(int curr)
@@ -152,7 +151,15 @@ bool FCFS::ProcIsRun(Process* p)
 void FCFS::KillIsDone()
 {
 	KillList klist;
-	list->Dequeue(klist);
+	list->DeleteFirst(klist);
+}
+
+void FCFS::SetKillListOrphan(int id, int k)
+{
+	KillList klist;
+	klist.killid = id;
+	klist.killtime = k;
+	list->InsertBeg(klist);
 }
 bool FCFS::IsIdle()
 {
