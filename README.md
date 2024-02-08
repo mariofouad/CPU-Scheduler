@@ -5,8 +5,8 @@ help improve the overall scheduling system.
 # Table of Contents
 * [Overview](#Overview)
 * [Introduction](#Introduction)
-* [How To Run](#How_To_Run)
-* [How To Use](#How To Use)
+* [How To Run](#How-To-Run)
+* [How To Use](#How-To-Use)
 * [Contributors](#Contributors)
 * [License](./LICENSE)
 # Overview
