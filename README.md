@@ -5,9 +5,9 @@ help improve the overall scheduling system.
 # Table of Contents
 * [Overview](#Overview)
 * [Introduction](#Introduction)
-* [How To Run]()
-* [How To Use]()
-* [Contributing]()
+* [How To Run](#How_To_Run)
+* [How To Use](#How_To_Use)
+* [Contributors](#Contributors)
 * [License](./LICENSE)
 # Overview
 This was the project of the "Data Structures" course at Cairo University, Computer Engineering Department. It was aimed after the completion of this project that we will be able to:
@@ -20,4 +20,17 @@ Process scheduling is allocating resources to different processes so that they c
 completed in an efficient and timely manner. The main objectives of scheduling are to optimize the
 use of resources, keep the CPU as busy as possible, have maximum utilization of the CPU, and
 minimize response time and waiting time for processes being scheduled. One more objective in
-multiprocessor systems is to ensure load balancing among different processors.
+multiprocessor systems to ensure load balancing among different processors.
+# How To Run
+Using Visual Studio:
+1. Download all files on your local machine.
+2. Open "MarsExploration" folder.
+3. Open "MarsExploration.sln" file, using Visual Studio.
+4. Run the code (F5).
+# How To Use
+# Contributors
+Contributors in the project:
+* [Abdullah Ashraf](https://github.com/AbdullahAsh77)
+* [Amr Safwat]()
+* [Mario Fouad](https://github.com/mariofouad)
+* [Moaz Hashem](https://github.com/Pixels57)
