@@ -6,7 +6,7 @@ help improve the overall scheduling system.
 * [Overview](#Overview)
 * [Introduction](#Introduction)
 * [How To Run](#How_To_Run)
-* [How To Use](#How_To_Use)
+* [How To Use](#How To Use)
 * [Contributors](#Contributors)
 * [License](./LICENSE)
 # Overview
@@ -31,6 +31,6 @@ Using Visual Studio:
 # Contributors
 Contributors in the project:
 * [Abdullah Ashraf](https://github.com/AbdullahAsh77)
-* [Amr Safwat]()
+* Amr Safwat
 * [Mario Fouad](https://github.com/mariofouad)
 * [Moaz Hashem](https://github.com/Pixels57)
