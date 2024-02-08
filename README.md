@@ -3,11 +3,11 @@ A program that simulates the operation of the
 process scheduler in a multiprocessor system and calculates some related statistics to
 help improve the overall scheduling system.
 # Table of Contents
-*[Introduction](# Introduction)
-*[]()
-*[]()
-*[]()
-*[]()
+* [Introduction](#Introduction)
+* []()
+* []()
+* []()
+* []()
 # Introduction
 Process scheduling is allocating resources to different processes so that they can be
 completed in an efficient and timely manner. The main objectives of scheduling are to optimize the
