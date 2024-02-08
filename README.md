@@ -28,6 +28,13 @@ Using Visual Studio:
 3. Open "CPUScheduler.sln" file, using Visual Studio.
 4. Run the code (F5).
 # How To Use
+1. Enter the name one of the [test cases files](./Test-Cases)
+2. Choose one of the interactive modes
+    There are 3 interface modes available
+      * Interactive mode
+      * Step-by-step mode
+      * Silent mode
+The description of each mode and more of the program details is available on the [project description file](https://docs.google.com/document/d/1MGKfCWCv1HpQ30vOlOghCRcJZ1W1KU87/edit).
 # Contributors
 Contributors in the project:
 * [Abdullah Ashraf](https://github.com/AbdullahAsh77)
