@@ -7,7 +7,7 @@ help improve the overall scheduling system.
 * [Introduction](#Introduction)
 * [How To Run](#How-To-Run)
 * [How To Use](#How-To-Use)
-* [Project Description File](https://docs.google.com/document/d/1MGKfCWCv1HpQ30vOlOghCRcJZ1W1KU87/edit).
+* [Project Description File](https://docs.google.com/document/d/1MGKfCWCv1HpQ30vOlOghCRcJZ1W1KU87/edit)
 * [Contributors](#Contributors)
 * [License](./LICENSE)
 # Overview
