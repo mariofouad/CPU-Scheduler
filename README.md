@@ -24,8 +24,8 @@ multiprocessor systems to ensure load balancing among different processors.
 # How To Run
 Using Visual Studio:
 1. Download all files on your local machine.
-2. Open "MarsExploration" folder.
-3. Open "MarsExploration.sln" file, using Visual Studio.
+2. Open "CPU-Scheduler" folder.
+3. Open "CPUScheduler.sln" file, using Visual Studio.
 4. Run the code (F5).
 # How To Use
 # Contributors
