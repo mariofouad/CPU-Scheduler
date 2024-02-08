@@ -30,7 +30,7 @@ Using Visual Studio:
 4. Run the code (F5).
 # How To Use
 1. Enter the name one of the [test cases files](./Test%20Cases)
-2. Choose one of the interface modes; there are 3 interface modes available
+2. Choose one of the interface modes; there are 3 interface modes available:
       * Interactive mode
       * Step-by-step mode
       * Silent mode
