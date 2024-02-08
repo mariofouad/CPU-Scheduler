@@ -28,8 +28,8 @@ Using Visual Studio:
 3. Open "CPUScheduler.sln" file, using Visual Studio.
 4. Run the code (F5).
 # How To Use
-1. Enter the name one of the [test cases files](./Test-Cases)
-2. Choose one of the interactive modes
+1. Enter the name one of the [test cases files](./Test%20Cases)
+2. Choose one of the interface modes
     There are 3 interface modes available
       * Interactive mode
       * Step-by-step mode
