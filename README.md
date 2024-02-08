@@ -5,9 +5,10 @@ help improve the overall scheduling system.
 # Table of Contents
 * [Overview](#Overview)
 * [Introduction](#Introduction)
-* []()
-* []()
-* []()
+* [How To Run]()
+* [How To Use]()
+* [Contributing]()
+* [License](./LICENSE)
 # Overview
 This was the project of the "Data Structures" course at Cairo University, Computer Engineering Department. It was aimed after the completion of this project that we will be able to:
 * Understand unstructured, natural language problem descriptions and derive an appropriate design.
