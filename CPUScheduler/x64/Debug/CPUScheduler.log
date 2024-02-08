@@ -1,0 +1,66 @@
+﻿  FCFS.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\FCFS.cpp(55,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  main.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  Process.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  Processor.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  RR.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  Scheduler.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\Scheduler.cpp(215,55): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\Scheduler.cpp(216,50): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\Scheduler.cpp(217,50): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\Scheduler.cpp(730,52): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\Scheduler.cpp(739,45): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  SJF.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  UI.cpp
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u251C' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,21): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2514' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(173,36): warning C4566: character represented by universal-character-name '\u2500' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(179,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\BTree.h(180,34): warning C4566: character represented by universal-character-name '\u2502' cannot be represented in the current code page (1252)
+  Generating Code...
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\UI.cpp(79): warning C4715: 'UI::UpdateInterface': not all control paths return a value
+C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\CPUScheduler\FCFS.cpp(114): warning C4715: 'FCFS::KillSignalID': not all control paths return a value
+  CPUScheduler.vcxproj -> C:\Users\Delta Store\Downloads\4-7_T08 phase 2\CPUScheduler\CPUScheduler\x64\Debug\CPUScheduler.exe

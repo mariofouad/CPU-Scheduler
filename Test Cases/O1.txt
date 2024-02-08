@@ -1,0 +1,14 @@
+TT	PID	AT	CT	IO_D	WT	RT	TRT
+
+Processes: 30
+Avg WT = 0,	Avg RT = 0,	Avg TT = 0
+Migration %: RTF = 0%,	MaxW = 0%
+Work Steal %: 0%
+Forked Process: 0%
+Killed Process: 0%
+
+Processors: 0 [0 FCFS, 0 SJF, 0 RR]
+Processors Load:
+
+Processors Utiliz:
+
