@@ -3,7 +3,6 @@ An arithmetic unit circuit that takes two 4-bit binary numbers and makes an arit
 # Table of Contents
 * [Overview](#Overview)
 * [How To Use](#How-To-Use)
-* [Project Description File](https://docs.google.com/document/d/1MGKfCWCv1HpQ30vOlOghCRcJZ1W1KU87/edit)
 * [Contributors](#Contributors)
 * [License](./LICENSE)
 # Overview
