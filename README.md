@@ -8,7 +8,7 @@ An arithmetic unit circuit that takes two 4-bit binary numbers and makes an arit
 # Overview
 This was the project of the "Logic Design" course at Cairo University, Computer Engineering Department. The circuits take two 4-bit signed numbers and make one of the four arithmetic operations on it; adding, subtracting, multiplying, and dividing.
 # How To Use
-1. Download and install (Logisim)[https://sourceforge.net/projects/circuit/files/latest/download]
+1. Download and install [Logisim](https://sourceforge.net/projects/circuit/files/latest/download)
 2. Download the Project files
 3. Open the "Binary-Calculator" folder
 4. Open the "ArithmeticLogicUnit" folder
