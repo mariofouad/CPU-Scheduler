@@ -28,7 +28,6 @@ Using Visual Studio:
     * Interactive mode
     * Step-by-step mode
     * Silent mode
-    * 
 # Contributors
 Contributors in the project:
 * [Abdullah Ashraf](https://github.com/AbdullahAsh77)
